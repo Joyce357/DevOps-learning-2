@@ -151,14 +151,6 @@ Other best practises
 
 
 
-END 
-------
-
-THURSDAY 
-
-
-
-
 What makes a bash shell script different from other scripting languages ? 
 
 + `Syntax ( format )`
@@ -166,7 +158,7 @@ What makes a bash shell script different from other scripting languages ?
 **SYNTAX IN BASH SHELL (Bash Programming Language)**
 
 
-1. Shebang 
+1. `Shebang` 
 #!/bin/bash
 
 2. Comments ( single line comment and multi comment ) 
@@ -174,20 +166,25 @@ note comments are not going to be excuted or run by the script . comments are ig
 
 # This is a comment 
 
-3. Variables  ( `User define variable or System Variables` )
+3.` Variables`  ( `User define variable or System Variables` )
 
 This is a method of storing information or Data that you will use in your bash shell script : user define variables or environmental variables or system variables 
 
 `Example of a Syntax defining a variable` 
 
-name ="calson"
-company= "team4techsolutions"
-occupation = DevOps and Cloud Engineer 
-Location = "Toronto"
-Country= "Canada"
 
+name="calson"
+company="team4techsolutions"
+occupation="DevOps and Cloud Engineer"
+Location="Toronto"
+Country="Canada"
 
-4.  Conditional Statements (if , else , elif )
+Note: To call or reference a variable in your code you will have to use the $ sign for example 
+my name is $name 
+
+System Variables comes with the operating system and are written in Capital letters . $HOST 
+
+4.  `Conditional Statements` (if , else , elif )
 
 
 if [ condition ]; then
@@ -225,15 +222,24 @@ else
 fi
 
 
-5.  Loops ( For loop , while loop , Until Loop )
+Note : The elif helps us to pass multiple conditions 
+
+example : 
+
+
+5.  `Loops ( For loop , while loop , Until Loop )`
+
+`For loop ` : A for loop is used when you want to repeat something multiple times 
 
 ##### for loop syntax ######
+
+example 
 
 for variable in list; do
   commands 
 done
 
-example 1
+`example 1`
 
 for i in 1 2 3 4 5
 do
@@ -254,12 +260,15 @@ do = is the action we want the for to carryout on the list
 done = once the action or condition is meet or complete 
 
 
-`while loop`
+`while loop`:
+A while loop on the other hands runs as long as a condition is True 
 
 while [ condition ]
 do
   commands
 done
+
+It will keep looping (running ) until the condition becomes false
 
 `example 1`
 
@@ -271,6 +280,22 @@ do
 done
 
 
+While = Keeping looping as long as the condition is True 
+[ ] = Our condition is in this bracket 
+$ Count = Current value to count 
+-gt = greater than 
+0 = zero 
+
+Keep running the loop while count is greater than 0 
+
+5 is greater 0 = True 
+4 is greater 0 = True 
+3 is greater 0 = True
+2 is greater 0 = True
+1 is greater 0 = True
+0 is greater 0 = False ( the loop stops here )
+
+
 use case 
 `example 2`
 
@@ -280,6 +305,7 @@ do
 done < backup.txt
 
 
+`Until Loop` : An until loop is the opposite of a while loop . It runs as long as the condition is false and it stops when the condition becomes true
 
 until [ condition ]
 do
@@ -289,14 +315,25 @@ done
 
 example 
 
-num=1
-until [ $num -gt 5 ]
+count=1
+
+until [ $count -gt 5 ]
 do
-  echo "Number: $num"
-  ((num++))
+  echo "Number: $count"
+  ((count++))
 done
 
 
++ Run the loop until count is greater than 5
++ as long as count is <= 5 , it keeps running 
+
+output 
+
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 5
 
 ### 🔁 Summary Table
 
@@ -304,44 +341,43 @@ done
 |---------------|-----------------------------|---------------------------------------------|
 | `for`         | Iterates over a list/range  | Files, arguments, fixed number of iterations |
 | `while`       | While condition is true     | Waiting for something, reading input         |
-| `until`       | Until condition is true     | Retry loops, wait-until conditions           |
+| `until`       | Until condition is False    | Retry loops, wait-until conditions true      |
 
 
 
-
-6.  **Arithematic Opertaions 
+6.  `Arithematic Opertaions` 
 
 ## Arithmetic Operations 
 
 This is important when you want to perform mathematical calculations in your bash shell scripts 
 
-### expr 
+`expr` 
 
 results=$(expr 5 + 3)
 echo "5 + 3 = $results
 
 or 
 
-### Double Parenthensis $((  ))  
+`Double Parenthensis` $((  ))  
 
 results=$((5+3))
 echo "5 + 3 = $results 
 
-### Addition (sum)  + 
+
+`Addition (sum)  +` 
 a=5
 b=2
 sum=$((a + b))
 echo "sum: $sum"
 
-### subtraction (difference) - 
+`subtraction (difference) - `
 
 a=5
 b=2
 difference=$((a - b))
 echo "difference: $difference"
 
-
-#66
+`Multiplication * `
 
 a=5
 b=2
@@ -349,23 +385,23 @@ eggs=$((a * b))
 echo "eggs: $eggs"
 
 
-###  Divison /
+`Divison /`
 
 a=5
 b=2
 eggs=$((a / b))
 echo "eggs: $eggs"
 
- ###  Modulus  (Remainder ) %
+`Modulus  (Remainder ) %`
 
 a=5
 b=2
 remainder =$((a % b))
 echo "remainder: $remainder"
 
- ###  Increment  and Decrement ++
+`Increment  and Decrement ++`
 
- increment 
+`increment` 
 
 a=5
 ((a++))
@@ -403,21 +439,21 @@ echo "increment a: $a"
 
 
 
+7.  `Arrays` 
 
-
-7.  Arrays 
-
-what is an array : its a syntax just like any other syntax in bash . An array is a special type of variable that can hold multiple values at once instead of just one 
+what is an array : its a syntax just like any other syntax in bash . An array is a special type of variable that can hold multiple values at once instead of just one value 
 
 `example of an array syntax` 
 
 fruits=("apple" "mango" "banana" "pear")
+numbers=("1" "2" "3" "4" "5")
+
 
 USE CASE : You might want to write a script that is going to loop through list 
 
-8. Functions
+8. `Functions`
 
- Functions allow you to bundle your code for repeated use .Makes your bash shell script or code well organised and maintanable . They help to organise your script , avoid you repeating the code and makes your logics in your modular 
+Functions allow you to bundle your code for repeated use .Makes your bash shell script or code well organised and maintanable . They help to organise your script , avoid you repeating the code and makes your logics in your modular 
 
 
 `syntax 1`
@@ -426,9 +462,12 @@ function_name () {
   # command go here
 }
 
+function_name :  this will call the function 
+
 `example of a simple function` 
 
 #!/bin/bash
+
  greet () {
   echo "welcome to team4tech solutions!"
 }
@@ -467,11 +506,7 @@ greet_person "Dang"
 greet_person "Calson"
 
 
-#################
-# July 31st 2025
-#################
-
-9.  Input & Output in Bash 
+9.  `Input & Output` in Bash 
 
 
 `ouputs` 
@@ -505,7 +540,7 @@ standard error
 
 ## Input
 
-Reading from standard input. The "read" command is used to take input from the user and store it as a variable .
+Reading from standard input. The "`read`" command is used to take input from the user and store it as a variable .
 
 
 e.g 
@@ -513,11 +548,6 @@ e.g
 echo "Please enter your name"   
 read name 
 echo "Hello, $name Welcome to Team4Tech Solutions Cloud & DevOps Master Class!"
-
-
-
-
-#######################
 
 
 Redirecting Input 
@@ -528,11 +558,23 @@ wc -w < welcome.sh   ( This counts the words in the welcome.sh file )
 
 command < filename (stdin)
 
+
+
+
+name =calson 
+
++ storing data 
++ We use variables to make our scripts dynamic ( no hardcoding )
++ It makes your script readable or improves readbility 
+
+
+
+
 10. `Positional Parameters` 
 
 In Bash, parameters are the values or arguments passed to a script or function when it's executed. These are also called positional parameters because they are accessed by their position in the command line.
 
-They are system define parameter (variables ) - system defined parameters or variables 
+They are system define parameter (variables )
 
  `Positional Parameters / Arguments` 
 
@@ -636,11 +678,16 @@ esac
 
 
 expression : Values you will compare against the pattern 
-pattern1 or pattern2 : This patterns the expression is tested againts 
-command1 and command2 : This actual actions that are executed if the expression matches the pattern 
+
+pattern1 or pattern2 : This `patterns` the expression is tested against 
+
+command1 and command2 : This actual `actions` that are executed if the expression matches the `pattern` 
+
 *) : The default case that matches anything if no other pattern matchees (optional )
+
 ;; : terminates each branch of the case
-esac: ends the case statement, Its case spelled backward  
+
+esac :  ends the case statement, Its case spelled backward  
 
 ## example 
 
@@ -702,6 +749,8 @@ Each block ends with ;; to mark the end of that case.
 esac is the reverse of "case", marking the end of the block.
 
 
+
+
 **Debug vs Troubleshoot**
 
 
@@ -717,7 +766,7 @@ Its a systematic approach primarily used by developers to ensure that the code/s
 # What is Troubleshooting 
 
 Troubleshooting is a broader process of diagnosing and resolving issues in systems or processes . It 
-includes hardware, software , networks , and other systems .This involves you identifying the root  cause of a problem and implementing a solution . 
+includes `hardware, software , networks , and other systems` .This involves you identifying the root  cause of a problem and implementing a solution . 
 
 
 
@@ -727,6 +776,8 @@ Debugging a bash shell script is very important its going help you to
 identify , and fix errors.
 
 1- **Using "set" Command Options**
+
+`set` with different flags 
 
 `set -x` : Enables a mode of the shell where all executed commands are printed to the terminal . This useful for tracing the flow of the script .
 
@@ -775,6 +826,8 @@ This helps you to run your script in debugging options directly from the command
 
 example :  bash -x "script name"
 
+
+
 3. **Using 'trap'**
 The trap command can catch and handle signals and other script errors.
 
@@ -812,7 +865,7 @@ echo "script has ended
 
 USE CASE : 
 
-+ Automate task ( Automating IAM Key rotation , Backing Important files into s3 bucket , use to monitor health of servers by checking CPU .memory and disk space usage , You Optimization)
++ Automate task ( Automating IAM Key rotation ,Package Management, Backing Important files into s3 bucket , use to monitor health of servers by checking CPU .memory and disk space usage , use it for cost Optimization , cleanup of your servers)
 
 
 ## Exit Codes 
@@ -836,11 +889,8 @@ you write a bash shell script that when run it deletes the old api keys and crea
 
 
 
-CLI OR GUI 
 
-CLI AND GUI ---CONSOLE 
-
-APPLICATIION 1 ----API----- APPLICATION 2 
+CHALLENGE ! BASH 
 
 
 1. we have created a user in aws under IAM 
@@ -849,6 +899,9 @@ APPLICATIION 1 ----API----- APPLICATION 2
 
 
 
+
+
+**GIT AND GITHUB** 
 
 + Identify 
 + understand use of each syntax 
@@ -879,3 +932,36 @@ logging :   store events
             timestamp , level , scriptname  message 
             2025/01/19. error   ec2instance.sh  - 
  log levels:  Debug , info , warn , error , critical 
+
+
+Can you tell me your experience with Bash shell scripting 
+
+
+Task you have perfom with bash shell script 
+
++ Packagement - Installing tools 
++ Cost optimization - To auto start and auto shutdown ec2 instances in our development environments 
++ Backup - automate backup of important files to s3 bucket
++ Cleanup idle EBS volumes and snapshots in aws for cost optimization 
++ Written a bash shell script for Data restoration test to meer Disaster recovery requirements for SOC compliance 
+
+
+
+
+`GIT AND GITHUB` 
+
+`AWS`
+
+
+6 months ----> Cloud engineer or DevOps engineer 
+3 days weeks - Monday , Tuesday and wednessday  7pm to 9 pm est 
+Web application 
+recording 
+
+what is a cloud engineer , devops engineer 
+
+
+
+
+
+
