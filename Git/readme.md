@@ -326,9 +326,31 @@ You have been hired
 + You set up authentication with GitHub using either HTTPS or SSH key pairs
 + Clone the current projects the company is working on 
 
-END 
 
-Thursday 
+Step 
+create a project directory ( folder) , clone the project inside that directory 
+
+mkdir <directory-name> e.g mkdir Class10-Git-Project
+cd <directory-name> : This will change directory moves you into a directory or folder
+ls : List 
+clear : means making your workspace clean 
+cat : allows you to read the content of a file 
+
+**Git commands** 
+
+`git clone <repository url> :` 
+
+This command is used to create a local copy of a remote repository. It allows you to download the entire repository, including its history, branches, and files, to your local machine. 
+
+`git branch` :
+
+This command is used to list, create, or delete branches in a Git repository. It allows you to manage different lines of development within your project.
+
+`git branch <branch-name>` : This will create new branch with the name you want 
+
+`git checkout <new-branch-name>` This command will switch from one branch to another 
+
+`git checkout -b <branch-name>`: This creates a new branch and automatically switch to the new branch 
 
 
 
