@@ -324,14 +324,27 @@ You have been hired
 + You configured your username and email address
 + Your company invited into their github organisation
 + You set up authentication with GitHub using either HTTPS or SSH key pairs
+
+
+
 + Clone the current projects the company is working on 
 
 
-Step 
+
+**GIT WORKFLOW**
+
+How to contribute in an existing project at your company 
+
+**example** . You have been employed and your company have added you on your companies github repository . They ask you to make changes to the project files and push the changes. What are some of the steps you will take to achieve this ?
+
+
+
+Step 1 
+
 create a project directory ( folder) , clone the project inside that directory 
 
 mkdir <directory-name> e.g mkdir Class10-Git-Project
-cd <directory-name> : This will change directory moves you into a directory or folder
+cd <directory-name> :e.g cd Class10-Git-Project  This will change directory moves you into a directory or folder
 ls : List 
 clear : means making your workspace clean 
 cat : allows you to read the content of a file 
@@ -341,6 +354,7 @@ cat : allows you to read the content of a file
 `git clone <repository url> :` 
 
 This command is used to create a local copy of a remote repository. It allows you to download the entire repository, including its history, branches, and files, to your local machine. 
+e.g : git clone 
 
 `git branch` :
 
@@ -358,7 +372,57 @@ This command is used to list, create, or delete branches in a Git repository. It
 
 
 
+mkdir <directory-name> e.g mkdir Class10-Git-Project
+cd <directory-name> : This will change directory moves you into a directory or folder
+ls : List 
+clear : means making your workspace clean 
+cat : allows you to read the content of a file 
+
+**Git commands** 
+
+1. `git clone <repository url> :` 
+
+This command is used to create a local copy of a remote repository. It allows you to download the entire repository, including its history, branches, and files, to your local machine. 
+
+e.g `git clone git@github.com:Team4techsolutions-Class10/class10.git`
+
+2. `git branch` :
+
+This command is used to list, create, or delete branches in a Git repository. It allows you to manage different lines of development within your project.
+
+3. `git branch <branch-name>` : This will create new branch with the name you want 
+
+4. `git checkout <new-branch-name>` This command will switch from one branch to another 
+
+5. `git checkout -b <branch-name>`: This creates a new branch and automatically switch to the new branch 
+
+6. `git status` :
+
+This command is used to display the current state of the working directory and staging area. It shows which changes have been staged, which haven't, and which files are untracked.
+
+refer to files or directories created in a project as a working area
 
 
+7. `git add .` : 
+
+This command is used to add changes in the working directory to the staging area. The dot (.) indicates that all changes should be added. It prepares the changes for the next commit (save).
+
+or 
+
+8. `git add <filename>` :
+
+This command is used to add specific files to the staging area. Replace <filename> with the name of the file you want to stage.
+
+9. `git commit` ;
+
+This command is used to save the staged changes to the local repository. It creates a new commit with a message describing the changes. You can use the -m option to provide a commit message directly in the command, like this: `git commit -m "Your commit message here"`. 
+
+10. `git commit -m "commit message here"` This creates a commit (saves) files ready to push into the repository 
+
+Note all commits have what we call a commit i.d .This commit id helps to track what changes where made , when , by who etc 
+
+11. `git push --set-upstream origin update-notes` 
+
+This command is used to push the committed changes from your local repository to a remote (github) repository. The --set-upstream option is used to set the upstream branch for the current branch, which allows you to use git push without specifying the remote and branch name in future pushes. In this example, origin is the name of the remote repository, and update-notes is the name of the branch you want to push to.
 
 
