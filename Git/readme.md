@@ -339,6 +339,7 @@ How to contribute in an existing project at your company
 
 
 
+
 Step 1 
 
 create a project directory ( folder) , clone the project inside that directory 
@@ -362,21 +363,12 @@ This command is used to list, create, or delete branches in a Git repository. It
 
 `git branch <branch-name>` : This will create new branch with the name you want 
 
-`git checkout <new-branch-name>` This command will switch from one branch to another 
+`git checkout <new-branch-name> or git switch <branch-name>` This command will switch from one branch to another 
 
 `git checkout -b <branch-name>`: This creates a new branch and automatically switch to the new branch 
 
 
 
-
-
-
-
-mkdir <directory-name> e.g mkdir Class10-Git-Project
-cd <directory-name> : This will change directory moves you into a directory or folder
-ls : List 
-clear : means making your workspace clean 
-cat : allows you to read the content of a file 
 
 **Git commands** 
 
@@ -421,8 +413,349 @@ This command is used to save the staged changes to the local repository. It crea
 
 Note all commits have what we call a commit i.d .This commit id helps to track what changes where made , when , by who etc 
 
-11. `git push --set-upstream origin update-notes` 
+11. `git push --set-upstream origin <branch-name>` 
+e.g `git push --set-upstream origin update-notes`
 
 This command is used to push the committed changes from your local repository to a remote (github) repository. The --set-upstream option is used to set the upstream branch for the current branch, which allows you to use git push without specifying the remote and branch name in future pushes. In this example, origin is the name of the remote repository, and update-notes is the name of the branch you want to push to.
 
+
+**How can work with Git on a NEW PROJECT** 
+
+1. `First Approach` 
+
+
++ Create a project directory 
++ Once you are in the project directory Initialize a new Git repository
+each project you will need to initialized git . you will need to generate a local repository 
+
+`git init` :
+This command is used to initialize a new Git repository in the current directory. It creates a .git subdirectory that contains all the necessary files and structures for version control. After running git init, you can start tracking changes, creating commits, and managing branches within that directory.  
+
+`Note` : If you clone an existing project from a git repository you do not need to run git init again . This is so because the project has git init already 
+
+`Note` : When you initialized a local repository using git init , it creates a master branch and when you create a github repository it creates a main branch 
+
+git is called distributed version control systems 
+local git repository = machine - your computer 
+remote repository  = github ( centralized location ) , gitlab , Bitbucket 
+
++ `git remote -v` : 
+
+This command is used to display the remote repositories that are associated with your local Git repository. It shows the names of the remotes and their corresponding URLs. This information is useful for understanding where your code will be pushed or pulled from when you use commands like git push or git pull. The -v option stands for "verbose" and provides more detailed information about the remote repositories.
+
++ setup your remote repository where you need to push your new project to 
+
+`git remote add <alais> <repository-url>
+
+`git remote add origin <repository-url>`
+
++ `git add . or git add <file-name>`
+
++ `git commit -m "commit message"` 
+
+or you can add and commit at the same using the && command e.g
+
+`git add . && git commit -m "first commit"` 
+
++ Push your new project into the repository 
+`git push --set-upstream origin <branch-name>`
+
+
+2. Second Approach ( This commands can be found on the new github repository you created)
+
+`git init`
+`git add README.md`
+`git commit -m "first commit"`
+`git branch -M main`
+`git remote add origin <repository url>`
+`git push -u origin main`
+
+
+
+
+
+#############################################
+
+
+Git branch :
+
+Git has what is called a Repository which is like a storage . It comes with a default branch `main` / `master` This branch holds your code storage or code base and therefore it's like your main storage . To be able to edit this code a good practise will be too create a new branch . what then are branches ? .Git branches are essentially pointers to a snapshot of your changes. When you work on a new feature, fix a bug, or experiment, creating a new branch in Git allows you to work on different versions of your repository at the same time, without affecting the stable or main version. This isolation makes it easier to manage features, fixes, and experiments independently.
+
+When you clone a repository it comes with existing branches . To make a change on a branch you must create a new branch from the existing branch . The branch you created will come with all existing code base for you to work on
+You can now make changes to the branch you created . Once these changes  are done you will need to commit the changes
+After commiting the changes you will need push the changes into a remote repository
+You would need to create a Pull Request for the code to be merge into the main or master branch 
+
+
+
+**Key Terminologies In Git**
+
+1. `Repository (Repo)` : A repository is a like a Project folder (storage) that git tracks .This this folder contains all files and directories . The is a .git directory or folder where git stores history and configurations
+
+Two Types of Git Repositories
+
+`Local Repostory` --> on your local computer ( git init ) it comes with a local repository (.git )
+`Remote repository` ---> These are repositories stored on github , gitlab , Bitbucket
+
+`Git init` : This command will initialized or create a local git repository to start tracking your project . Take note: Git init should be ran only when you are are starting a project from scratch . But if you are cloning an existing project already from github then there is no need to run git init
+
+For each project you are starting from scratch you will need to initialized git
+
+`Commit` saving changes at a specific point in time of the project . A commit is a snapshot of your changes at a specific point in time.
+
+Note : - Every commit comes with Unique Commit ID (Commit Hash)
+
+- Comes with a commit message . you must give a commit message explaing what you have add , modified or change - It comes with Author information (User)who made the commit and timestamp
+
+`Branch` : A git branch is a copy of your saved code (commit) which allows you to isolate the code or work in parellel when developing Git branch comes with a default branch call the main or master branch
+
+`Merge` : This is means combining changes done one branch with another If both branches changed the same part of a file, Git will ask you to resolve a conflict before completing the merge
+
+`Remote` : A remote is a reference to a repository hosted somewhere else (e.g., GitHub, Gitlab ). Note : You can push changes to the remote repository (upload) and pull (download) changes .
+
+`Staging Area` : A middle step between editing files and committing (saving) them.This is just the step where you move files or directories from your working area to your staging area . Meaning the files or directories are ready to be commited (save)
+
+You stage files with git add before committing.
+
+`HEAD` : HEAD is a pointer to the current branch and commit you’re working on.
+Usually points to the latest commit in your branch.
+You can move HEAD to different commits to “go back in time.
+
+`Working /Project Directory`
+
+The folder on your computer where you edit files.
+It Contains your project’s current files as you see them.
+Can have untracked changes (files Git doesn’t know about yet).
+
+**Git Commands**
+
+`git init` - Initialize git local repository in your project directory 
+`git status` - It Checks the state of working directory and shows you files that you are currently working on and files that ready to be committed . Files currently in the working area are in red while files that are ready to be save (commit) are in green 
+`git add <filename or directory-name>` : This adds a specific file or directory to the staging area ready for commit 
+`git add .` : This on the other hand adds all files or directories in your working area to the staging area 
+`git commit -m "commit message" or git commit` :  Saves changes 
+`git add . && git commit -m "commit message"` : Using && command helps you add and commit at the same time
+
+
+`Branching and Merging Commands`
+
+Why Branches Are Used in git 
+
++ `Feature Isolation`: Work on new features without affecting the main code.
++ `Bug Fixes`: Fix issues without risking other parts of the code.
++ `Experimentation`: Test ideas safely, revert easily if needed.
++ `Collaboration` : Multiple people can work on different parts of a project at the same time.
+Default Branches ---comes with github or git
+
+Default Branch (Master or Main Branch)
+
+**Branch Merge Types** ;
+
+How can you take changes from one branch and combine with another branch 
+
++ Fast-forward merge Happens when there’s no divergence between branches. Git just moves the branch pointer forward.
+
+Example: main → feature is directly ahead of it.
+
++ Three-way merge
+
+Happens when branches have diverged. Git creates a new merge commit combining changes from both.
+
++ Merge Conflicts
+
+Occur when Git can’t automatically decide which change to keep because the same line of code was modified differently in each branch.
+
+Merging branches you can merge them through two ways ( Fast-forward or Three way merge)
+Try as much as possible to avoid merge conflicts
+
+
+`git branch` : it list branches, Shows all local branches. The current branch is marked with * which simply means that is the branch you are on . 
+
+`git branch -a` : it lists local branches plus remote branches (local on your computer  + remote branches in github) 
+
+`git branch <branch-name>` : It creates a branch with what ever name you will specify
+
+`git checkout <branch-name>` or `git switch <branch-name>` : This switches from one branch to another
+
+`git checkout -b <branchname>` : This creates a branch and switch to the branch at the same time 
+`git merge <branch-name>` : This will combine changes from one branch into another 
+`git stash` : This will temporary store or save changes so you can work on a different branch safely 
+`git stash pop` :This will retrieve the temporary save work (file or directories) that you stashed
+`git diff <branch-name>` : This shows the difference between two branches e.g you can check stage branch vs master branch .
+Note : The branch you are on ,any information in read - red is missing on the branch while anything in green (+) is on your current branch but missing in the other branch you are comparing with 
+
+`git branch -D <branch-name>` : This will delete a branch in your local environment 
+`git branch -m <old-branch-name> <new-branch-name>` : This changes a branch name from old to new name 
+
+`git branch --show-current` : This will show you the current branch you are on 
+
+`git push [remote repository] [branch]` : This is to push changes to a remote repository on a specific branch 
+
+`git push` : This will push your changes to the current branch you are on .This branch must be in existence in the remote repository.
+
+`git push -set-upstream origin <new-branch-name>` : This will push a new branch that was created on your local machine or environment but the branch doesnt exist in the remote (github) repository
+
+`git push --delete [remote repository] [branch-name]`': Deletes a branch from the remote repository (like GitHub, GitLab, Bitbucket). 
+
+
+`git checkout --track [remote/branch]` : Creates a new local branch that is set up to track a remote branch.“Tracking” means your local branch is linked to a remote branch so git pull and git push know the branch 
+
+
+**Checking Status & History commands**
+
+`git status` :
+
+This command is used to display the current state of the working directory and staging area. It shows which changes have been staged, which haven't, and which files are untracked. It helps you understand what changes are ready to be committed and what changes still need to be added to the staging area.
+
+`git log`:
+
+This command is used to show the commit history of the repository. It displays a list of commits, including the commit hash, author, date, and commit message. You can use various options with git log to customize the output, such as --oneline for a condensed view or --graph to visualize the branch structure.
+
+Commit hash (SHA-1 ID)
+Author name & email
+Date
+Full commit message
+e.g
+
+commit df3c10ca37241e5e7f2527baa631c4e6c3ed06c3 Author: Calson Njinoh castorprince619@gmail.com Date: Thu Aug 7 22:11:23 2025 -0400
+
+git log --oneline --graph --decorate; This gives more details about the commit in lines
+
+git rebase  : It moves or reapplies commits from one branch on top of another branch. Instead of merging (which creates a merge commit), it rewrites commit history so it looks like your work started from the latest base branch state.
+
+git cherry-pick "commit id" :
+
+GitHub Basics (Remote Repositories)
+
+git remote -v : Lists the remote repositories linked to your local repo. when do you use this command ? you can use this when you need to confirm which remote repository is connected to your local repo especially when you want to push your code changes or new project
+
+git push origin <branch> : Uploads commits from your local branch to the remote branch. e.g git push origin dev
+
+git clone <repository name> : It creates a local copy of your existing remote repository (github repo) and brings to your local . it clones it with the following
+
+A working directory (project)
+The full commit history
+A link to the remote repository
+git pull This brings changes from your remote repository(github) that are not present in your local repository (github) git fetch : Shows your the changes on your remote repository that are not in your local but do not update your local
+
+git remote add <alias-name> repository name : This helps to sync your local repository and your remote repository making it easier for you to push code changes
+
+Summarize Git
+
+Git is what you will install on your local computer ( Windows or MacOS)
+
+Starting a new Project on your local computer (Bash shell scripting , Terraform , Ansible , Jenkinsfile etc )
+
+Set your git local environment (username and email address ) --> git config --global user.name "username" git config --global user.email "email address" Init --> git add ---> git commit -m "commit msg" --->git remote -v ----> copy github repository --> git push git remote add repository name ---->
+
+Contributing to an existing project ----> git clone or git pull ----> default branch is main ---> create branch ---> push the branch (git push --set-upstream origin )-----> create a pull request ---select review & approved ---merge
+
+Main , Dev , Staging ----> branch off
+
+9:25 PM EST
+
+GITHUB
+
+Github is a web based or web application platform version control and collaboration that is built around git .Git is the most popular version control system .
+
+Github is a Version Control with git: GitHub hosts repositories (folders containing code, documents, and history) where every change is tracked. This allows you to see who changed what, when, and why, and revert to earlier versions if needed.
+
+Collaboration – Multiple people can work on the same project at the same time, using features like branches, pull requests, and code reviews to manage and merge changes safely.
+
+Cloud Hosting for Git Repositories – Instead of storing your Git repositories only on your computer, GitHub stores them online so you can access them from anywhere.
+
+Integration & Automation – GitHub connects with CI/CD tools, project boards, and security scanners, letting you automate builds, tests, deployments, and even security checks.
+
+In github we are going to create repositories
+
+What is a Github Repository ?  : A repository (often called a repo) in GitHub is basically a storage space where your project lives. It contains all the files, folders (directories), and the complete history of changes for your project. It’s managed by Git, and GitHub provides an online interface to view, collaborate, and manage it.
+
+What are the different types of github repositories 
+
+GitHub repositories are mainly categorized by visibility and purpose:
+
+Public Repository :
+Visible to everyone on the internet
+U might one to use a Public Repository for Opensource projects or sharing code publicly
+Accessing public repositories , anyone on the internet can view , clone the code , but only users with write access can make changes
+Private Repositories :
+Visible only to you and the collaborators you choose (teams or organisation members).
+Purpose: Used for private projects, sensitive code, or company-owned software .
+Accessing private repositories : Only invited collaborators can view or contribute to the projects
+Internal Repository (For Github Enterprize Only )
+Visible only to members of the same organization.
+Purpose : Used for organization-wide projects that should not be public but can be accessed by all members in the organization
+Accesing internal repository : All org members can see it, but only those with permissions can contribute.
+use case : A shared codebase for internal tools in a large company.
+GitHub Repository Size Limits
+
+Individual File Size
+Limit: 100 MB per file (hard limit).
+If you try to push a file larger than 100 MB, GitHub will reject it.
+For files over 50 MB, you’ll get a warning when pushing, but it will still upload (until it hits 100 MB).
+Total Repository Size Limit ?
+Soft limit: Around 1 GB recommended for optimal performance.
+GitHub doesn’t block you at exactly 1 GB, but large repos can become slow to clone or work with.
+Hard practical limit: Around 5 GB — beyond that, GitHub may flag the repo and ask you to reduce the size.
+GitHub Storage for Large Files (LFS)
+If you need to store large binary files (like videos, datasets, images), use Git LFS (Large File Storage).
+Free tier: 1 GB storage and 1 GB/month bandwidth included.
+You can purchase more storage/bandwidth if needed.
+GitHub Packages & Artifacts
+If you store container images or build artifacts in GitHub Packages, the storage limit depends on your plan.
+Free plan: 500 MB storage & 1 GB/month data transfer.
+Paid tiers offer more.
+What is a Github Organisation What are teams in github other features of github
+
+A Readme.md is a very important file in your github projects.It serves for different purposes .Its a source of truth for anyone who is new to the project and needs more information.
+
+Primary Use of a Readme.md
+
+Project introduction :
+
+It gives or provides a summary of what a project is , its purpose , and its primary features it explains why the project was created and what problem it solves Installation Instructions : :
+
+It list dependencies or tools required before installing the project it gives you Installations Steps and how to execute the project on your computer Use Guide
+
+readme files can give you instructions on how to use the project after installation e.g with example Contribution Guidelines :
+
+Contribution Rules like how to contribute to the project , including how your code standards , branching strateg and commit messages Project Structure:
+
+For example it can contain information on how directory and files are structured Also how the code is organised Contact information:
+
+it can have contact details like emails for code maintainers or authors including their contact details ############################################### June 18 2024 ################################################
+
+Github Organisation
+
+Organizations on GitHub are shared accounts that allow multiple users to collaborate on many projects. They are ideal for open-source projects, companies, and any groups needing collective management of repositories. Each organization can have multiple repositories and be managed by multiple administrators.
+
+Key Features of Github Organisation
+
+Teams & Permissions : Organisations can allow you to create teams with different access permissions , making it easier to manage who can view or edit a repositories Teams within your organisation can be structured in a hierachy order , which allows granular or fine grained access control and roles. e.g developers can have read access while devops team can have write access. Organisations helps with Repository Management: An organisation can own unlimited public and private repositories An organisation provides a central location to manage policies ,including merging , branching and more policies Security and compliance : Github organisations probide advanced security features like two factor authentication Helps in Third Party Access controls: Allows admins to manage third party application access ,ensuring only trusted applications can access your data Best Practices for Using GitHub Organizations
+
+Use Teams for Role-Based Access Control (RBAC): Define teams based on roles and responsibilities within your projects to manage permissions effectively.
+
+Regularly Audit Access and Permissions:
+
+Periodically review who has access to your organization and their permissions to ensure that they are still relevant and secure.
+
+Enable Security Features:
+
+Use GitHub’s security features to protect your code and infrastructure from potential vulnerabilities.
+
+Use Webhooks and Integrations Wisely:
+
+Connect your development workflows with other tools and services using webhooks and third-party integrations, but make sure to manage and monitor these connections carefully.
+
+GitHub Teams
+
+Within an organization, Teams are groups of members with specific permissions and roles. Teams can help manage access to repositories and facilitate communication and collaboration among members.
+
+**Key Features of Github Teams or Importance of Teams in Github Account
+
+Role-Based Access Control (RBAC): Teams within your github organisations allows you to assign specific repository access permissions to groups users .This is helps in managing what each team member can do or cannot do within your organisation repositories .
+
+Permissions can be set at different levels as Read , Write , Maintain , and admin or Triage
+
+Nested Teams: Teams can have mutiple sub-teams , making it easier to reflect your companys prohects structure within your github organisation Team Discussions; Team discussions are possible because each team has its own page within ur github organisation,where u can see your team members , repositories and any ongoing discussions.. Mentioning Teams: Teams can be mentioned in discussions , pull request , and issues using the @teamname format.This helps to simplify communication within and across your teams .
 
