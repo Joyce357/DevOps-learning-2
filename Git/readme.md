@@ -609,153 +609,244 @@ This command is used to display the current state of the working directory and s
 
 `git log`:
 
-This command is used to show the commit history of the repository. It displays a list of commits, including the commit hash, author, date, and commit message. You can use various options with git log to customize the output, such as --oneline for a condensed view or --graph to visualize the branch structure.
+This command is used to show the commit history of the repository. It displays a list of commits, including the commit hash, author, date, and commit message. You can use various options with git log to customize the output, such as --oneline for a condensed view or --graph to visualize the branch structure. 
 
-Commit hash (SHA-1 ID)
-Author name & email
-Date
-Full commit message
+`Note` : Git is good when you want to check who made a specific commit or to roll back to a previous commit . Git log will show the following details below 
+
++ Commit hash (SHA-1 ID)
++ Author name & email
++ Date & time of the commit 
++ Full commit message
+
 e.g
-
 commit df3c10ca37241e5e7f2527baa631c4e6c3ed06c3 Author: Calson Njinoh castorprince619@gmail.com Date: Thu Aug 7 22:11:23 2025 -0400
 
-git log --oneline --graph --decorate; This gives more details about the commit in lines
+`git log --oneline --graph --decorate`; This gives more details about the commit in lines
 
-git rebase  : It moves or reapplies commits from one branch on top of another branch. Instead of merging (which creates a merge commit), it rewrites commit history so it looks like your work started from the latest base branch state.
+`git rebase`  :
 
-git cherry-pick "commit id" :
+It moves or reapplies commits from one branch on top of another branch. Instead of merging (which creates a merge commit), it rewrites commit history so it looks like your work started from the latest base branch state.
 
-GitHub Basics (Remote Repositories)
 
-git remote -v : Lists the remote repositories linked to your local repo. when do you use this command ? you can use this when you need to confirm which remote repository is connected to your local repo especially when you want to push your code changes or new project
+`Interview Question` :  What is the difference between git merge and git rebase ?
 
-git push origin <branch> : Uploads commits from your local branch to the remote branch. e.g git push origin dev
 
-git clone <repository name> : It creates a local copy of your existing remote repository (github repo) and brings to your local . it clones it with the following
+`git cherry-pick "commit id"` :
 
-A working directory (project)
-The full commit history
-A link to the remote repository
-git pull This brings changes from your remote repository(github) that are not present in your local repository (github) git fetch : Shows your the changes on your remote repository that are not in your local but do not update your local
+This command is used to apply the changes from a specific commit (identified by its commit hash) onto your current branch. It allows you to select individual commits from another branch and apply them without merging the entire branch. This is useful when you want to incorporate specific changes without bringing in all the commits from the source branch.
 
-git remote add <alias-name> repository name : This helps to sync your local repository and your remote repository making it easier for you to push code changes
+
+**GitHub Basics (Remote Repositories) Commands** 
+
+`git remote -v` : Lists the remote repositories linked to your local repo. when do you use this command ? you can use this when you need to confirm which remote repository is connected to your local repo especially when you want to push your code changes or new project
+
+`git push origin <branch>` : Uploads commits from your local branch to the remote branch. e.g git push origin dev
+
+`git clone <repository name>` : It creates a local copy of your existing remote repository (github repo) and brings to your local computer . it clones it with the following
+
++ A working directory (project)
++ The full commit history
++ A link to the remote repository
+
+`git pull`
+
+This command is used to fetch and integrate changes from a remote repository into your current branch. It is essentially a combination of git fetch (which retrieves changes from the remote) and git merge (which integrates those changes into your local branch). When you run git pull, it will automatically update your local branch with any new commits from the remote repository.
+
+`git fetch` : 
+
+This command is used to retrieve the latest changes from a remote repository without merging them into your local branch. It updates your local copy of the remote branches, allowing you to see what changes have been made on the remote repository before deciding to merge them into your local branch.
+
+`Interview Questions` : What is the difference between git pull and git clone 
+What is the difference between git pull and git fetch 
+
+
+`git remote add <alias-name> repository name` : This helps to sync your local repository and your remote repository making it easier for you to push code changes
+
+
+**TABLE OF GIT COMMANDS** 
+
+| Git Command                 | Use                             |
+| --------------------------- | ------------------------------- |
+| git init                    | Initialize a new Git repository |
+| git clone <repo-url>        | Clone a repository              |
+| git status                  | Show repository status          |
+| git add <file>              | Add file to staging             |
+| git add .                   | Add all files to staging        |
+| git commit -m "message"     | Commit staged changes           |
+| git log                     | Show commit history             |
+| git log --oneline           | Show short commit history       |
+| git diff                    | Show file changes               |
+| git branch                  | List branches                   |
+| git branch <name>           | Create a branch                 |
+| git checkout <branch>       | Switch branch                   |
+| git checkout -b <branch>    | Create and switch branch        |
+| git merge <branch>          | Merge branch                    |
+| git rebase <branch>         | Rebase commits                  |
+| git remote -v               | Show remote repositories        |
+| git remote add origin <url> | Add remote repo                 |
+| git push origin <branch>    | Push to remote                  |
+| git pull origin <branch>    | Pull from remote                |
+| git fetch                   | Fetch remote changes            |
+| git reset <file>            | Unstage file                    |
+| git reset --hard HEAD       | Reset repository                |
+| git stash                   | Save temporary changes          |
+| git stash pop               | Restore stashed changes         |
+| git tag                     | List tags                       |
+| git tag <name>              | Create tag                      |
+| git show <commit-id>        | Show commit details             |
+| git rm <file>               | Remove file                     |
+| git mv <old> <new>          | Rename file                     |
+
+
+
 
 Summarize Git
 
-Git is what you will install on your local computer ( Windows or MacOS)
++ We have been able to install git on our local machines ( MacOs , Linux , Windows)
++ How to configure git ( email and usernames)
++ Setup get authentication with github using ssh and https 
++ How we contribute on an existing project (Git workflow )
++ Git commands 
 
-Starting a new Project on your local computer (Bash shell scripting , Terraform , Ansible , Jenkinsfile etc )
 
-Set your git local environment (username and email address ) --> git config --global user.name "username" git config --global user.email "email address" Init --> git add ---> git commit -m "commit msg" --->git remote -v ----> copy github repository --> git push git remote add repository name ---->
 
-Contributing to an existing project ----> git clone or git pull ----> default branch is main ---> create branch ---> push the branch (git push --set-upstream origin )-----> create a pull request ---select review & approved ---merge
 
-Main , Dev , Staging ----> branch off
+**GITHUB**
 
-9:25 PM EST
+`What is Github ?` 
 
-GITHUB
+GitHub is a web-based platform that provides hosting for `Git repositories`, along with a suite of tools for version control, collaboration, and project management. It allows developers to store their code online, collaborate with others, track changes, and manage projects effectively. GitHub is widely used in the software development community for both open-source and private projects.
 
-Github is a web based or web application platform version control and collaboration that is built around git .Git is the most popular version control system .
 
-Github is a Version Control with git: GitHub hosts repositories (folders containing code, documents, and history) where every change is tracked. This allows you to see who changed what, when, and why, and revert to earlier versions if needed.
 
-Collaboration – Multiple people can work on the same project at the same time, using features like branches, pull requests, and code reviews to manage and merge changes safely.
+USE CASE OF A GITHUB REPOSITORY 
 
-Cloud Hosting for Git Repositories – Instead of storing your Git repositories only on your computer, GitHub stores them online so you can access them from anywhere.
++ Cloud Hosting for Git Repositories – Instead of storing your Git repositories only on your computer, GitHub stores them online so you can access them from anywhere.
 
-Integration & Automation – GitHub connects with CI/CD tools, project boards, and security scanners, letting you automate builds, tests, deployments, and even security checks.
++ Integration & Automation – GitHub connects with CI/CD tools, project boards, and security scanners, letting you automate builds, tests, deployments, and even security checks.
 
-In github we are going to create repositories
 
-What is a Github Repository ?  : A repository (often called a repo) in GitHub is basically a storage space where your project lives. It contains all the files, folders (directories), and the complete history of changes for your project. It’s managed by Git, and GitHub provides an online interface to view, collaborate, and manage it.
++ In github we are going to create repositories
 
-What are the different types of github repositories 
+`What is a Github Repository` ?  : A repository (often called a repo) in GitHub is basically a storage space where your project lives. It contains all the files, folders (directories), and the complete history of changes for your project. It’s managed by Git, and GitHub provides an online interface to view, collaborate, and manage it.
+
+**What are the different types of github repositories**
 
 GitHub repositories are mainly categorized by visibility and purpose:
 
-Public Repository :
-Visible to everyone on the internet
-U might one to use a Public Repository for Opensource projects or sharing code publicly
-Accessing public repositories , anyone on the internet can view , clone the code , but only users with write access can make changes
-Private Repositories :
-Visible only to you and the collaborators you choose (teams or organisation members).
-Purpose: Used for private projects, sensitive code, or company-owned software .
-Accessing private repositories : Only invited collaborators can view or contribute to the projects
-Internal Repository (For Github Enterprize Only )
-Visible only to members of the same organization.
-Purpose : Used for organization-wide projects that should not be public but can be accessed by all members in the organization
-Accesing internal repository : All org members can see it, but only those with permissions can contribute.
-use case : A shared codebase for internal tools in a large company.
-GitHub Repository Size Limits
+1. `Public Repository` :
 
-Individual File Size
-Limit: 100 MB per file (hard limit).
-If you try to push a file larger than 100 MB, GitHub will reject it.
-For files over 50 MB, you’ll get a warning when pushing, but it will still upload (until it hits 100 MB).
-Total Repository Size Limit ?
-Soft limit: Around 1 GB recommended for optimal performance.
-GitHub doesn’t block you at exactly 1 GB, but large repos can become slow to clone or work with.
-Hard practical limit: Around 5 GB — beyond that, GitHub may flag the repo and ask you to reduce the size.
-GitHub Storage for Large Files (LFS)
-If you need to store large binary files (like videos, datasets, images), use Git LFS (Large File Storage).
-Free tier: 1 GB storage and 1 GB/month bandwidth included.
-You can purchase more storage/bandwidth if needed.
-GitHub Packages & Artifacts
-If you store container images or build artifacts in GitHub Packages, the storage limit depends on your plan.
-Free plan: 500 MB storage & 1 GB/month data transfer.
-Paid tiers offer more.
-What is a Github Organisation What are teams in github other features of github
++ A public repository is Visible to everyone on the internet
++ Public Repositories are commonly used for Opensource projects or sharing code publicly
++ Accessing public repositories , anyone on the internet can view , clone the code , but only users with write access can make changes
 
-A Readme.md is a very important file in your github projects.It serves for different purposes .Its a source of truth for anyone who is new to the project and needs more information.
 
-Primary Use of a Readme.md
+2. `Private Repositories` :
 
-Project introduction :
++ Visible only to you and the collaborators you choose (teams or organisation members).
++ Purpose: Used for private projects, sensitive code, or company-owned software .
++ Accessing private repositories : Only invited collaborators can view or contribute to the projects
++ You will need to setup authentication via ssh or https or github apps to be able to clone and push into the repository 
 
-It gives or provides a summary of what a project is , its purpose , and its primary features it explains why the project was created and what problem it solves Installation Instructions : :
+3. `Internal Repository` (For Github Enterprize Only )
 
-It list dependencies or tools required before installing the project it gives you Installations Steps and how to execute the project on your computer Use Guide
++ Visible only to members of the same organization.
++ Purpose : Used for organization-wide projects that should not be public but can be accessed by all members in the organization
++ Accesing internal repository : All organisation members can see it, but only those with permissions can contribute.
++ use case : A shared codebase for internal tools in a large company.
 
-readme files can give you instructions on how to use the project after installation e.g with example Contribution Guidelines :
 
-Contribution Rules like how to contribute to the project , including how your code standards , branching strateg and commit messages Project Structure:
 
-For example it can contain information on how directory and files are structured Also how the code is organised Contact information:
+**GitHub Repository Size Limits**
 
-it can have contact details like emails for code maintainers or authors including their contact details ############################################### June 18 2024 ################################################
+`Individual File Size`
 
-Github Organisation
++ Limit: 100 MB per file (hard limit).
++ If you try to push a file larger than 100 MB, GitHub will reject it.
++ For files over 50 MB, you’ll get a warning when pushing, but it will still upload (until it hits 100 MB).
+
+`Total Repository Size Limit ?`
+
++ Soft limit: Around 1 GB recommended for optimal performance.
++ GitHub doesn’t block you at exactly 1 GB, but large repos can become slow to clone or work difficule to work with.
++ Hard practical limit: Around 5 GB — beyond that, GitHub may flag the repo and ask you to reduce the size.
+
+
+`GitHub Storage for Large Files (LFS)`
+
++ If you need to store large binary files (like videos, datasets, images), use Git LFS (Large File Storage).
++ Free tier: 1 GB storage and 1 GB/month bandwidth included.
++ You can purchase more storage/bandwidth if needed.
+
+`GitHub Packages & Artifacts`
+
++ If you store container images or build artifacts in GitHub Packages, the storage limit depends on your plan.
++ Free plan: 500 MB storage & 1 GB/month data transfer.
++ Paid tiers offer more.
+
+
+When creating a repository you will need to create a readme.md file 
+
+
+`A Readme.md` is a very important file in your github projects.It serves for different purposes .Its a source of truth for anyone who is new to the project and needs more information.
+
+**Primary Use of a Readme.md on a github reposiroty or in your project**
+
++ Project introduction : A readme.md file  gives or provides a summary of what a project is , its purpose , and its primary features.it explains why the project was created and what problem it solves and Installation Instructions :
+
++ A readme file in github or a project list dependencies or tools required before installing the project, it gives you Installations Steps and how to execute the project on your computer whcih is what we refer to as a  User Guide
+
++ readme files can give you instructions on how to use the project after installation e.g with examples
+
++ A readme file can give youContribution Guidelines : Contribution Rules like how to contribute to the project , including coding standards , branching strategy and commit messages 
+
++ Project Structure: For example it can contain information on how directory and files are structured Also how the code is organised 
+
++ A readme.md file can contain Contact information of those contributing to the project .it can have contact details like emails for code maintainers or authors including their contact details.
+
+
+
+**Github Organisation**
 
 Organizations on GitHub are shared accounts that allow multiple users to collaborate on many projects. They are ideal for open-source projects, companies, and any groups needing collective management of repositories. Each organization can have multiple repositories and be managed by multiple administrators.
 
-Key Features of Github Organisation
+**Key Features of Github Organisation**
 
-Teams & Permissions : Organisations can allow you to create teams with different access permissions , making it easier to manage who can view or edit a repositories Teams within your organisation can be structured in a hierachy order , which allows granular or fine grained access control and roles. e.g developers can have read access while devops team can have write access. Organisations helps with Repository Management: An organisation can own unlimited public and private repositories An organisation provides a central location to manage policies ,including merging , branching and more policies Security and compliance : Github organisations probide advanced security features like two factor authentication Helps in Third Party Access controls: Allows admins to manage third party application access ,ensuring only trusted applications can access your data Best Practices for Using GitHub Organizations
++ Teams & Permissions : Organisations can allow you to create teams with different access permissions , making it easier to manage who can view or edit a repositories Teams within your organisation can be structured in a hierachy order , which allows granular or fine grained access control and roles. e.g developers can have read access while devops team can have write access. 
 
-Use Teams for Role-Based Access Control (RBAC): Define teams based on roles and responsibilities within your projects to manage permissions effectively.
++ Organisations helps with Repository Management: An organisation can own unlimited public and private repositories 
++ An organisation provides a central location to manage policies ,including merging , branching and more policies
++ Security and compliance : Github organisations provide advanced security features like two factor authentication Helps in Third Party Access controls: Allows admins to manage third party application access ,ensuring only trusted applications can access your data 
 
-Regularly Audit Access and Permissions:
+**Best Practices for Using GitHub Organizations**
 
-Periodically review who has access to your organization and their permissions to ensure that they are still relevant and secure.
++ Use Teams for Role-Based Access Control (RBAC): Define teams based on roles and responsibilities within your projects to manage permissions effectively.
++ Regularly Audit Access and Permissions:
++ Periodically review who has access to your organization and their permissions to ensure that they are still relevant and secure.
++ Enable Security Features:Use GitHub’s security features to protect your code and infrastructure from potential vulnerabilities.
++ Use Webhooks and Integrations Wisely: connect your development workflows with other tools and services using webhooks and third-party integrations, but make sure to manage and monitor these connections carefully.
 
-Enable Security Features:
 
-Use GitHub’s security features to protect your code and infrastructure from potential vulnerabilities.
-
-Use Webhooks and Integrations Wisely:
-
-Connect your development workflows with other tools and services using webhooks and third-party integrations, but make sure to manage and monitor these connections carefully.
-
-GitHub Teams
+**GitHub Teams**
 
 Within an organization, Teams are groups of members with specific permissions and roles. Teams can help manage access to repositories and facilitate communication and collaboration among members.
 
-**Key Features of Github Teams or Importance of Teams in Github Account
+**Key Features of Github Teams or Importance of Teams in Github Account** 
 
-Role-Based Access Control (RBAC): Teams within your github organisations allows you to assign specific repository access permissions to groups users .This is helps in managing what each team member can do or cannot do within your organisation repositories .
++ Role-Based Access Control (RBAC): Teams within your github organisations allows you to assign specific repository access permissions to groups users .This is helps in managing what each team member can do or cannot do within your organisation repositories .
++ Permissions can be set at different levels as Read , Write , Maintain , and admin or Triage
 
-Permissions can be set at different levels as Read , Write , Maintain , and admin or Triage
+`Nested Teams`: Teams can have mutiple sub-teams , making it easier to reflect your companys projects structure within your github organisation 
+`Team Discussions`; Team discussions are possible because each team has its own page within ur github organisation,where u can see your team members , repositories and any ongoing discussions.. 
+`Mentioning Teams`: Teams can be mentioned in discussions , pull request , and issues using the @teamname format.This helps to simplify communication within and across your teams .
 
-Nested Teams: Teams can have mutiple sub-teams , making it easier to reflect your companys prohects structure within your github organisation Team Discussions; Team discussions are possible because each team has its own page within ur github organisation,where u can see your team members , repositories and any ongoing discussions.. Mentioning Teams: Teams can be mentioned in discussions , pull request , and issues using the @teamname format.This helps to simplify communication within and across your teams .
 
+Github Account ---->to colloborate with others --------> create an Organisation -----> invite users to the organisation ----> create teams within the organisation ( devops team(sr dev , jnr ) , cloud , software dev etc)
+
+
+Thursday 
+
+HANDS ON GITHUB 
+
+AWS --> amazon web services 
+contest 
