@@ -663,6 +663,26 @@ What is the difference between git pull and git fetch
 `git remote add <alias-name> repository name` : This helps to sync your local repository and your remote repository making it easier for you to push code changes
 
 
+.gitignore` :
+
+A .gitignore file is a text file that tells Git which files or directories to ignore in a project. It helps prevent certain files from being tracked and committed to the repository. This is especially useful for files that are generated during development (like build artifacts, logs, or temporary files) or contain sensitive information (like API keys or configuration files). By using a .gitignore file, you can keep your repository clean and avoid accidentally sharing unnecessary or sensitive files. 
+
+`NOTE` : Never should you commit and push sensitive data inside github 
+
+`git restore --staged <filename>` ; Removes a file from the staging area.The file changes are kept locally, just removed from staging area
+
+`git reset `: 
+
+This command is used to undo changes in your Git repository. It can be used to unstage files, move the HEAD pointer to a previous commit, or even discard changes in the working directory. The behavior of git reset depends on the options you use:
+
++ `git reset <commit>`: Moves the HEAD to the specified commit and unstages all changes after that commit. The changes will still be in your working directory, but they won't be staged for commit.
+
++ `git reset --soft <commit>`: Moves the HEAD to the specified commit but leaves your working directory and staging area unchanged. This is useful for undoing commits while keeping your changes staged.
+
++ `git reset --hard <commit>`: Moves the HEAD to the specified commit and discards all changes in the working directory and staging area. This is a destructive operation, so use it with caution.
+
+
+
 **TABLE OF GIT COMMANDS** 
 
 | Git Command                 | Use                             |
@@ -711,6 +731,10 @@ Summarize Git
 
 
 
+
+
+
+
 **GITHUB**
 
 `What is Github ?` 
@@ -738,7 +762,7 @@ GitHub repositories are mainly categorized by visibility and purpose:
 
 + A public repository is Visible to everyone on the internet
 + Public Repositories are commonly used for Opensource projects or sharing code publicly
-+ Accessing public repositories , anyone on the internet can view , clone the code , but only users with write access can make changes
++ Accessing public repositories , anyone on the internet can view , clone the code , but only users with write access AND collaborators can make changes
 
 
 2. `Private Repositories` :
@@ -798,7 +822,7 @@ When creating a repository you will need to create a readme.md file
 
 + readme files can give you instructions on how to use the project after installation e.g with examples
 
-+ A readme file can give youContribution Guidelines : Contribution Rules like how to contribute to the project , including coding standards , branching strategy and commit messages 
++ A readme file can give you Contribution Guidelines : Contribution Rules like how to contribute to the project , including coding standards , branching strategy and commit messages 
 
 + Project Structure: For example it can contain information on how directory and files are structured Also how the code is organised 
 
@@ -833,7 +857,7 @@ Within an organization, Teams are groups of members with specific permissions an
 
 **Key Features of Github Teams or Importance of Teams in Github Account** 
 
-+ Role-Based Access Control (RBAC): Teams within your github organisations allows you to assign specific repository access permissions to groups users .This is helps in managing what each team member can do or cannot do within your organisation repositories .
++ `Role-Based Access Control (RBAC)`: Teams within your github organisations allows you to assign specific repository access permissions to groups users .This is helps in managing what each team member can do or cannot do within your organisation repositories .
 + Permissions can be set at different levels as Read , Write , Maintain , and admin or Triage
 
 `Nested Teams`: Teams can have mutiple sub-teams , making it easier to reflect your companys projects structure within your github organisation 
@@ -844,23 +868,70 @@ Within an organization, Teams are groups of members with specific permissions an
 Github Account ---->to colloborate with others --------> create an Organisation -----> invite users to the organisation ----> create teams within the organisation ( devops team(sr dev , jnr ) , cloud , software dev etc)
 
 
-`.gitignore` :
 
-A .gitignore file is a text file that tells Git which files or directories to ignore in a project. It helps prevent certain files from being tracked and committed to the repository. This is especially useful for files that are generated during development (like build artifacts, logs, or temporary files) or contain sensitive information (like API keys or configuration files). By using a .gitignore file, you can keep your repository clean and avoid accidentally sharing unnecessary or sensitive files. 
 
-`NOTE` : Never should you commit and push sensitive data inside github 
+**MORE FEATURES ON GITHUB***
 
-`git restore --staged <filename>` ; Removes a file from the staging area.The file changes are kept locally, just removed from staging area
+`Overview page`
+The overview page of a GitHub repository provides a summary of the project, including its description, recent activity, and key information. It typically includes sections like:
 
-`git reset `: 
+`Repositories `
+This section lists all the repositories within the organization, allowing users to easily navigate and access different projects.
 
-This command is used to undo changes in your Git repository. It can be used to unstage files, move the HEAD pointer to a previous commit, or even discard changes in the working directory. The behavior of git reset depends on the options you use:
+Under respositories in the organisation we have the following 
 
-+ `git reset <commit>`: Moves the HEAD to the specified commit and unstages all changes after that commit. The changes will still be in your working directory, but they won't be staged for commit.
++ `Code` : This is where the source code of the project is stored and managed. It includes all the files, directories, and commit history related to the project.
 
-+ `git reset --soft <commit>`: Moves the HEAD to the specified commit but leaves your working directory and staging area unchanged. This is useful for undoing commits while keeping your changes staged.
++ `issues` :
+The Issues section is a place where users can report bugs, request features, or ask questions related to the project. It allows for tracking and managing these issues, assigning them to team members, and discussing solutions.
 
-+ `git reset --hard <commit>`: Moves the HEAD to the specified commit and discards all changes in the working directory and staging area. This is a destructive operation, so use it with caution.
++ `pull requests`:
+The Pull Requests section is where users can propose changes to the codebase. It allows for code review, discussion, and collaboration before merging changes into the main branch. Pull requests are a crucial part of the collaborative development process on GitHub.
+
++ `Actions` :
+GitHub Actions is a powerful feature that allows you to automate workflows directly within your GitHub repository. You can create custom workflows that run on specific events (like pushes, pull requests, or scheduled times) to automate tasks such as building, testing, and deploying your code.
+
++ `projects`:
+
++ `security`:
++ `insights`:
++ `Repository settings` : 
+
+
+
+
+
+
+
+
+`Projects`:
+The Projects section allows you to manage and organize your work using project boards. You can create columns for different stages of your workflow (e.g., To Do, In Progress, Done) and add issues or pull requests to these columns to track their progress.
+
+`Github Packages`
+GitHub Packages is a package hosting service that allows you to publish and manage packages (like libraries, tools, or container images) directly within GitHub. It integrates with your repositories and supports various package formats, making it easier to share and distribute your code.
+
+
+`Teams`
+
+Teams are groups of users within a GitHub organization that can be assigned specific permissions and roles. They help manage access to repositories and facilitate collaboration among members. Teams can have nested sub-teams, and you can mention teams in discussions, pull requests, and issues to simplify communication.
+
+
+`Organisation Settings:`
+
+The Organization Settings page allows administrators to manage various aspects of the organization, including:
++ Member management: Invite new members, manage existing members, and set their roles and permissions.
++ Repository settings: Configure default repository settings, such as branch protection rules and default branch.
++ Security settings: Enable security features like two-factor authentication and manage access to third-party applications.
++ Billing and plans: View and manage billing information, upgrade or downgrade plans, and access usage
+details.
+
+
+
+
+`Fork`:
+A fork is a personal copy of someone else’s repository that lives on your GitHub account. It allows you to freely experiment with changes without affecting the original project. You can make changes in your forked repository and then submit a pull request to the original repository if you want to contribute your changes back.
+
+
 
 
 
