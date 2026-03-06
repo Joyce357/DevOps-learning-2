@@ -844,9 +844,39 @@ Within an organization, Teams are groups of members with specific permissions an
 Github Account ---->to colloborate with others --------> create an Organisation -----> invite users to the organisation ----> create teams within the organisation ( devops team(sr dev , jnr ) , cloud , software dev etc)
 
 
+`.gitignore` :
+
+A .gitignore file is a text file that tells Git which files or directories to ignore in a project. It helps prevent certain files from being tracked and committed to the repository. This is especially useful for files that are generated during development (like build artifacts, logs, or temporary files) or contain sensitive information (like API keys or configuration files). By using a .gitignore file, you can keep your repository clean and avoid accidentally sharing unnecessary or sensitive files. 
+
+`NOTE` : Never should you commit and push sensitive data inside github 
+
+`git restore --staged <filename>` ; Removes a file from the staging area.The file changes are kept locally, just removed from staging area
+
+`git reset `: 
+
+This command is used to undo changes in your Git repository. It can be used to unstage files, move the HEAD pointer to a previous commit, or even discard changes in the working directory. The behavior of git reset depends on the options you use:
+
++ `git reset <commit>`: Moves the HEAD to the specified commit and unstages all changes after that commit. The changes will still be in your working directory, but they won't be staged for commit.
+
++ `git reset --soft <commit>`: Moves the HEAD to the specified commit but leaves your working directory and staging area unchanged. This is useful for undoing commits while keeping your changes staged.
+
++ `git reset --hard <commit>`: Moves the HEAD to the specified commit and discards all changes in the working directory and staging area. This is a destructive operation, so use it with caution.
+
+
+
+
+
+
+
+
+
 Thursday 
 
 HANDS ON GITHUB 
 
 AWS --> amazon web services 
 contest 
+
+
+
+
