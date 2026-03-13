@@ -325,7 +325,7 @@ Default output format []: json
 + Every 90 days you want to rotate the access keys this prevent compromised key usage 
 + Manage users using groups as much as possible 
 + Regular Permission Audit (dormant , unused keys every quaterly  )
-+ Use as much as Customer managed policies in production environments because it will follow least previlege access . 
++ Use as much as `Customer managed policies` in production environments because it will follow least previlege access . 
 
 
 `User Groups`
@@ -352,3 +352,115 @@ A user group in AWS Identity and Access Management (IAM) is a collection of IAM 
 +`Managing users using `Groups` makes it Scalable`
 Its easy to Onboard ,When a new user is added to the company adding them to the group speeds up their onboarding process
 easy to offboarding when someone is leaving removing them from the group revokes their permission
+
+
+
+**Policies ( IAM POLICIES)**
+
+`What is an IAM policy ?`
+
+An IAM policy in AWS Identity and Access Management (IAM) is a JSON document that defines permissions for an IAM user, group, or role. It specifies what actions are allowed or denied on specific AWS resources. IAM policies are used to control access to AWS services and resources, ensuring that users have the appropriate permissions to perform their tasks while adhering to the principle of least privilege. 
+
+
+These are simply permissions you can grant to users or groups to carryout task or thier job functions (manage your aws resources) in your aws account e.g permission to create ec2 , or s3 bucket 
+
+
++ When you create an AWS account it comes with default policies and these policies are refered to as `AWS MANAGED POLICIES` 
++ Users can also create their own IAM policies . When user creates his or her own custom IAM policies its refered to as `CUSTOMER MANAGED POLICY` 
+
+**WHAT IS A MANAGED POLICY ?** 
+
++ A Managed Policy is a standalone IAM policy that you can attach to multiple users, groups, or roles.
+
+**There Two Types of Managed Policies**
+
+1. `AWS Managed Policies`:
+
+These are pre-defined policies created and maintained by AWS. They are designed to provide permissions for common use cases and are regularly updated by AWS to reflect changes in services and best practices. Examples include `AmazonS3ReadOnlyAccess` and `AmazonEC2FullAccess`.
+
++ These are policies that comes with your aws account by default and aws created policies and maintained these policies
+e.g AdministratorAccess
+
++ To differentiate them on the console you will see the name `AWS managed` beside the policy 
+
+
+`Benefits or advantages ` 
+
++ AWS Managed Policies are maintained and updated by AWS, ensuring that they are always up-to-date with the latest security best practices and service changes.
++ They provide a convenient way to grant permissions for common use cases without the need to create custom policy 
++ Pre-built, easy to use.
+
+`Disadvantages of aws managed policies`
+
++ They may grant more permissions than necessary for specific use cases, which can lead to security risks if not carefully reviewed and monitored.
++ Too broad for production workloads and not really good for least previllage access
++ You `can not` edit or modify the policy . you can only attach to a user , group or roles
+
+
+2. `Customer Managed Policies`:
+
+These are policies that you create and manage yourself. Customer Managed Policies allow you to define custom permissions tailored to your specific needs and requirements. You have full control over the content of these policies, and you can modify them as needed.
++ You can attached the policy to multiple users and groups or role
+
+`Benefits or advantages `
+
++ They allow you to create custom permissions that are tailored to your specific use cases and security requirements.
++ You have full control over the content of the policy and can modify it as needed to adapt to changing requirements or security best practices.
++ They are ideal for production workloads where you want to implement the principle of least privilege by granting only the permissions necessary for specific tasks or roles.
+
+`Disadvantages of customer managed policies`
+
++ They require more effort and expertise to create and manage compared to AWS Managed Policies, as you need to define the permissions accurately to avoid security risks.
++ If not properly managed, they can lead to permission sprawl and security risks if too many policies are created or if policies are not regularly reviewed and updated.
++ They may require ongoing maintenance to ensure that they remain aligned with changing security best practices and service updates, which can be time-consuming for large and complex environments.
+
+Apart from managed policies where we have (customer and aws managed policies) we also have an Inline Policy a user can create
+
+**Inline Policy**
+
+An inline policy is a type of IAM policy that is directly embedded within a specific IAM user, group, or role. Unlike managed policies, which are standalone and can be attached to multiple entities, inline policies are unique to the entity they are associated with and cannot be reused across different users, groups, or roles.
++ This is a policy created by the iam user and managed by the user
++ Unlike Managed Policies (standalone + reusable), inline policies are one-to-one with the entity (user , group or iam role).
++ If you delete the user/group/role, the inline policy goes too.
++ Not reusable: Cannot be shared with another identity.
++ Good for exceptions: Special permissions unique to one user/role.
+
+
+`When to use an Inline Policy ?`
+
++ When you have a specific use case that requires permissions that are unique to a single user, group, or role and are not applicable to other entities.
++ When you want to ensure that the permissions defined in the policy are tightly coupled with the specific user, group, or role and should not be reused or shared across multiple entities.
++ When you want to create a policy that is only relevant to a specific user, group, or role and does not need to be maintained or updated independently of that entity.
++ When you have a temporary or one-time permission requirement that does not warrant the creation of a reusable managed policy.
+
+
+**DIFFERENCE BETWEEN MANAGED POLICES AND INLINE POLICIES**
+
+| Feature                   | AWS Managed Policies                    | Customer Managed Policies               | Inline Policies                          |
+|---------------------------|------------------------------------------|-----------------------------------------|------------------------------------------|
+| **Definition**            | Predefined policies created and managed by AWS. | Policies created and managed by the customer. | Policies embedded directly into a user, group, or role. |
+| **Management**            | Managed by AWS; automatically updated by AWS to include new services and actions. | Managed by the customer; allows for customization to meet specific needs. | Managed directly within the user, group, or role it is attached to. |
+| **Reusability**           | Can be attached to multiple users, groups, or roles across the account. | Can be reused across multiple users, groups, or roles within the account. | Specific to a single user, group, or role and cannot be reused. |
+| **Modification**          | Cannot be modified by customers.         | Can be created, updated, and deleted by customers. | Can be edited directly within the user, group, or role it is attached to. |
+| **Examples**              | `AdministratorAccess`, `AmazonS3ReadOnlyAccess` | Custom policies created by the customer. | Inline policies specific to a particular entity. |
+| **Use Case**              | Common permissions needed across many AWS accounts. | Specific needs not covered by AWS managed policies. | Specific, non-reusable permissions tailored to individual users, groups, or roles. |
+| **Complexity**            | Simple to use; AWS handles updates and maintenance. | Requires customer to manage and update as needed. | Simple to assign but can become complex to manage at scale. |
+| **Policy Scope**          | Broad and generic to cover common use cases. | Can be tailored to precise needs and security requirements. | Very specific to the needs of a single entity. |
+| **Best Practices**        | Use for general permissions where AWS managed policies suffice. | Use for more granular control where specific permissions are needed. | Use sparingly for specific cases where managed policies are not suitable. |
+
+
+**How to create an IAM POLICY** 
+
+Two Format of creating a customer managed policy 
+
+`Visual and  Json format `
+
+**Steps to create an IAM policy** 
+
++ search IAM and click on policy you will see a list of iam policies 
++ At Top right click on create policy 
++ Step 1 is for you to specify permissions. There are two ways you can specify or setup the permissions . for policy editor you can use  `Visual or Json format` select the service which you wish to grant the user the permission to access 
++ Each service in aws has unique actions that a user can take 
+
+arn : amazon resource name 
+This is a unique identifier(name) for each aws resource 
