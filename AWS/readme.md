@@ -328,7 +328,7 @@ Default output format []: json
 + Use as much as `Customer managed policies` in production environments because it will follow least previlege access . 
 
 
-`User Groups`
+1. `User Groups`
 
 A user group in AWS Identity and Access Management (IAM) is a collection of IAM users that can be managed as a single entity. User groups allow you to assign permissions to multiple users at once, making it easier to manage access to AWS resources. When you add a user to a group, the user inherits the permissions assigned to that group. This simplifies permission management and ensures consistent access control across multiple users who require similar permissions.
 
@@ -355,7 +355,7 @@ easy to offboarding when someone is leaving removing them from the group revokes
 
 
 
-**Policies ( IAM POLICIES)**
+2.  **Policies ( IAM POLICIES)**
 
 `What is an IAM policy ?`
 
@@ -389,6 +389,7 @@ e.g AdministratorAccess
 + AWS Managed Policies are maintained and updated by AWS, ensuring that they are always up-to-date with the latest security best practices and service changes.
 + They provide a convenient way to grant permissions for common use cases without the need to create custom policy 
 + Pre-built, easy to use.
+
 
 `Disadvantages of aws managed policies`
 
@@ -449,6 +450,7 @@ An inline policy is a type of IAM policy that is directly embedded within a spec
 | **Best Practices**        | Use for general permissions where AWS managed policies suffice. | Use for more granular control where specific permissions are needed. | Use sparingly for specific cases where managed policies are not suitable. |
 
 
+
 **How to create an IAM POLICY** 
 
 Two Format of creating a customer managed policy 
@@ -461,6 +463,293 @@ Two Format of creating a customer managed policy
 + At Top right click on create policy 
 + Step 1 is for you to specify permissions. There are two ways you can specify or setup the permissions . for policy editor you can use  `Visual or Json format` select the service which you wish to grant the user the permission to access 
 + Each service in aws has unique actions that a user can take 
++ After you select the service you will see a list of actions that the user can perform on that service . You can select all actions or specific actions
++ After you select the actions you can specify the resources that the user can access . 
 
-arn : amazon resource name 
-This is a unique identifier(name) for each aws resource 
+`example of am IAM POLICY `
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:GetActiveVpnTunnelStatus",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeVolumeStatus",
+                "ec2:DescribeInstances",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumesModifications"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+**Lets Understand The Json Document**
+
++ `Version` : This specifies the version of the policy language being used. The current version is "2012-10-17".
+ It doesn’t represent the date your policy was created; it’s just a format version.
+
+2. `Statement` : A policy can have one or more statements and each statement describe a specific permission 
+first statement on our example starts with `"Statement":` and the second statement in our policy starts with `"Sid": "VisualEditor1",` (sid is a statement identifier )
+This is an array of individual statements that define the permissions. Each statement includes the following elements:
++ `Sid` (Statement ID): An optional identifier for the statement, used for organizational purposes.
++ `Effect`: Specifies whether the statement allows or denies access. In this example, both statements have an "Allow" effect, meaning they grant permissions.
++ `Action`: Lists the specific actions that are allowed or denied. In this example, the first statement allows actions related to starting and stopping EC2 instances, while the second statement allows actions related to describing EC2 resources.Action simply defines what the user can do 
++ `Resource`: Specifies the AWS resources to which the actions apply. In this example, the resource is set to "*", which means the permissions apply to all resources . You can specify specific ARNs (Amazon Resource Names) to limit the permissions to certain resources if you wish . 
+
++ `Condition` :  
+
+This is an optional element that allows you to specify conditions under which the policy statement applies. Conditions can be based on factors such as the time of day, the source IP address, or the presence of specific tags on resources. In our example policy, there are no conditions specified. Conditions in IAM policies let you apply extra restrictions beyond just the Action and Resource. Think of them as “if clauses” that narrow when permissions apply (based on tags, IP addresses, time, MFA, encryption, etc.).
+
+`example of a condition in a policy can be` : 
+a user must have MFA ( Multi Factor Authenitcation) setup before they can access a resource 
+
+
+e.g
+
+{
+    
+    "Sid": "StartStopWithMFA",
+    "Effect": "Allow",
+    "Action": [
+        "ec2:StartInstances",
+        "ec2:StopInstances"
+    ],
+    "Resource": "arn:aws:ec2:ca-central-1:891377304437:instance/i-0930308ce32674ab2",
+    "Condition": {
+        "Bool": {
+            "aws:MultiFactorAuthPresent": "true"
+        }
+    }
+}
+
+
+`WHY IS AN `ARN` important when setting up an IAM policy`  ? 
+
+ARN stands for Amazon Resource Name, and it is a unique identifier used to specify AWS resources in IAM policies. When setting up an IAM policy, ARNs are important because they allow you to precisely define which AWS resources the policy applies to. By using ARNs, you can grant or deny permissions for specific resources, ensuring that users only have access to the resources they need to perform their tasks while adhering to the principle of least privilege.
+
+
+3. **IAM ROLES** 
+
+What is an IAM role : 
+
+An IAM role in AWS Identity and Access Management (IAM) is an AWS identity with specific permissions that can be assumed by trusted entities,who are these trusted entities , they are ; IAM users, applications, or AWS services. Unlike an IAM user, a role does not have long-term credentials (password or access keys) associated with it. Instead, when a trusted entity assumes a role, it receives temporary security credentials that allow it to perform actions defined by the role's permissions.
+
+**Analogy** 
+
+AN iam role is a like a temporary badge you wear to do a job e.g When you enter a secure building , a security guard gives you a temporary badge , you can use the badge to access specific areas in the building , but you must return the badge once you are done . which is just like an IAM role . an iam role grants temporary permission to a user , group ,or aws services (known as entity) to have access to specific resources within the aws account when carryout a task and will stop using the temporary permission when the task is done and if they were reuse the iam role again aws rotates the access credentials which makes it safe
+
++ IAM USER - Employee with permanent badge who can have access to some areas in the building 
++ ROLE : visitor badge , that you can borrow or given by security guard to return it later 
+
+**Use Cases for IAM Roles**
+
++ `Cross-Account Access` : IAM roles can be used to grant access to resources in one AWS account to users or services in another AWS account without sharing long-term credentials.
++ `AWS Service Access` : IAM roles can be assumed by AWS services to perform actions on
+behalf of the user. For example, an EC2 instance can assume an IAM role to access S3 buckets or DynamoDB tables without needing to store credentials on the instance.
+
++ `Federated Access` : IAM roles can be used to allow users from an external identity
+provider (such as Active Directory, Google, or Facebook) to access AWS resources without needing to create IAM users for each external user.
+
++ `Temporary Elevated Permissions` : IAM roles can be used to grant temporary elevated permissions to users or services for specific tasks, such as performing administrative actions or accessing sensitive data, without giving them permanent access.
+
++ `Automated Workflows` : IAM roles can be used in automated workflows, such as AWS Lambda functions or AWS Step Functions, to allow these services to access resources securely without hardcoding credentials.
+
+
+
+
+IAM ---> username and ( password ( AWS CONSOLE) / Access Keys (CLI)  )  - >
+`Authentication` password and access keys   <---> `Authorization` ( attached IAM policies ) -- Long term credentials 
+
+IAM ROLE does not have permanent credentials instead with IAM role you `assume` it  aws gives you a temporary credentials 
+
+`IAM ROLES HAVE 3 PARTS`
+
+1. `Trust Policy` : This defines who can assume the role. It specifies the trusted entities (users, groups, or AWS services) that are allowed to assume the role.
+
+
+2. `Permission Policy` : This defines what actions you can perform when using the role ( in our anology where can you access in the building using the badge ) e.g Read/Write Access to an s3 bucket - we attached this permission policies to the role.These are Managed Policies (aws managed and customer managed policies )
+
+3. `Session Duration` : This defines how long the temporary credentials obtained by assuming the role will remain valid. The session duration can be set from a few minutes to several hours, depending on the use case and security requirements. When you assume the role ,AWS Issues a temporary security credentials valid for a limited time ( 15 mins up to 12 hours )
+
+
+
+***ASSUME ROLE PROCESS** 
+
+You (or a service) sends a request to AWS STS ( `Security Token Service`) ----> STS gives you a temporary keys --> You use the keys to interact with aws services until they expire 
+
+**HOW TO CREATE AN IAM ROLE**
+
+`Note` : There are some services you will create on aws that comes with an IAM ROLE
+
+
+**AM ROLE TRUST ENTITIES**
+
+`Trust Entity` : who we will like to setup to assume the iam role 
+
++ AWS service  e.g ec2 , s3 , lambda etc 
++ AWS account   
++ Web Identity 
++ Saml 2.0 Federation  
++ Custom Trust Entity 
+
+
+
+1. Sign in to the AWS Management Console and open the IAM console at https://console.aws.amazon.com/iam/.
+2. In the navigation pane, click on "Roles" and then click on the "Create
+role button 
+3. Select the type of trusted entity that will assume the role. For example, if you want to create a role for an AWS service, select "AWS service" and choose the specific service from the list.
+4. Click "Next: Permissions" to proceed to the permissions page.
+5. On the "Attach permissions policies" page, you can choose to attach existing AWS managed policies, customer managed policies, or create a new policy to attach to the role. Select the appropriate policies based on the permissions you want to grant to the role and click "Next: Tags".
+6. (Optional) Add tags to the role for easier identification and management, then click "Next: Review".
+7. Review the role details, including the trusted entities and attached policies. If everything looks correct , enter a name for the role and an optional description, then click "Create role".
+
+
+`Trust Policy` : This policy defines who can assume / use the role . In the trust policy the service that assumes the role is what we call the `principal`
+
+`example of a trust policy`
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+``Interview Question : What is the difference between a Trust Policy an IAM policy ? `
+
++ A Trust Policy defines who can assume an IAM role, specifying the trusted entities (users, groups, or AWS services) that are allowed to use the role. It focuses on the "who" aspect of access control.
++ An IAM Policy, on the other hand, defines what actions are allowed or denied for a
+user, group, or role. It specifies the permissions associated with the entity, focusing on the "what" aspect of access control.
+
+iam policies have no principals wheareas trust policies in iam role has principals 
+
+"Action": "sts:AssumeRole" : Permission to use the role 
+
+
+
+| Feature               | IAM Role                                                                 | IAM Policy                                                                 |
+|-----------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| **Identity**          | An IAM role is an AWS identity with specific permissions.                | An IAM policy is a JSON document that defines permissions.                |
+| **Usage**             | Intended for use by applications, AWS services, or users needing temporary access. | Policies are attached to IAM identities (users, groups, roles) to grant permissions. |
+| **Trust Policy**      | Has a trust policy that defines who can assume /use the role.                 | N/A                                                                       |
+| **Credentials**       | Provides temporary security credentials when assumed.                     | N/A                                                                       |
+| **Attachment**        | Roles are not attached to users but assumed by entities needing the role. | Policies can be attached to users, groups, or roles.                      |                              |
+| **Permissions**       | Permissions are defined by the role's attached policies.                 | Defines what actions are allowed or denied on specified resources.        |
+
+
+
+Interview Questions 
+
+1. `How do you enhanced security in AWS `
++ Define IAM policies for IAM users follwoing least previllage Access principle 
++ Use groups as much as possible to streamline and be consistent with Granting permission 
++ IAM users over using the root user . 
++  Rotating keys every 90 days 
++ Enforcing strong password policies 
++ Enable MFA for all users 
+
+
+4. **IAM Account settings**
++ This is where you can manage your password policy for your aws account
++ You can also manage your access keys here ( rotate , delete etc )
++ You can also manage your multi factor authentication (MFA) here
+
+`Under Account Settings we have the following :` 
+
++ `Password Policy` : This is where you can set the password requirements for your IAM users, such as minimum length, required character types, and whether to allow users to change their own passwords.
+
++ `Centralized root access for member accounts` ;
+
+This is a feature that allows you to manage root user access for member accounts in an AWS Organizations setup. It provides a centralized way to control and monitor root user access across multiple accounts.  
+
++ `Security Token Service (STS)`
+AWS Security Token Service (STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). STS is used in scenarios where you want to grant temporary access to AWS resources without sharing long-term credentials. ( Session Tokens from the STS endpoints , Outbound Identity Federation)
+
+
+5. **Identity providers**
++ This is where you can manage your identity providers for your aws account
++ Identity providers allow you to use external identity sources (such as Active Directory, Google, or   
+Facebook) to authenticate users and grant them access to AWS resources without needing to create IAM users for each external user. This is often used in scenarios where you want to enable single sign-on (SSO) for your AWS environment, allowing users to log in with their existing credentials from an external identity provider.
+
+
+B. ACCESS REPORT 
+
++ This is where you can view the access report for your aws account
++ The access report provides information about the permissions that are being used in your account, including which users, groups, and roles are using which permissions, and how those permissions are being used. This can help you identify potential security risks and ensure that your permissions are being used appropriately. Under Access reports in IAM we have the following features 
+
+1. `Access Analyzer `:
+
++ This is a feature that helps you identify resources in your AWS account that are shared with an external entity. It analyzes resource-based policies to determine if any resources are accessible from outside your account and provides findings to help you understand and manage those access permissions.It focuses to analyze two important key things which are `External Access and Unused access `
+
+`external access`: Analyzes external entities having access to your aws resources 
+`unused access` : This are access that have not been active for a number of days . 
+
+
++ `Resource Analysis`: It identify the resources shared with external entities 
++ `Policy validation`: It checks your policies to ensure you are not granting unintended access & it provides recommendations to enhanced your security posture in your aws account  
++ `Continous Monitoring` : Monitors changes in your resource policies & updates the findings  
++ `Displays detailed findings` : it displays information about the external entity , the resource which helps you to understand the level of access the external entity has . 
+
+
+
+## Benefits of Using Access Analyzer
+
++ It Improves security by helping you to identify any access with external entities  and helps you to mitigate or prevent any unintended access to your aws resources 
++ It helps you to identify any unintended resource sharing 
++ It ensures that your resource policies are correctly configured and do not expose your resources by giving you recommendations 
++ It helps in compliance , it provides information or insights into access configurations (SOC2)
++ It generates IAM policies based on Access activity 
+
+
+2. `Credential Report`: 
+
++ This is a report that provides information about the credentials (passwords, access keys, MFA devices) associated with your IAM users. It includes details such as when the credentials were last used, whether they are active or inactive, and whether they have been rotated. The credential report can help you identify potential security risks, such as unused or compromised credentials, and take appropriate actions to secure your AWS environment. 
+
+
+some of the things you will see in the report are ; 
+
++ User information 
++ Password information 
++ Access Key information 
++ MFA (Multi Factor Authentication) information 
++ Security access information 
+
+`Look at it as a Health Check Report for your IAM users` 
+
+`This report will help you to answer questions like ?` 
+
++ Which users have passwords 
++ Are passwords being rotated or users have old passwords and same access keys 
++ Do users have MFA (Multi Factor Authentication enabled ?)
++ Are users access keys active , unused , compromised ? 
+
+`Its a good tool for : or Advantages of using Credential Report`
+
++ Security Audits
++ Regular Compliance checks 
++ It helps in securitty monitoring it gives you an overview of your iam users security credentials statuses allowing you to proactive protect your aws account . e.g you can see if iam users have not set up MFA (Multi factor authentication). 
++ It helps you with user management . it helps you to identify any security risk especially when there is outdated credentials or inactive users you can simply see and remove them .
+
+
+
+
+
