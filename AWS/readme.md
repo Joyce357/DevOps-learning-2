@@ -918,6 +918,7 @@ EC2 - Regional Service / Zonal Service
 EC2 instance is the general name of how aws identifies its Compute - its virtual machines. 
 
 
+
 **Why do companies need an ec2 service ? or what are some of the cases for an ec2-instance ?** 
 
 + `Hosting Websites and Web Applications`: EC2 instances can be used to host websites and web applications, providing the necessary compute resources to handle traffic and run backend processes.
@@ -965,6 +966,19 @@ Costs depend on  : `Instance type` , `Region` , `OS (Linux, Windows, Red Hat)`. 
 
 2. `Reserved Instances`: Make a one-time payment for a reserved capacity of compute resources for a specified term (1 or 3 years) and receive a significant discount compared to On-Demand pricing. This option is good for applications with steady-state workloads that can commit to using the same instance type over a long period of time. You can choose between three payment options: All Upfront, Partial Upfront, and No Upfront.
 
+
+`How Reserve instancs Work ?`
+
+The user commits to : 
+
++ Instance type ( T2 micro ,medium etc )
++ Region - ca-central-1 or us-east-1 etc 
++ Term - How long will you use the instance 1 year to 3 years 
++ Paymant option - Upfront full or Partial , installaments 
+
+AWS applies the Reserve instance discount automatically to running matching instances
+
+
 `Note:` A Reserved instance is not a physical instance —it’s a billing discount applied to On-Demand instances that match its criteria.
 `Note` : You can convert on demand instance purchasing option to reserved instance option 
 
@@ -983,6 +997,7 @@ have access to the compute resources you need when you need them.
 
 
 
+
 3. `Spot Instances`: Bid for unused EC2 capacity at a significantly lower price than On-Demand instances. This option is ideal for applications that can tolerate interruptions and are flexible in terms of when they run. Spot Instances can be interrupted by AWS with a two-minute warning if the capacity is needed for On-Demand or Reserved Instances increase.
 
 + However even though its cost savings , cheaper the instance can be interrupted by AWS with a two minute warning when the capacity is needed for on demand instances . 
@@ -993,6 +1008,7 @@ Analogy: It’s like buying leftover airline seats at huge discounts, but you mi
 ## USE CASE : Temporary task , applications that are flexible , fault tolerence , handle interruptions ,data analysis . 
 
 **What Advantages of SPOT INSTANCES**
+
 + `Cost savings`: Spot Instances can offer significant cost savings compared to On-Demand pricing, making them an attractive option for cost-conscious users.
 + `Scalability`: Spot Instances can be used to quickly scale up your compute resources when
 you need them, allowing you to handle spikes in demand without incurring high costs.
@@ -1026,6 +1042,498 @@ In practice: AWS keeps prices stable now, but interruptions still happen.
 
 
 4. `SAVING PLANS` :
-5. `DEDICATED HOST`
-6. `DEDICATED INSTANCE`
-7. `CAPACITY RESERVATIONS`
+
+Saving Plans is a flexible pricing model that offers significant cost savings compared to On-Demand pricing in exchange for a commitment to use a specific amount of compute resources (measured in $/hour) for a 1 or 3-year term. Saving Plans provide the same discounts as `Reserved Instances` but with more flexibility, allowing you to switch between `instance types`, `regions`, and even AWS services while still benefiting from the discounted rates.
+
+With the saving plans it offers lower price on EC2 instances regardless of the instance family (instance type) , size , OS , tenancy , aws region in exhange the above commitment of usage.
+
+`Note` : Instead of committing to a specific instance (like Reserved Instances), you commit to a dollar amount of usage per hour.
+
+
+`Example:`
+
+Commitment: $5/hour for 1 year.
+Actual usage: $7/hour.
+You pay: $5 at discounted rate + $2 at On-Demand
+
+
+summary using analogy 
+
+`Analogy `
+
++ On-Demand = buying groceries per item.
++ Reserved Instances = signing a contract for one type of grocery each week. ( plaintains)
++ Savings Plans = a prepaid meal plan where you choose what to eat, but you’ve already committed to spending a certain amount.
+
+
+5. `DEDICATED HOST`: 
+
+A Dedicated Host is a physical server with EC2 instance capacity fully dedicated to your use. This option is ideal for applications that require a high level of isolation, compliance, or licensing requirements that cannot be met with shared infrastructure. With Dedicated Hosts, you have more control over the placement of your instances and can use your existing server-bound software licenses.
+
+Use Case : scenario where you what EC2 instances to be physically isolated at the host hardware level from instances that belong to other AWS accounts.When a company is subject meet certain policies or regulatory .
+
+`Pricing` : varies based on instance family , region and payment option you choose . You can pay to own the entire host , its expensive whereas dedicated instances which are cost effective
+
+`Why Use Dedicated Hosts?`
+
++ `Compliance`: Needed for regulations that require workloads to run on dedicated hardware (HIPAA, PCI DSS, FedRAMP).
++ `Licensing`: Lets you use existing server-bound software licenses (Windows Server, SQL Server, Oracle) tied to sockets, cores, or physical servers.
++ You can see the physical sockets, cores, and host IDs for tracking.
+
+
+6. `DEDICATED INSTANCE` : 
+
+A Dedicated Instance is an EC2 instance that runs on hardware dedicated to a single customer. `Unlike Dedicated Hosts, you do not have control over the physical server`, but your instances are still isolated at the `hardware level` from instances of other customers. Dedicated Instances are ideal for applications that require a high level of isolation but do not have specific compliance or licensing requirements that necessitate a Dedicated Host.
+
+**Advantages of Dedicated Instance:**
+
++ `Isolation`: Runs on hardware that is dedicated to a single customer, providing a higher level of isolation compared to shared instances.
++ `Cost-effective`: Generally more affordable than Dedicated Hosts while still providing hardware-level isolation.
++ `No need for host management`: You do not have to manage the underlying physical server,as AWS handles the infrastructure, allowing you to focus on your applications.
++ `Ideal for applications with isolation needs`: Suitable for applications that require isolation but do not have specific compliance or licensing requirements that necessitate a Dedicated Host.
+
+
+**Disadvantages of Dedicated Instance:**
++ `Less control`: You do not have control over the physical server, which may not meet certain compliance or licensing requirements.
++ `Higher cost than shared instances`: Dedicated Instances are more expensive than standard On-Demand instances
+
+
+`ANALOGY` : 
+
+`Shared EC2` = You rent an apartment in a big building with strangers. ( on demand ) (multi-tenant )
+`Dedicated Instance` = You rent an apartment in a building where only your company lives, but you don’t own the whole building.
+`Dedicated Host` = You buy the entire building and manage who lives in which room.( single tenant )
+
+
+Take note 
+
+`Single-Tenant` : → No other customer shares the physical hardware.
+`AWS-controlled placement`: You don’t see sockets/cores like in Dedicated Hosts.
+
+
+7. `CAPACITY RESERVATIONS`: 
+
+A Capacity Reservation is a reservation of EC2 instance capacity in a specific Availability Zone for any duration. This option is ideal for applications that require guaranteed capacity but do not want to commit to a long-term reservation like Reserved Instances or Savings Plans. With Capacity Reservations, you can ensure that you have access to the compute resources you need when you need them, without the long-term commitment of other purchasing options.
+GPU 
+
+`Focus`: Capacity assurance (not discounts).
+
+
+`Analogy:`
+
+On-Demand = you walk into a restaurant and hope there’s a table.
+Capacity Reservation = you book a table ahead, even if you don’t eat, you still pay.
+
+
+**Summary**
+
+Flexibility : On demand instances - Commonly used by most companies 
+Predictability , Long term usage : Reserved instances and Saving plans
+High cost savings and flexible workloads : Spot instances
+Compliance and License requirements : Dedicated Hosts or Dedicated instances
+Guaranteed Capacity : Capacity reservations
+
+
+
+**Instance Types** :
+
+An instance type is focused on hardware configurations of the computer (ec2 instance ) - Perfomancing 
+
++ CPU (vCPUs)
++ Memory (RAM)
++ Storage type (EBS volumbes)
++ Network Perfomance 
+
+
+`Analogy` : Think of Instance Types like car models: some are small and efficient, others are heavy-duty trucks, others are race cars.
+
+Apple --refers to all its computers as Mac ---> different macs e.g Macbook Neo , Macbook air , Macbook pro , Imac , Mac mini , Mac Studio etc 
+
+aws -refers to all its computers as EC2-instances --> has different instance types like t2 ( t2-micro , t2-small , t2-large) ,t3 , t4 etc 
+
+**Note** ; When selecting a specific instance you have to keep in mind the type of workload you want to carryout with the instance . 
+
+**AWS has categorized the instances based on use cases** 
+
+1. `General Purposes` : 
+
++ These are the most commonly used instance types in AWS. They provide a balance of `compute, memory, and networking resources, making them suitable for a wide range of applications. Examples include the T3, T4g, M5, and M6g instance types.
+
+General Purpose (A/M/T families)
+
++ Balanced CPU, memory, networking.
++ Best for: web servers, app servers, dev/test.
++ Example: t3.micro (free tier), m5.large.
+
+2. `Compute Optimized (C family)`:
++ These instances are designed for compute-intensive workloads that require high-performance processors. They are ideal or good for applications such as high-performance web servers, scientific modeling, and batch processing. Examples include the C5 and C6g instance types.
+
+Compute Optimized (C family)
++ High CPU-to-memory ratio.
++ Example: c5.large.
+
+3. `Memory Optimized R , X , Z family`:
++ These instances are designed for memory-intensive workloads that require large amounts of RAM. They are ideal
+for applications such as in-memory databases, real-time big data analytics, and high-performance computing. Examples include the R5 and R6g instance types.
+
+Memory Optimized (R family)
+
+4. `Storaged Optimized I/D/H Family)`: 
+
++ These instances are designed for workloads that require high, sequential read and write access to large data sets on local storage. They are ideal for applications such as data warehousing, Hadoop distributed computing, and log processing. Examples include the I3 and I4i instance types.
+
++ High disk throughput (NVMe SSDs).
++ Best for: Big Data, NoSQL DBs, Hadoop clusters.
++ Example: i3.large.
+
+5. `Accelerated Computing (P/G/F family)`:
++ These instances are designed for workloads that require hardware accelerators, such as `GPUs or FPGAs`. They are ideal for applications such as machine learning, high-performance computing, and video rendering. Examples include the P3 and G4 instance types.
+
++ GPUs, FPGAs, ML/AI chips.
++ Best for: Machine Learning, Graphics Rendering, AI model training.
++ Example: p3.8xlarge, g5.xlarge, inf1.6xlarge.
+
+6. `High Perfomance Instances` : High-performance computing instances are purpose built to offer the best price performance for running HPC workloads at scale on AWS. These instances are ideal for applications that benefit from high-performance processors, such as large, complex simulations and deep learning workloads.e.g (HPC)
+HPC = High Perfomance Compute 
+
+reference : https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/compute-optimized-instances.html
+
+
+**AMI = Amazon Machine Image**
+
+`What is an AMI ?` ; 
+
+An Amazon Machine Image (AMI) is a `pre-configured` template that contains the necessary information to launch an EC2 instance. It includes the operating system or  application server, or  applications required to run your instance. AMIs can be created from existing instances or provided by AWS as standard images for various operating systems and software configurations. 
+
+`AMI includes :` 
+
++ An operating system (e.g., Linux, Windows)
++ Application server (e.g., Apache, Nginx , git )
++ Applications (e.g., WordPress, MySQL)
++ Custom Configurations ( security agents , monitoring tools etc )
+
+
+**WHAT YOU SHOULD KNOW WHEN IT COMES TO AMI** 
+
++ Template for your ec2 instance. This is the Pre-configured OS or application for your virtual machine
++ You can use AWS provided AMIs or create your own custom AMIs.
++ Users can customize AMI to match their specific needs and they can also modify existing AMI
++ AMIs are region-specific, so you need to ensure that you are using the correct AMI for the region where you want to launch your EC2 instance.
++ You can use a single AMI to create multiple ec2- instances with the same AMI configurations
++ AMIs can be shared with other AWS accounts, allowing you to collaborate and share resources across accounts.
++ There are Private AMI (only the user who owns it can see and use it ) and Public AMI (anyone on the internet (aws) can see and use it)
++ You can also use AWS Marketplace to find and purchase AMIs that are pre-configured with specific software or applications.
++ AMI can be build from a snapshoot
++ AMI can be used to create an Auto Scaling group, which allows you to automatically launch and terminate EC2 instances based on demand.
+
+
+**TYPES OF AMI**
+
+
++ `AWS Marketplace AMIs`: These are pre-configured AMIs provided by AWS and its partners, available in the AWS Marketplace. They include a wide range of software and applications, such as operating systems, databases, and development tools.
+
++ `Custom AMIs`: These are AMIs that you create yourself, based on your specific requirements. You can customize the operating system, applications, and configurations to meet your needs.
+
++ `Community AMIs`: These are AMIs that are shared by other AWS users. They can be public or private, and they may include a variety of configurations and software.
+
++ `AWS-provided AMIs`: These are basic AMIs provided by AWS that include popular operating systems like `Amazon Linux, Ubuntu, and Windows Server`. They serve as a starting point for creating custom AMIs.
+
+
+
+instance types ----> hardware configuration ( t2.micro , t2 large) ---->
+
+
+ AMI (OPERATING ----> `linux `, `windows` , `macOs` )---> t2-medium (2cpu core , 50 gb ) ----> create instance 
+
+
+**HANDS ON** 
+
+**How to create an ec2 using an ami and to create a custom ami from an existing instance** .
+
+
+
++ we created an ec2 instance 
++ select an AMI which is Ubuntu (Linux operating ) this is a + linux operating system and the distribution is Ubuntu which aws has pre-configured to create an ec2 
++ We installed a webserver - apache2 and deployed a static website . This now means our operating has another software this type apache2 and our web application running 
+
+step 1
+
+`to install the webserver follow the commands `
+
+`sudo apt update`
+`sudo apt install apache2`
+
+step 2
+
+Use the following code below to add into the /var/www/html and update this file index.html 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team4techsolutions | Software Development Company</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+      color: white;
+      padding: 20px 60px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h1 {
+      color: #00c2ff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #00c2ff;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .hero h2 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: auto;
+      font-size: 18px;
+    }
+
+    section {
+      padding: 60px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .contact {
+      text-align: center;
+      background: #1b263b;
+      color: white;
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #0d1b2a;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <h1>Team4techsolutions</h1>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <div class="badge">🚀 Class10 Cohort</div>
+    <h2>Welcome to Team4techsolutions Class10</h2>
+    <p>
+      This is our Class10 cohort where students are learning real-world cloud,
+      DevOps, and software engineering skills through hands-on projects.
+    </p>
+  </div>
+</header>
+
+<section>
+  <h2 class="section-title">What You Will Learn in Class10</h2>
+  <div class="service-grid">
+    <div class="card">
+      <h3>Linux & Bash</h3>
+      <p>Understand system administration and command-line skills.</p>
+    </div>
+    <div class="card">
+      <h3>Git & GitHub</h3>
+      <p>Learn version control and collaboration like real engineers.</p>
+    </div>
+    <div class="card">
+      <h3>AWS Cloud</h3>
+      <p>Deploy real infrastructure using EC2, S3, IAM, and more.</p>
+    </div>
+    <div class="card">
+      <h3>Terraform</h3>
+      <p>Automate infrastructure using Infrastructure as Code.</p>
+    </div>
+    <div class="card">
+      <h3>CI/CD Pipelines</h3>
+      <p>Build and deploy applications using Jenkins and GitHub Actions.</p>
+    </div>
+    <div class="card">
+      <h3>Kubernetes</h3>
+      <p>Deploy and manage containerized applications in production.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="contact">
+    <h2>Join Class10</h2>
+    <p>Email: info@team4techsolutions.com</p>
+    <p>Location: Toronto, Canada</p>
+    <p>Start your journey into Cloud & DevOps today.</p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Team4techsolutions - Class10</p>
+</footer>
+
+</body>
+</html>
+
+`step 3`
+
+open security group on the ec2 instance 
+
++ locate the instance
++ click on the security group associated with the instance
++ click on the inbound rules and add a new rule to allow HTTP traffic (port 80) 
++ save the rule and now you should be able to access the website using the public IP address of the instance in a web browser ( http://public-ip ) copy the public ip and paste like 178.28.3049
+
+
+
+**CREATE AN AMI from the instance** 
+
++ Click on the instance and select action 
++ click on image and templates
++ click on create image
++ provide a name and description for the image and click on create image
++ Now you have created an AMI from the instance and you can use this AMI to launch new instances with the same configuration as the original instance. 
+
+`Provision an  instance from the custom AMI`
++ Click on AMi on left under ec2 instances
++ Locate the custom AMI you created and select it
++ Click on launch and follow the steps to configure the instance ( select instance type , configure instance
+details , add storage , add tags , configure security group )
++ Review and launch the instance
++ Once the instance is running, you can access it using the public IP address and verify that
+the web server and website are working as expected.
+
+
+**Why do companies create their own custom AMI ?** 
+
++ `Standardization`: Custom AMIs allow companies to create a standardized environment for their applications, ensuring consistency across all instances launched from the AMI.
+
++ `Faster Deployment`: Launching an instance from a custom AMI is faster than setting up a new instance from scratch, as the AMI already contains the necessary software and configurations.
+
++ `Cost Efficiency`: By creating a custom AMI, companies can optimize the software and configurations to reduce costs and improve performance.
+
++ `Security`: Custom AMIs can be configured with specific security settings and software, helping to enhance the security posture of the instances launched from the AMI.
+
++ `Compliance`: Custom AMIs can be designed to meet specific compliance requirements, ensuring that instances launched from the AMI adhere to necessary regulations and standards.
+
+
+`What are some of the best practices for AMI` 
+
++ Regularly update and patch your custom AMIs to ensure they include the latest security updates and software versions.
++ Use descriptive names and tags for your AMIs to make it easier to identify their purpose and contents.
++ Limit access to your custom AMIs to only those who need it, using AWS Identity and
+Access Management (IAM) policies.
++ Test your custom AMIs before using them in production to ensure they work as expected and do
+not contain any vulnerabilities or misconfigurations.
++ Use versioning for your custom AMIs to keep track of changes and allow for easy rollback (e.g parameterstore)
++ Automate → Use EC2 Image Builder or CI/CD pipelines to refresh AMIs monthly/quarterly.
++ Secure them → Harden OS, remove unused packages, include security agents.
+
+
+**How to copy an AMI from ONE region in aws to another** 
+
++ Go to the EC2 dashboard and click on "AMIs" in the left-hand menu.
++ Locate the AMI you want to copy and select it.
++ Click on the "Actions" button and select "Copy AMI" from the dropdown menu
++ In the "Copy AMI" dialog box, select the destination region where you want to copy the AMI.
++ Provide a name and description for the copied AMI, and click on the "Copy AMI" button to start the copying process.
++ Once the copying process is complete, you can go to the destination region and find the copied AMI in the "AMIs" section of the EC2 dashboard.
+
+
+**What are some of the use cases of An AMI ?**  
+
++ `Backup and Disaster Recovery`: AMIs can be used to quickly recover from failures by launching new instances from a pre-configured AMI.
++ `Scaling`: AMIs can be used to quickly scale up your infrastructure by launching multiple instances from the same AMI using an auto scaling group in aws 
++ `Testing and Development`: AMIs can be used to create consistent environments for testing and development, allowing developers to quickly spin up instances with the necessary software and configurations.
++ `Custom Software`: AMIs can be used to create instances with custom software and configurations that
+are not available in standard AWS-provided AMIs.
++ `Multi-Region Deployments`: AMIs can be copied across regions, allowing you to
+deploy applications in multiple regions with the same configuration.
++ `Data migration` moving an ami from one region to another with all the data inside 
+
+
+**KEY PAIRS** 
+
+
+
+
+
+
+calson@team4techsolutions.com
