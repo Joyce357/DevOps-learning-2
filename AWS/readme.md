@@ -1531,9 +1531,169 @@ deploy applications in multiple regions with the same configuration.
 
 **KEY PAIRS** 
 
+`What is a Keypair` : 
+
+A key pair is a set of security credentials that are used to securely connect to an EC2 instance. It consists of a `public key and a private key`. The public key is stored on the EC2 instance, while the private key is kept by the user. When you launch an EC2 instance, you can specify a key pair to associate with the instance, allowing you to securely connect to it using SSH (for Linux instances) or RDP (for Windows instances). Key pairs are essential for ensuring secure access to your EC2 instances and should be managed carefully to prevent `unauthorized access.` 
+
+`Note`; You can create an ec2 instance without a keypair . But you wont be able to login via ssh 
+
+`How Key Pairs Work`
++ When you create a key pair, AWS generates a public key and a private key.
++ The public key is stored on the EC2 instance, while you download and securely store the
+private key on your local machine.
++ To connect to the EC2 instance, you use the private key with an SSH client (
+Linux) or RDP client (Windows) to authenticate your access.
++ The EC2 instance verifies the private key against the stored public key to grant access.
++ You can select an existing keypair if you have one already (or create) a Key new Pair.
++ You can use a single key pair on multiple ec2 instances 
++ You download the private key file (.pem) to your local machine. ( downloads folder )
+
+`Note :`
+
++ Keep your private key secure and do not share it with anyone. If someone gains access to your private key, they can potentially access your EC2 instances. 
++ If you lose your private key, you will not be able to access your EC2 instances through ssh , and you will need to create a new key pair and update your instances to use the new public key.
++ An ec2 instance without a keypair you wont be able to SSH into the server but you can still login to the server using different methods
++ When naming a keypair use a single name , do not put spaces in the naming convention
++ When you create a keypair for the first time it goes to your downloads but you like you can move it from there and place in any folder of your choice 
++ If this is the first time you are using the keypair you will need to update the permissions and you need to be in the location where the key is. `chmod 400 <keypair-name>`
++ To login into an EC2 instance through ssh, security group inbound rule port 22 must be open . The common troubleshooting error you will see when its connectivity problems or issues like ports `Operation timed out`: Security group or NACL
++ If you are using windows and want to connect to a linux instance you can use `putty` as an ssh client but putty does not support .pem file so you will need to convert the .pem file to .ppk file using puttygen
+
+**Use Cases of Key Pairs**
+
++ `Secure Access`: Key pairs provide a secure method for accessing EC2 instances, ensuring that only authorized users can connect to the instances.
++ `Automation`: Key pairs can be used in automation scripts and tools to securely connect to EC2
+instances for tasks such as configuration management, deployment, and monitoring.
++ `Multi-User Access`: Key pairs allow multiple users to securely access the same EC2
+instance by sharing the public key while keeping their private keys secure.
++ `Compliance`: Key pairs help meet security and compliance requirements by providing a secure authentication method for accessing EC2 instances.
++ `Remote Management`: Key pairs enable remote management of EC2 instances, allowing administrators to perform
+maintenance, updates, and troubleshooting tasks without needing physical access to the server.
+
+
+**What are the methods of logging into an EC2 instance**
+
++ `SSH (Secure Shell)`: For Linux instances, you can use an SSH client (like OpenSSH or PuTTY) to connect to the instance using the private key from your key pair. 
+
++ `RDP (Remote Desktop Protocol)`: For Windows instances, you can use an RDP client to connect to the instance using the private key from your key pair to retrieve the administrator password.
+
++ `EC2 Instance Connect`: This is a browser-based SSH connection method provided by AWS for Linux instances, allowing you to connect to your instance without needing a separate SSH client or key pair.
+
++ `Session Manager`: This is a feature of AWS Systems Manager that allows you to securely connect to your EC2 instances without needing SSH or RDP. It uses the AWS Management Console or AWS CLI to establish a secure session with the instance.
+
++ `EC2 Serial Console` : 
+This is a feature that provides access to the serial port of your EC2 instances, allowing you to troubleshoot and recover instances that are not responding to SSH or RDP connections. It can be accessed through the AWS Management Console or AWS CLI.
+
+
+**How To Login into an EC2 using Session Manager** 
+
++ Ensure that the EC2 instance has the SSM agent installed and running.
++ Attach an IAM role to the EC2 instance with the necessary permissions for Systems Manager (e.g., `AmazonSSMManagedInstanceCore`).
++ Go to the AWS Systems Manager console and navigate to "Session Manager."
++ Click on "Start session" and select the EC2 instance you want to connect to.
++ Click on "Start session" to establish a secure connection to the instance through the browser-based
+terminal provided by Session Manager. You can now run commands and manage your EC2 instance without needing SSH or RDP access.
+
+
+**Most commonly used approach to login into EC2 instances by companies ?**
+
++ For Linux instances, SSH is the most commonly used method for logging in, as it provides secure and direct access to the instance's command line.
+
++ For Windows instances, RDP is the most commonly used method for logging in, as it provides a graphical interface for managing the instance.
+
++ However, with the increasing emphasis on security and automation, many companies are also adopting `Session Manager` for secure and convenient access to their EC2 instances without the need for managing SSH keys or RDP credentials.
 
 
 
+***HOW DO YOU GRANT ACCESS TO A USER WHO DONT HAVE A PRIVATE KEY***
+
+Note : We stated that do not share private keys . What happens when you created an ec2 instance e.g Linux operating system and your colleage at work wants to login but you are the one with the private key . what will you do to grant them access ? 
+
++ Login into the EC2 instance as the administrator 
++ Create a new user account for your colleague using the `adduser` command (e.g., `sudo adduser colleague_username`).
+
++  Add the new user to the `sudo` group if they need administrative privileges (e.g., `sudo usermod -aG sudo colleague_username`).
+
+`Next step` 
+
++ Ask your colleague to generate an ssh key on their local computer using the following commands : `ssh-keygen -t rsa -b 2048 -f calson@team4techsolutions.com` or `ssh-keygen` 
+
++ This will generate a public key (colleague_key.pem.pub) and a private key (colleague_key.pem).
+
++ When your colleage generates the key it comes with two keys . public and private and they can find it in their .ssh directory by running the command 
+`cd .ssh` 
+
++ Your colleague should share the public key (colleague_key.pem.pub) with you securely (e.g., via email or a secure file-sharing service) or slack or teams . 
 
 
-calson@team4techsolutions.com
++ Once you receive the public key, log in to the EC2 instance and switch to the new user account using `su - colleague_username`.
+
++ Create a `.ssh` directory in the new user's home directory if it doesn't already exist ( e.g., `mkdir -p /home/colleague_username/.ssh`).
++ Set the appropriate permissions for the `.ssh` directory (e.g., `chmod 700 .ssh `    
+/home/colleague_username/.ssh`).
++ Create an `authorized_keys` file in the `.ssh` directory and add the colleague's
+public key to it (e.g., `echo "colleague_public_key_content" >> /home/colleague_username/.ssh/authorized_keys`).
++ Set the appropriate permissions for the `authorized_keys` file (e.g., `chmod
+600`  /home/colleague_username/.ssh/authorized_keys`).
++ Now your colleague can use their private key (colleague_key.pem) to securely connect to
+
+Last step 
+
++ Give your collegue the username you created on the instance .e.g joel 
+make sure the spelling matches the user you created on the ec2 instance 
++ Give your colleague the host ip address so they can use to login ( public or private ip ) if instance is in public subnet 
+
+
+
+**HOW TO LOGIN TO WINDOWS OPERATING SYSTEM USING RDP** :
++ Launch a Windows EC2 instance and ensure it has a key pair associated with it.
++ Once the instance is running, select it in the EC2 console and click on "Connect
++ In the "Connect to instance" dialog, select the "RDP client" tab.
++ Click on the "Get Password" button and provide the private key file (.pem) associated with the instance to decrypt the administrator password.
++ Download the RDP file provided in the dialog and
+open it with an RDP client (like Remote Desktop Connection on Windows).
++ When prompted, enter the decrypted administrator password to log in to the Windows EC2 instance.
+
+
+**SECURITY GROUPS** 
+
+`What is a Security Group `:
+
+A security group is a virtual firewall that controls inbound (incoming) and outbound (out-going) traffic to and from EC2 instances. It acts as a set of rules that determine which traffic (network) is allowed to reach the instance and which traffic is allowed to leave the instance. Security groups are associated with EC2 instances, and you can have multiple security groups for different instances or even the same instance. They are essential for securing your EC2 instances by controlling access based on IP addresses, ports, and protocols.
+
++ It helps protect what gets in and what gets out . Its security at the instance level
++ By default when you create an ec2-instance it comes with a default security group
++ You need port 22 inbound rule open on your security group before user can ssh into your ec2 instance
++ You can have multiple security groups attached to a single EC2 instance, and each security group can have its own set of rules.
++ A security must be attached to a VPC (virtual private cloud)
++ When you configure a source like 0.0.0.0/0 : it means you are allowing access from anyone and anywhere .`This is not recommended and not a good security practise`
++ apart from using the source as ip address cidr like (0.0.0.0.0/0 or 123.495.697/32) you can also configure the source as a security group id sgr-08adaec2ddb600c5f
++ Security groups are stateful in nature If it allows inbound request or traffic into your ec2 instance , it automatically allow outbound request without setting any outbond rules .
++ When you create a security group by default it denies all inbound traffic and allow all outbound traffic .
+
+**Key Takeways** 
++ Virtual firewall - controls network traffic in and out of your ec2 instances
++ Security groups are stateful this means if a security allows inbound traffic it will automatically allow outbound traffic
++ It has inbound rules and outbound rules : inbound rules define which traffic can reach the instance , while outbound rule defines what traffic can leave the ec2 instance
++ You can have multiple security groups attached to a single EC2 instance, and each security group can have its own set of rules.
+
+
+**USE CASE OF SECURITY GROUPS** 
++ `Web Server`: For a web server, you would typically allow inbound traffic on port 80 (HTTP) and port 443 (HTTPS) from any source 
++ `SSH Access`: For a Linux server that requires SSH access, you would allow inbound traffic on port 22 from specific IP addresses (e.g., your office IP or home IP) to enhance security.
++ `Database Server`: For a database server, you would allow inbound traffic on the database port
+(e.g., port 3306 for MySQL) only from the IP addresses of your application servers or other trusted sources.
++ `Internal Communication`: For instances that need to communicate with each other within a VPC,
+you would allow inbound traffic on the necessary ports (e.g., port 8080 for application communication) from the security group associated with the other instances.
++ `Remote Desktop Access`: For a Windows server that requires RDP access, you would allow
+inbound traffic on port 3389 from specific IP addresses to ensure secure access.
++ `Custom Applications`: For custom applications, you would allow inbound traffic on the specific ports used by your application (e.g., port 5000 for a Flask application) from trusted sources or security groups.
+
+**Best Practices for Security Groups**
+
++ Follow the principle of least privilege by only allowing necessary traffic and blocking all other traffic.
++ Regularly review and update your security group rules to ensure they align with your current security requirements.
++ Use specific IP addresses or CIDR blocks instead of allowing traffic from all sources (0.0.0.0/0)
++ Use security group references to allow traffic between instances within the same VPC instead of using IP addresses.
++ Monitor security group usage and changes using AWS CloudTrail and AWS Config to detect any unauthorized modifications
++ Use descriptive names and tags for your security groups to easily identify their purpose and associated instances.
