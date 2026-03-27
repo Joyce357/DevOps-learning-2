@@ -1679,6 +1679,7 @@ A security group is a virtual firewall that controls inbound (incoming) and outb
 
 
 **USE CASE OF SECURITY GROUPS** 
+
 + `Web Server`: For a web server, you would typically allow inbound traffic on port 80 (HTTP) and port 443 (HTTPS) from any source 
 + `SSH Access`: For a Linux server that requires SSH access, you would allow inbound traffic on port 22 from specific IP addresses (e.g., your office IP or home IP) to enhance security.
 + `Database Server`: For a database server, you would allow inbound traffic on the database port
@@ -1697,3 +1698,167 @@ inbound traffic on port 3389 from specific IP addresses to ensure secure access.
 + Use security group references to allow traffic between instances within the same VPC instead of using IP addresses.
 + Monitor security group usage and changes using AWS CloudTrail and AWS Config to detect any unauthorized modifications
 + Use descriptive names and tags for your security groups to easily identify their purpose and associated instances.
+
+
+**Lets have a closer look at Inbound security group rules** 
+
++ `Security Group rule ID e.g sgr-0480d4464a009b91f :` 
+
+This is a unique identifier for the specific rule within the security group. It helps you manage and reference individual rules when you need to modify or delete them.
+
++ Security group `Type` :
+
+This specifies the type of traffic that the rule applies to. Common types include SSH, HTTP, HTTPS, RDP, and Custom TCP/UDP. The type determines the default port and protocol settings for the rule.
+
++ `Protocol` : 
+
+This specifies the network protocol that the rule applies to, such as TCP, UDP, or ICMP. The protocol determines how the traffic is handled and what ports are relevant for the rule.
+
++ `Port range` :
+This specifies the range of ports that the rule applies to. For example, port 22 for SSH, port 80 for HTTPS 443 , or a custom range like 5000-6000 for specific applications. 
+
++ `Source`: This is where the traffic is coming coming from . It can be an ip address cidr , or security group id 
+
++ `Description - optional`:
+
+This is an optional field where you can provide a description for the rule to help you remember its purpose or any specific details about it. It can be useful for documentation and management purposes, especially when you have multiple rules in a security group and you manage it with a team 
+
+
+Questions 
+
+`Why should we set outbound rules if by default security groups are stateful` meaning what is allow inbound automatically is allow for outbount  ?:
+
++ While security groups are stateful and allow return traffic for allowed inbound connections, setting outbound rules can still be important for controlling and restricting outgoing traffic from your EC2 instances. By default, all outbound traffic is allowed, which may not be desirable in certain scenarios where you want to limit the communication from your instances to specific destinations or services. Setting outbound rules allows you to enforce stricter security policies and prevent unauthorized data exfiltration or communication with untrusted sources.
+
+
+**EBS VOLUMES : Elastic Block Store**
+
+`What is an EBS Volume ?`:
+
+An Elastic Block Store (EBS) volume is a `persistent block storage device` that can be attached to an EC2 instance. It provides durable and high-performance storage for your EC2 instances, allowing you to `store applications data, and operating systems data . EBS volumes are designed to be highly available and can be easily attached, detached, and resized as needed. They are commonly used for storing data that requires low-latency access and high throughput, such as databases, file systems, and application data.
+
+An example of an ebs volume when compare to your local computer is ? 
+
++ EBS Volume = Hard Drive
+
+What is a persistent Block storage or volume ?: 
+
++ Persistent storage means that the data stored on the EBS volume will persist even after the EC2 instance is stopped or terminated. This allows you to retain your data and applications without losing them when the instance is not running.
+
+`Features of an EBS volume`
+
++ `Persistent Storage` : EBS volumes provide persistent storage, meaning that the data stored on the volume will persist (stay) even if the EC2 instance is stopped or terminated. This allows you to retain(get) your data and applications without losing them when the instance is not running. 
+
++ `High Performance` : EBS volumes are designed to provide high performance with low latency and high throughput. They are suitable for applications that require fast access to data, such as databases and file systems.
+
++ `Scalability` : EBS volumes can be easily resized to accommodate changing storage needs. You can increase the size of an EBS volume without downtime, allowing you to scale your storage as your application grows.
+
++ `Durability` : EBS volumes are designed for durability, with data replicated across multiple availability zones (AZs) to protect against hardware failures. This ensures that your data is safe and available even in the event of a failure.
+
++ `Flexibility` : EBS volumes can be attached to and detached from EC2 instances as needed. This allows you to easily manage your storage and move volumes between instances if necessary.
+
++ `Backup and disaster recovery through Snapshots` : EBS volumes can be backed up using snapshots, which are point-in-time copies of the volume. Snapshots can be used for backup, recovery, and creating new volumes from existing data.
+
+
+**Different Types of EBS Volumes**
+
+`Note` : Voume refers to storage 
+
+These are focused on performance , purpose and pricing 
+
++ `General Purpose SSD (gp2 and gp3)`: These volumes are suitable for a wide range of workloads, including boot volumes, small to medium-sized databases, and development environments. They offer a balance of price and performance. 
+Cost effective and has low latency
+
++ `Provisioned IOPS SSD (io1 and io2)`: These volumes are designed for I/O-intensive applications that require high performance, such as large databases and critical workloads. They provide consistent performance with provisioned IOPS (Input/Output Operations Per Second).
+
++ `Throughput Optimized HDD (st1)`: These volumes are optimized for streaming workloads that require high throughput, such as big data and log processing. They are cost-effective for large, sequential workloads.
+
+what is Throughput : in the context of computer networking and storage , This is when data is succesfully transfered from one location to another and its measured in bits per second (bps ), Mbps (mega-bits per second) , gigabits per second.
+
+High throughput - data is transfered from one location to another faster 
+low throughput ----data is transfered from one location to another in a slow manner
+
++ `Cold HDD (sc1)`: These volumes are designed for infrequently accessed data that requires low cost storage, such as archival data and backup. They are the lowest cost option for EBS volumes.This is good for scenarios where price is more of a concern than perfomance . e.g its good to save backup files or files saves in ec2 .
+
++ `Magnetic (standard)`: These volumes are the previous generation of EBS volumes and are not recommended for new applications. They are suitable for workloads that require low cost storage and do not require high performance, such as infrequently accessed data and archival storage.
+
+`Note` : Any ec2 instance type that you select comes with a default EBS volume ( root volume)
+
+
+Take note when it comes storage 
+
++ Frequently accessed data are costly 
++ Infrequently accessed data are cost effective 
+
+
+**HOW CAN WE SCALE AN EBS VOLUME ?**
+
+There are two ways we can scale in aws 
+
++ `Vertical Scaling` : This involves increasing the size of an existing EBS volume. You can do this by modifying the volume and specifying a larger size. The process is seamless and does not require downtime, allowing you to scale your storage without interrupting your applications.
+
++ `Horizontal Scaling` : This involves adding additional EBS volumes and attaching them to your EC2 instance. This allows you to distribute your data across multiple volumes, increasing your overall storage capacity and performance. You can use techniques like RAID (Redundant Array of Independent Disks) to combine multiple volumes into a single logical volume for improved performance and redundancy.
+
+**How to Scale an EBS Volume (Vertical Scaling)**
++ Go to the EC2 dashboard and click on "Volumes" in the left-hand menu.
++ Locate the EBS volume you want to scale and select it.
++ Click on the "Actions" button and select "Modify Volume" from the dropdown menu.
++ In the "Modify Volume" dialog box, specify the new size for the volume and click
+on the "Modify" button to start the scaling process.
++ Once the modification process is complete, you may need to extend the file system on the volume
+to utilize the new space. This can be done using the appropriate commands for your operating system (e.g., `resize2fs` for Linux or Disk Management for Windows).
+
+**How to Scale an EBS Volume (Horizontal Scaling)**
++ Go to the EC2 dashboard and click on "Volumes" in the left-hand menu.
++ Click on the "Create Volume" button to create a new EBS volume with the desired
+size and configuration.
++ Once the new volume is created, select it and click on the "Actions" button,
+then select "Attach Volume" from the dropdown menu.
++ In the "Attach Volume" dialog box, select the EC2 instance you want to attach
+the volume to and specify the device name (e.g., /dev/sdf) before clicking on the "Attach" button.
++ After the volume is attached, you may need to configure it on the EC2 instance (
+e.g., partitioning, formatting, and mounting) to start using the additional storage capacity.
+
+
+**EBS SNAPHOTS**
+
+All ec2 instances comes with a root volume ( default ebs volume)
+
+`What is a root voume ? `:
+
+`Root Volume` : A root volume is the primary EBS volume that contains the `operating system and boot files` for an EC2 instance. It is the volume from which the instance boots and runs its operating system. The root volume is typically created from an Amazon Machine Image (AMI) when you launch an EC2 instance, and it serves as the foundation for the instance's file system and applications.
+
+`Data Volume`; A data volume is an additional EBS volume that can be attached to an EC2 instance to provide extra storage capacity for applications, databases, or other data. Unlike the root volume, a data volume does not contain the operating system and is used solely for storing `application data or files`. Data volumes can be created and attached to an EC2 instance as needed, allowing you to scale your storage independently of the root volume.
+
+`What is data` ? : 
+
+Data refers to any information that is stored, processed, or transmitted by a computer system. It can take various forms, including text, numbers, images, audio, video, and more. In the context of computing and technology, data is often organized into structured formats (like databases) or unstructured formats (like files) and is used for various purposes such as analysis, decision-making, communication, and storage. Data can be generated by users, applications, sensors, and other sources and is a fundamental component of modern computing systems.
+
+
+**WHAT AN EBS SNAPHOT ?** 
+
+What are EBS snapshots = This is a copy or replica of your EBS Volume .
+
+An EBS snapshot is a point-in-time backup of an EBS volume. It captures the state of the volume at the moment the snapshot is taken, allowing you to create a backup of your data and applications. EBS snapshots are stored in Amazon S3 and can be used for various purposes, such as creating `new EBS volumes`,  `restoring data to an existing volume`, or `sharing snapshots with other AWS accounts`. 
+
+Snapshots are incremental, meaning that only the changes made to the volume since the last snapshot are saved, which helps reduce storage costs and speeds up the snapshot creation process. 
+
+By default when you create an aws account , ec2 ebs encryption is turned off . you will need to manually turn it on . What happen if you have already created EBS volumes with encryption not turn on ?
+
+`What is encryption ?` : 
+
+Encryption is the process of converting data into a coded format that can only be accessed or decrypted by someone with the appropriate decryption key. It is a security measure used to protect sensitive information from unauthorized access. In the context of EBS volumes, encryption helps ensure that the data stored on the volume is secure and cannot be read by anyone who does not have the necessary permissions or keys to decrypt it.
+
+
+BREAK 9:22
+
++ How to create an ebs volume 
++ How to detach an ebs volume 
++ How attach an ebs volume 
++ How to scale an ebs volume vertically 
++ How create a snapshot of an ebs volume 
++ How can we create a volume out of the snapshot 
++ How encrypt an existing ebs volume that has no encryption 
+
+
+
