@@ -1743,7 +1743,7 @@ An example of an ebs volume when compare to your local computer is ?
 
 What is a persistent Block storage or volume ?: 
 
-+ Persistent storage means that the data stored on the EBS volume will persist even after the EC2 instance is stopped or terminated. This allows you to retain your data and applications without losing them when the instance is not running.
++ Persistent storage means that the data stored on the EBS volume will persist(preserved) even after the EC2 instance is stopped or terminated. This allows you to retain your data and applications without losing them when the instance is not running.
 
 `Features of an EBS volume`
 
@@ -1806,9 +1806,21 @@ There are two ways we can scale in aws
 + In the "Modify Volume" dialog box, specify the new size for the volume and click
 on the "Modify" button to start the scaling process.
 + Once the modification process is complete, you may need to extend the file system on the volume
-to utilize the new space. This can be done using the appropriate commands for your operating system (e.g., `resize2fs` for Linux or Disk Management for Windows).
+to utilize the new space. This can be done using the appropriate commands for your operating system (e.g., `resize2fs` for Linux or Disk Management for Windows). For linux run the following commands :
+
+`lsblk` : to list the block devices and identify the volume you modified ( e.g /dev/xvdf)
+
+`sudo resize2fs /dev/nvme0n1p1` : to grow the partition on the volume ( e.g xvdf1)
+
+`df -hT` : verify using this command 
+
+
+
+
+
 
 **How to Scale an EBS Volume (Horizontal Scaling)**
+
 + Go to the EC2 dashboard and click on "Volumes" in the left-hand menu.
 + Click on the "Create Volume" button to create a new EBS volume with the desired
 size and configuration.
@@ -1817,7 +1829,7 @@ then select "Attach Volume" from the dropdown menu.
 + In the "Attach Volume" dialog box, select the EC2 instance you want to attach
 the volume to and specify the device name (e.g., /dev/sdf) before clicking on the "Attach" button.
 + After the volume is attached, you may need to configure it on the EC2 instance (
-e.g., partitioning, formatting, and mounting) to start using the additional storage capacity.
+e.g., partitioning, formatting, and mounting) to start using the additional storage capacity
 
 
 **EBS SNAPHOTS**
@@ -1850,7 +1862,18 @@ By default when you create an aws account , ec2 ebs encryption is turned off . y
 Encryption is the process of converting data into a coded format that can only be accessed or decrypted by someone with the appropriate decryption key. It is a security measure used to protect sensitive information from unauthorized access. In the context of EBS volumes, encryption helps ensure that the data stored on the volume is secure and cannot be read by anyone who does not have the necessary permissions or keys to decrypt it.
 
 
-BREAK 9:22
+**What can be the use or use case of creating an EBS SNAPSHOTS ?**
+
++ `Backup and Recovery`: EBS snapshots can be used to create backups of your EBS volumes, allowing you to restore your data and applications in case of accidental deletion, corruption, or other issues.
+
++ `Creating New Volumes`: You can create new EBS volumes from existing snapshots, which is useful for scaling your storage or creating additional volumes with the same data and configuration as the original volume.
+
++ `Data Migration`: EBS snapshots can be used to migrate data between different regions or accounts by copying the snapshot to the desired location and creating a new volume from it.
+
++ `Testing and Development`: EBS snapshots can be used to create test environments or development instances with the same data and configuration as production volumes, allowing you to test changes or new features without affecting the live environment.
+
+
+`Practise the following :`
 
 + How to create an ebs volume 
 + How to detach an ebs volume 
@@ -1862,3 +1885,149 @@ BREAK 9:22
 
 
 
+**Life CYCLE Manager**
+
+`What is a life cycle manager ?`
+
+A lifecycle manager is a tool or service that helps automate the management of resources throughout their lifecycle. In the context of AWS, it can refer to services like AWS Systems Manager Lifecycle Manager, which allows you to automate the creation, retention, and deletion of EBS snapshots based on defined policies. This helps ensure that your backups are regularly created and maintained without manual intervention, improving data protection and operational efficiency. OR 
+
+This is feature that helps you to automate the creation ,Retention and deletion of EBS snapshots and AMI's Think of it as A schedule manager that makes sure backups (snapshots) happen regularly and old ones are deleted automatically.It Simplifies backup management and ensures compliance (no manual snapshot cleanup).
+
++ You can create a life cyle policy to automatically take snapshots on your behalf at specific time
++ You can create a custom policy and or use a aws default policy .
++ For custom policies you can create an `EBS SNAPSHOOT POLICY ,EBS AMI BACKED CUSTOM POLICY , CROSS ACCOUNT COPY EVENT POLICY`
+
+1. `EBS SNAPSHOOT POLICY` :
+
+This policy allows you to automate the creation and management of EBS snapshots. You can specify the schedule for taking snapshots, the retention period for keeping them, and any tags or filters to apply. This helps ensure that your EBS volumes are regularly backed up without manual intervention.
+
+2. `EBS AMI BACKED CUSTOM POLICY`:
+
+This policy allows you to automate the creation and management of Amazon Machine Images (AMIs) that are backed by EBS volumes. You can specify the schedule for creating AMIs, the retention period for keeping them, and any tags or filters to apply. This helps ensure that your EC2 instances are regularly backed up as AMIs without manual intervention or creation.
+
+3. `CROSS ACCOUNT COPY EVENT POLICY`:
+
+This policy allows you to automate the copying of EBS snapshots or AMIs across AWS accounts. You can specify the schedule for copying, the source and destination accounts, and any tags or filters to apply. This helps ensure that your backups are securely copied to another account for disaster recovery or compliance purposes without manual intervention.
+
+`Note:` : The life cycle manager feature is free but you will incur charges for the snapshots that are being created by the life cycle policies since its data being stored
+
+
+`SNAPSHOTS ARE INCEMENTAL WHAT DOES THAT MEAN ?`
+
++ Incremental snapshots mean that after the initial snapshot is taken, subsequent snapshots only capture the changes made to the EBS volume since the last snapshot. This helps reduce storage costs and speeds up the snapshot creation process, as only the modified data blocks are saved rather than creating a full copy of the entire volume each time.
+
+HANDS ON HOW TO CREATE LIFE CYCLE POLICIES FOR EBS AND AMI
+
+
+today monday :   take snapshot :    folders( calson , dan , smith )  ----> rentention  ( after snapshot new data ---> divine , franck )
+
+Frequency ---often the snapshot ( 1 day )
+retention --> how long to keep the snapshot ( retention must be greater than frequency 2+ )
+
+
+
+Tuesday : take snapshot   ( new snapshot )--->  calson , dan , smith,  divine , franck 
+
+
+
+**EBS SNAPSHOT RECYCLE BIN**
+
+`What is EBS Snapshot Recycle Bin ?`: 
+
+The EBS Snapshot Recycle Bin is a feature that allows you to recover deleted EBS snapshots within a specified retention period. When you delete an EBS snapshot, it is moved to the recycle bin instead of being permanently deleted immediately. This provides a safety net in case you accidentally delete a snapshot or need to recover it within the retention period. You can restore snapshots from the recycle bin back to their original state or permanently delete them if they are no longer needed. This feature helps prevent data loss and provides an additional layer of protection for your EBS snapshots.
+
+`HOW TO CREATE A RECYLEBIN retention rule`
++ Go to the EC2 dashboard and click on "Snapshots" in the left-hand menu.
++ Click on the "Recycle Bin" tab at the top of the page.
++ Click on the "Create Rule" button to create a new recycle bin retention rule.
++ In the "Create Recycle Bin Rule" dialog box, specify the following details:
+  Rule details (Retention rule name and Retention rule description - optional )
+  Retention settings  : Resource type ( ebs snapshots, volumes or ami )
+  Select the resources to retain ( retain all resources or resources with tag ) , 
+  Retention : how long u want the snapshot to be kept in the recycle bin 
+
+
+
+  BREAK 9:27 PM EST 
+
+
+  **EFS : Elastic File System** 
+
+
+`What is EFS ?`:
+
+Elastic File System (EFS) is a `fully managed`, scalable, and elastic file storage service provided by AWS. It allows you to create and manage shared file systems that can be accessed by multiple EC2 instances simultaneously. EFS is designed to provide high performance and low latency for applications that require `shared access to files`, such as content management systems, web servers, and big data analytics. It `automatically scales storage capacity as needed`, so you only pay for what you use, and it provides durability and availability by replicating data across multiple availability zones (AZs). EFS is a great choice for applications that require shared file storage with high throughput and low latency.
+
+
+`Its Fully Managed Service` . AWS handles ( Infrastructure management hardware , Operating system , networking ,it handles scaling (vertical or horizontal scaling), Patch Management , Backup & Recovery , Monitoring ) on our behalf 
+
+
+**Features of ELASTIC FILE SYSTEM ( EFS )**
+
++ `Scale performance` : 
+
+EFS can automatically scale its performance to meet the demands of your applications. It provides two performance modes: General Purpose and Max I/O. The General Purpose mode is suitable for most workloads and offers low latency, while the Max I/O mode is designed for applications that require high throughput and can tolerate higher latency.
+
++ `Highly Available:`
+
+EFS is designed for high availability, with data replicated across multiple availability zones (AZs) within a region. This means that if one AZ experiences an outage, your file system will still be accessible from other AZs, ensuring that your applications remain available and resilient.
+
++ Its compactible ( can work) with Linux based Operating systems . It does not support windows based operating systems
++ `Cost Effective`: 
+EFS is a cost-effective solution for shared file storage, as you only pay for the storage you use. There are no upfront costs or minimum fees, and you can scale your storage up or down as needed without worrying about provisioning or managing infrastructure.
++ `Secured`:
+EFS provides multiple layers of security to protect your data. You can use AWS Identity and Access Management (IAM) to control access to your file systems, and you can also enable encryption at rest and in transit to ensure that your data is secure both when it is stored and when it is being accessed.
+
+NOTE : 
++ You can connect your EFS from aws cloud to on premise using VPN or Direct Connect (transit)
++ You can mount multiple EFS file system on a single ec2 and vice versa
+1 EFS = 5 ec2 instances attached to it 
+5 EC2 = 1 efs attached to them 
+5 EFS = 1 ec2 instance 
+
++ You can create multiple mount point from a single EFS file system 
+
+what is a mount point : 
+A mount point is a directory in the file system where an EFS file system is attached or mounted. It serves as the access point for applications to read and write data to the EFS file system. When you create a mount point, you specify the EFS file system you want to mount and the directory path where it will be accessible on your EC2 instances. This allows multiple EC2 instances to access the same EFS file system through their respective mount points, enabling shared access to files and data across those instances.
+
+
+**USE CASE OF EFS * What can prompt a you or a company to create an EFS ( Elastic File System)** 
+
++ `Content Management Systems (CMS)`: EFS is ideal for CMS applications that require shared access to files, such as images, videos, and documents. Multiple web servers can access the same EFS file system to serve content to users without the need for complex synchronization.
+
++ `Web Servers`: EFS can be used to store and serve web application data, allowing multiple web servers to access the same file system for consistent content delivery and easy management.
+
++ `Big Data Analytics`: EFS can provide scalable and high-performance storage for big data analytics workloads, allowing multiple instances to access and process large datasets concurrently.
+
++ `Shared Development Environments`: EFS can be used to create shared development environments where multiple developers can access the same file system for code sharing, collaboration, and testing.
+
++ `Media Processing`: EFS can be used for media processing applications that require shared access to media files, such as video encoding or image processing, allowing multiple instances to work on the same files without conflicts.
+
++ `Data Migration` : 
+
+EFS can be used as a temporary storage solution during data migration projects, allowing you to easily transfer data between on-premises systems and AWS without the need for complex data transfer processes.
+
++ `Backups` :
+
+EFS can be used to store backups of critical data and applications, providing a scalable and durable storage solution for backup and recovery purposes. Multiple instances can access the same EFS file system to create and manage backups without the need for separate storage solutions.
+
+
+**EFS (ELASTIC FILE SYSTEM) STORAGE CLASSES** 
+
+Most storages have what we call a storage class . A storage is focused how often you access the data (information). If you frequently access data then you need to store the data in a storage class that requires frequent access . 
+
+EFS offers the following Storage Classes: 
+
++ `EFS Standard`: This storage class is designed for frequently accessed data and provides low latency and high throughput. It is suitable for applications that require consistent performance and low access times.
+
++ `EFS Infrequent Access (IA)`: This storage class is designed
+for infrequently accessed data and provides lower storage costs compared to the standard class. It is suitable for applications that do not require immediate access to data and can tolerate slightly higher latency.
+
++ `EFS One Zone`: This storage class is designed for data that can be stored in a single availability zone (AZ) and provides lower storage costs compared to the standard class. It is suitable for applications that do not require high availability and can tolerate data loss in the event of an AZ failure.
+
++ `EFS Standard-IA`: This storage class is designed for data that is infrequently accessed but requires high durability and availability. It provides lower storage costs compared to the standard class while still maintaining the same level of durability and availability.
+
+
+
+
+END 
