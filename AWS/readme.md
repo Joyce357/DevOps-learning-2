@@ -1948,7 +1948,6 @@ The EBS Snapshot Recycle Bin is a feature that allows you to recover deleted EBS
 
 
 
-  BREAK 9:27 PM EST 
 
 
   **EFS : Elastic File System** 
@@ -2025,9 +2024,446 @@ for infrequently accessed data and provides lower storage costs compared to the 
 
 + `EFS One Zone`: This storage class is designed for data that can be stored in a single availability zone (AZ) and provides lower storage costs compared to the standard class. It is suitable for applications that do not require high availability and can tolerate data loss in the event of an AZ failure.
 
-+ `EFS Standard-IA`: This storage class is designed for data that is infrequently accessed but requires high durability and availability. It provides lower storage costs compared to the standard class while still maintaining the same level of durability and availability.
++ `EFS One Zone Infrequent Access `: This storage class is designed for data that is infrequently accessed but requires high durability and availability. It provides lower storage costs compared to the standard class while still maintaining the same level of durability and availability.
+
+**Lifecycle Management For EFS**
+
+Lifecycle management simply means how data moves from one storage class to another using life cyle policies . 
+
++ You can create lifecycle policies to automatically transition files between storage classes based on their access patterns. For example, you can set a policy to transition files that have not been accessed for a certain period of time from the EFS Standard class to the EFS Infrequent Access class, helping to optimize storage costs while still ensuring that your data is available when needed. 
+
+EFS has automatic lifecycle Management to move files from one storage class to another base on acces frequency or pattern.
+
+ 1. Transition into Infrequent Access (IA):
+
+Files not accessed for 30 days can be moved to IA and this can save up to 92% of cost and then you can also transition files from Infrequent Access to Archive etc 
+
+2. Transition into Archive. 90 days files or data without access will be transitioned into Archive Amazon Elastic File System (EFS) supports auto-transitioning files to Archive storage using Lifecycle Management policies, which can be set up to automatically move files to lower-cost storage tiers like EFS IA and EFS Archive after a specified period of inactivity
+
+Standard ---->Infrequent Access ----> Archive 
 
 
 
 
-END 
+
+**HOW TO CREATE AN ELASTIC FILE SYSTEM**
+
+How to create an Elastic file system
+How can then mount it on an ec2 instance
+You will neeD to set the following
+
+
++ File system type ( Regional or One zone )
++ Automated Back up - enable
++ Lifecycle management--> Transitioned infrequent access data
++ Encryption (custom or default KMS)
++ Performance settings ( Enhanced & Bursting --> select Enhanced )
+
+Steps to Create EFS
+
++ We created an EFS file system and we selected Throughput `Enhance - Elastic`
++ While creating the file system we created a custom security group and attached to the EFS .
++ We created 2 ec2 instances with the same security groups
++ We going to edit the security groups ( EFS security group inbound rules and EC2 instances Inbound rules) to accept Port NFS PORT : 2049
+
+
+`Note:` when mounting the EFS to multiple instances ensure that the mount point is the same for all the instances if you want to sync data storage `/mnt/efs/fs1`
+ 
++ Login into the ec2 instances and cd into the mount points /mnt/efs/fs1 and create test data to see if it syncs 
+
+
+
+
+EFS Perfomance Settings :
+
+Different Throughput modes
+
+Enhanced : ( Elastic and Provisioned )
+Bursting Mode
+File system policy
+
+These are policies you can set to enhance security on your EFS and some of the policies you can set up are :
+
+Prevent root access by default* Enforce read-only access by default* Prevent anonymous access Enforce in-transit encryption for all clients EFS Security group I.D : sg-095a54e70e97acb7a EC2 Instance security group : sg-0a3feea5f3e14dcbf
+
+EFS mount point: /mnt/efs/fs1
+
+
+
+
+
+**EFS Perfomance Settings** :
+
+`Different Throughput modes`
+
+1. Enhanced : ( Elastic and Provisioned )
+2. Bursting Mode
+
+File system policy
+
+These are policies you can set to enhance security on your EFS and some of the policies you can set up are :
+
+Prevent root access by default*
+Enforce read-only access by default*
+Prevent anonymous access
+Enforce in-transit encryption for all clients
+EFS Security group I.D : sg-095a54e70e97acb7a EC2 Instance security group : sg-0a3feea5f3e14dcbf
+
+EFS mount point: /mnt/efs/fs1
+
+
+
+**Differences Between Elastic File System (EFS) and EBS volumes***
+
+| Feature              | **Amazon EBS (Elastic Block Store)**                            | **Amazon EFS (Elastic File System)**                       |
+|----------------------|-----------------------------------------------------------------|-----------------------------------------------------------|
+| **Storage Type**     | Block-level storage (like a virtual hard disk).                 | `File-level` storage using NFS protocol.                    |
+| **Accessibility**    | Attached to **one EC2 instance** at a time (per AZ). Multi-Attach only for io1/io2 in same AZ. | Can be mounted by **multiple EC2 instances** across AZs.   |
+| **Scalability**      | Manual scaling (up to 64 TiB). Must resize and expand FS.       | Automatically scales up/down with usage (petabyte scale).  |
+| **Performance**      | Consistent, low-latency performance. Volume types: gp3, io1/io2, st1, sc1. | Throughput scales with size. Supports bursting & provisioned throughput. |
+| **Backup & Recovery**| Point-in-time snapshots stored in S3.                          | Automated backups via AWS Backup. Multi-AZ replication.    |
+| **Cost Model**       | Pay for **provisioned size** (even if not fully used).          | Pay for **actual storage used**. Higher cost per GB.       |
+| **Best Use Cases**   | Databases, boot volumes, transactional apps.                    | Shared storage, CMS, big data, multi-instance workloads.   |
+
+
+
+***Difference Between EFS and EBS volume**;
+
++ Ebs provides a `block level storage` vs EFS offers `file level storage` which allows multiple ec2 instances to access the same file simultaneouly 
+
++ Scalability : Ebs volumes needs to be scaled manually but with EFS you can scale manually and automatically .
+
++ Attachment and mounting; for ebs volumes you can attach to only one instance at a time . Multi Attach enabled ebs volumes (oi and o2 types) and with this you will only be able to attach in a single availability zone while EFS you can mount on multiple ec2 instances at the same and different availability zones. 
+
++ Backup & recovery. Ebs uses snapshots which can be used for point in time backup of volumes ,while EFS you can enable automated backups this is managed by AWS. 
+
++ Cost and provisioning .EBS requires users to provisioned (that is  which storage capacity you want) when you do this you have anticipated the storage you will need. On other hand EFS will scale in or out automatically if demand increases or decreases
+
+
+
+
+
+
+Questions 
+1. How can i check the efs mountpoint on an ec2 instance if i was not the one that set it up 
+run the command for Linux  `df -h` 
+
+e.g
+Filesystem                                             Size  Used Avail Use% Mounted on
+/dev/root                                              6.8G  2.5G  4.3G  38% /
+tmpfs                                                  456M     0  456M   0% /dev/shm
+tmpfs                                                  183M  908K  182M   1% /run
+tmpfs                                                  5.0M     0  5.0M   0% /run/lock
+efivarfs                                               128K  3.6K  120K   3% /sys/firmware/efi/efivars
+/dev/nvme0n1p16                                        881M  162M  657M  20% /boot
+/dev/nvme0n1p15                                        105M  6.2M   99M   6% /boot/efi
+fs-03bc09d6fcff9da63.efs.ca-central-1.amazonaws.com:/  8.0E     0  8.0E   0% /mnt/efs/fs1
+tmpfs                                                   92M   12K   92M
+
+2. Is it possible to have Data inside an EFS and our instances just read from the file system rather than creating the data inside the ec2 instances 
+
+
+`Yes, it is possible to have data stored inside an EFS file system and allow your EC2 instances to read from it without creating the data directly on the instances. EFS provides shared file storage that can be accessed by multiple EC2 instances simultaneously. You can store your data in the EFS file system, and your EC2 instances can mount the EFS file system and read the data as needed. This allows for centralized storage and easy access to shared data across multiple instances without the need for duplicating the data on each instance.`
+
+3. `Can we mount an EFS on an existing ec2 instance that is running ? :`
+
+`Yes, you can mount an EFS file system on an existing EC2 instance that is running. To do this, you would need to follow these steps:
+
+1. Ensure that the EC2 instance has the necessary permissions to access the EFS file system. This typically involves configuring the appropriate security group rules and IAM roles.
+
+2. Install the NFS client on the EC2 instance if it is not already installed. This allows the instance to communicate with the EFS file system using the NFS protocol.
+
+3. Create a mount point directory on the EC2 instance where you want to mount the EFS file system (e.g., /mnt/efs).
+
+4. Use the `mount` command to mount the EFS file system to the created mount point. You would specify the EFS file system's DNS name and the mount point directory in the command.
+For example:
+```
+sudo mount -t nfs4 -o nfsvers=4.1 fs-0123456789abcdef0.efs.region.amazonaws.com:/ /mnt/efs
+```
+5. After executing the mount command, the EFS file system will be accessible from the specified mount point on the EC2 instance, allowing you to read and write data to it as needed.
+
+
+
+VPC - Virtual Private Cloud (networking ) --->  look at a fence that surrounds your house 
+Number ip address assigned your house ( for all the services that will connect on the network ) --->CIDR all the ip address assigned to your network 
+
+
+
+**AMAZON FSX**:
+
+Fully managed third-party file systems optimized for a variety of workloads
+
+`What is Amazon FSx ?`
+
+Amazon FSx is a fully managed `file storage service` provided by AWS that offers high-performance file systems for a `variety of workloads`. It provides two types of file systems: `Amazon FSx for Windows File Server`, which is designed for Windows-based applications and workloads, and `Amazon FSx for Lustre`, which is optimized for high-performance computing (HPC) and machine learning workloads. Amazon FSx allows you to easily create and manage file systems that can be accessed by multiple EC2 instances simultaneously, providing scalable and high-performance storage solutions for your applications.
+
+***Different Files Systems we can create Under Amazon FSX Service**
+
+- FSx for Windows File Server
+- FSx for NetApp Ontap
+- FSx for OpenZFS
+- FSx for Lustre 
+
+
+1. `Amazon FSx for Windows File Server`: This file system is designed for Windows-based applications and workloads. It provides a fully managed, highly available, and scalable file storage solution that supports the SMB protocol. It is ideal for use cases such as content management systems, web serving, and home directories.
+
+
++ This is a fully managed windows file system share drive 
++ it supports SMB protocol and windows NTFS
++ It supports `Microsoft Active Directory` Integration , ACL , user quotas
++ it can be mounted on a linux EC2 Instance , Windows , MacOs 
++ you can scale this file system up to 10 s of GB 
++ You connect it to your on-premise network using a `VPN or Direct Connect` 
++ It is highly available because you can configure to be in different availability zones ( data centers)
++ You can back up the data daily into an s3 bucket 
+
+
+# USE CASE 
+
++ Hosting an a business application , if you require a workflow that requires a windows file storage .
++ File share across your organisation 
+
+2. `FSX for Lustre` ;
+
+This file system is optimized for high-performance computing (HPC) and machine learning workloads. It provides a fully managed, scalable, and high-performance file storage solution that supports the Lustre file system. It is ideal for use cases such as big data analytics, genomics research, and financial modeling. 
+
+- The name lustre is taken from the word  linux - cluster (lustre )
+- This is a fully managed file system that is optimized for high perfomance computing , machine learning and media processing workloads. it can handle large amount of data processing workloads .
+- it can scale up to 100 GBS/S , millions IOPS
+- it has different storage options ( SDD , HDD)
+- You can intergrate or connect with it S3 
+- You connect it to your premise network using a VPN or Direct Connect 
+
+# USE CASE
++ Big data analytics
++ Genomics research
++ Financial modeling
++ Media processing
+
+
+3. `FSx for NetApp ONTAP`:
+
+This file system is designed for enterprise workloads that require advanced data management capabilities. It provides a fully managed, scalable, and high-performance file storage solution that supports the NetApp ONTAP file system. It is ideal for use cases such as databases, analytics, and virtual desktop infrastructure (VDI).
+
+ This service provides a managed NetApp ONTAP file system with full support for the `ONTAP data management feature 
+
+- It supports NFS . SMB and ISCSI 
+- it is good for enterprize applications , databases , and storage for virtual machines (ec2 instances ) (VM)
+- it works with the following operating systems 9 Linux , windows , MacOS , EC2 , EKS ,ECS, Vmcloud on aws 
+- It can shrink storage or it can grow the storage automatically  (scalable)
+- You can create Snapshots , replicate data , low cost , compression and data de-duplication
+
+`USE CASE` : Disaster recovery, backup , virtualization 
+
+4. `FSx for OpenZFS`: 
+This file system is designed for workloads that require high performance and advanced data management capabilities. It provides a fully managed, scalable, and high-performance file storage solution that supports the `OpenZFS file system`. It is ideal for use cases such as databases, analytics, and virtual desktop infrastructure (VDI).
+
++ it supports cloning 
++ it supports data compression
+all these makes it a use case for software development environments , data analytics application , media processing workflow 
++ 1 ,000,000 IOPS with < 0.5ms latency 
++ it supports snapshots 
+
+
+
+
+
+**EC2 Instance  Advanced DetailsAdvanced Settings** 
+
++ `Domain Join directory` : 
+This allows you to join your EC2 instance to an Active Directory (AD) domain, enabling centralized authentication and management of your instance using AD credentials.This is when you want your instance to have domain based authenticattion with a centralized authentication service like Active Directory  , SSO .
+
++ `IAM Instance Profile` : 
+This allows you to assign an IAM role to your EC2 instance, granting it permissions to access AWS resources securely without the need for hardcoding credentials. This is useful for applications running on the instance that need to interact with other AWS services, such as S3, DynamoDB, or CloudWatch.
+
++ `Hostname type`:
+This allows you to specify the hostname type for your EC2 instance, which can be either `Private DNS` or `Public DNS`. The hostname type determines how the instance's hostname is resolved within the network. Private DNS is used for instances that are only accessible within a VPC, while Public DNS is used for instances that need to be accessible over the internet.
+
+
++ `Instance auto-recovery`: 
+
+This allows you to enable automatic recovery for your EC2 instance in the event of a system failure. When enabled, if the underlying hardware of the instance fails, AWS will automatically recover the instance on new hardware, minimizing downtime and ensuring that your applications remain available.
+
++ `Shutdown behavior` :
+
+This allows you to specify the behavior of your EC2 instance when it is shut down. You can choose between "Stop" and "Terminate". If you select "Stop", the instance will be stopped and can be restarted later, while if you select "Terminate", the instance will be permanently deleted when it is shut down.
+
++ `Stop - Hibernate behavior`:
+
+This allows you to specify the behavior of your EC2 instance when it is stopped. You can choose between "Stop" and "Hibernate". If you select "Stop", the instance will be stopped and can be restarted later, while if you select "Hibernate", the instance's state will be saved to disk, allowing it to resume from where it left off when restarted.
+
++ `Termination protection`: 
+
+This allows you to enable termination protection for your EC2 instance, which prevents the instance from being accidentally terminated. When enabled, you will need to disable termination protection before you can terminate the instance, providing an extra layer of protection against accidental deletion.
+
++ `Stop protection`:
+
+This allows you to enable stop protection for your EC2 instance, which prevents the instance from being accidentally stopped. When enabled, you will need to disable stop protection before you can stop the instance, providing an extra layer of protection against accidental stoppage.
+
++ `Detailed CloudWatch monitoring`:
+
+This allows you to enable detailed monitoring for your EC2 instance, which provides additional metrics and insights into the performance and health of your instance. With detailed monitoring enabled, you can access more granular metrics in Amazon CloudWatch, such as CPU utilization, disk I/O, and network traffic, helping you to better understand and optimize the performance of your instance.
+
++ `Credit specification`:
+
+This allows you to specify the credit option for your EC2 instance, which determines how CPU credits are earned and used. You can choose between "Standard" and "Unlimited". With the "Standard" option, your instance will earn CPU credits when it is idle and can use those credits when it needs to burst above its baseline performance. With the "Unlimited" option, your instance can burst above its baseline performance without earning CPU credits, but you will be charged for any additional CPU usage beyond the baseline.
+
++ `Placement Group`: 
+
+This allows you to specify a placement group for your EC2 instance, which is a logical grouping of instances within a single availability zone. Placement groups can be used to optimize network performance and reduce latency between instances by placing them in close proximity to each other. There are three types of placement groups: Cluster, Spread, and Partition, each with its own use case and benefits for different workloads. 
+
+Types of Placement Groups :
+
+1. **Cluster Placement Group** : A cluster placement group is a logical grouping of instances within a single Availability Zone. Instances in this group are placed close together to provide low latency and high throughput networking.
+
+*Use case* : This is good for applications that require high network performance 
+
+`Advantages of a CLuster placement Group `:
+
++ Provides low latency and high throughput networking between instances.
++ its good  for applications that require high network performance, such as HPC, big data analytics, and
+machine learning workloads.
++ It can support up to 16 instances in a single cluster placement group.
+
+`Disadvantages of Cluster placement Group : `
+
++ Instances in a cluster placement group must be launched within the same Availability Zone, which can limit flexibility and availability.
++ If the underlying hardware fails, all instances in the cluster placement group may be affected, leading
+to potential downtime for your applications.
++ It may not be suitable for applications that require high availability or fault tolerance, as all instances in the cluster placement group are placed on the same hardware.
+
+2. **Spread Placement Group** : A spread placement group distributes instances across multiple underlying hardware racks within a single Availability Zone. This ensures that instances are placed on separate racks to minimize the risk of simultaneous failure.
+
+`Use Case`: Suitable for applications that need to be highly available and resilient to hardware failures. It is often used for critical applications where you want to ensure that no two instances are on the same hardware rack.
+
+`Advantages of Spread Placement Group`:
+
++ Provides high availability and fault tolerance by distributing instances across multiple hardware racks.
++ It can support up to 7 instances per Availability Zone, allowing for greater flexibility in instance placement.
++ It is ideal for applications that require high availability and resilience to hardware failures.
+
+`Disadvantages of Spread Placement Group`:
+
++ It may not provide the same level of network performance as a cluster placement group, as instances are distributed across different racks.
++ It may not be suitable for applications that require low latency and high throughput networking between instances.
++ It may require more careful planning and management to ensure that instances are properly distributed across racks.
++ Limitation with the number of instance you can launch in a single AZ  you can have `7 instances per AZ` though the number can change depending the Region.
++ Availability Zone Restrictions: While spreading instances can enhance availability, it also means that your application components might be spread too thinly across AZs, potentially impacting performance due to inter-AZ latency.
+
+3. **Partition Placement Group** : A partition placement group divides instances into logical partitions, where each partition is placed on `separate underlying hardware`(rack). This allows for high availability and fault tolerance while still providing some level of network performance.
+
++ You can select up to 7 partitions 
+
+USE CASE : Ideal for large distributed and replicated applications that require high fault tolerance, such as Hadoop, Cassandra, or MongoDB clusters.
+
++ Intances per partitioned: AWS has No hard limit (besides the regional instance quota). You can launch hundreds or thousands of instances as long as they fit within your account limits.
+
+`Advantages of Partition Placement Group`:
+
++ Provides high availability and fault tolerance by distributing instances across separate hardware racks.
++ It can support a large number of instances across multiple partitions, allowing for greater scalability and flexibility.
++ It is ideal for applications that require high availability and fault tolerance while still providing some level of network performance.
+
+`Disadvantages of Partition Placement Group`:
++ It may not provide the same level of network performance as a cluster placement group, as instances are distributed across different racks.
++ It may require more careful planning and management to ensure that instances are properly distributed across partitions.
++ It may not be suitable for applications that require low latency and high throughput networking between instances.  
++ Limit on partition.There's a limit to the number of partitions you can have within a placement group, which can vary by region. This limit might restrict how you scale your application.
++ inter partition latency : While instances within the same partition benefit from low-latency connections, communication between instances in different partitions might experience higher latency, as they could be located in different physical areas within a data center
+
+
++  `EBS-optimized instance`: 
+
+This allows you to specify whether your EC2 instance is optimized for Amazon EBS. EBS-optimized instances provide dedicated bandwidth for Amazon EBS I/O, which can improve the performance of your EBS volumes when attached to the instance. This is particularly beneficial for applications that require high I/O performance, such as databases or data-intensive workloads. When you select this option, your instance will be configured to provide optimal performance for EBS volumes, ensuring that your applications can access data stored on EBS with low latency and high throughput.
+
++ `Instance bandwidth configuration`:
+
+This allows you to specify the network bandwidth for your EC2 instance. You can choose from different bandwidth options based on the instance type and size, which can range from low to high bandwidth configurations. This is important for applications that require high network performance, such as data transfer, streaming, or communication between instances. By selecting the appropriate bandwidth configuration, you can ensure that your EC2 instance has the necessary network capacity to meet the demands of your applications and workloads.
+
++ `Purchasing option` :
+
+This allows you to specify the purchasing option for your EC2 instance, which can be either "On-Demand", "Reserved Instances", or "Spot Instances". On-Demand instances are billed at a fixed rate per hour with no long-term commitment, while Reserved Instances require a one-time payment for a specified term and provide a significant discount compared to On-Demand pricing. Spot Instances allow you to bid on unused EC2 capacity at a discounted price, but they can be interrupted by AWS with little notice if the capacity is needed for other purposes. Choosing the right purchasing option can help you optimize costs based on your application's usage patterns and requirements.
+
++ `Nested virtualization`:
+
+This allows you to enable nested virtualization for your EC2 instance, which means that you can run virtual machines (VMs) inside your EC2 instance. This is useful for testing and development purposes, as it allows you to create and manage multiple VMs on a single EC2 instance without the need for additional physical hardware. With nested virtualization enabled, you can run hypervisors such as VMware, Hyper-V, or KVM within your EC2 instance, providing a flexible environment for testing and development of virtualized workloads.
+
++ `Metadata accessible`:
+
+This allows you to specify whether the instance metadata service is accessible from your EC2 instance. The instance metadata service provides information about the instance, such as its instance ID, IP address, and security groups. By enabling or disabling access to the metadata service, you can control whether applications running on the instance can retrieve this information, which can be important for security and compliance purposes. If you disable access to the metadata service, applications will not be able to access instance metadata, which can help prevent unauthorized access to sensitive information about your instance.
+
+`Metadata version`:
+
+This allows you to specify the version of the instance metadata service that is accessible from your EC2 instance. The instance metadata service has two versions: Version 1 (IMDSv1) and Version 2 (IMDSv2). IMDSv2 provides enhanced security features, such as requiring session tokens for accessing metadata, which can help protect against certain types of attacks. By selecting the appropriate metadata version, you can ensure that your EC2 instance is using the level of security that best meets your requirements.
+
+`Metadata response hop limit`:
+
+This allows you to specify the maximum number of network hops that instance metadata requests can traverse before being blocked. This is a security feature that helps prevent unauthorized access to instance metadata from outside the instance. By setting a hop limit, you can control how far metadata requests can travel within your network, which can help mitigate the risk of certain types of attacks that attempt to access metadata from outside the instance. A lower hop limit can provide increased security by restricting access to metadata, while a higher hop limit may be necessary for certain applications that require access to metadata from other instances or services within your network.
+
+
+`Allow tags in metadata`:
+
+This allows you to specify whether tags associated with your EC2 instance are included in the instance metadata. Tags are key-value pairs that you can assign to your EC2 instances for organizational and management purposes. By enabling this option, you can access the tags of your instance through the metadata service, which can be useful for applications that need to retrieve tag information for configuration or automation purposes. If you disable this option, tags will not be included in the instance metadata, which can help enhance security by preventing unauthorized access to tag information.
+
++ `User data`:
+
+This allows you to specify user data for your EC2 instance, which is a script or set of commands that can be executed when the instance is launched. User data can be used to automate the configuration and setup of your instance, such as installing software, configuring settings, or running initialization scripts. By providing user data, you can ensure that your EC2 instance is properly configured and ready to use immediately after launch, saving time and effort in manual setup processes. 
+
+User data can include shell scripts, cloud-init directives, or other automation data that applies to your instance to configure software packages, install applications, manage files, or perform other bootstrapping tasks.
+
+`Bootstrap` : (user data)
+
+In the context of EC2 instances, bootstrapping refers to the process of automatically configuring and initializing an instance when it is launched. This can include tasks such as installing software, setting up configurations, or running scripts that prepare the instance for use. By providing user data during the launch of an EC2 instance, you can automate the bootstrapping process, ensuring that your instance is ready to perform its intended functions without requiring manual intervention after it starts. This is particularly useful for scaling applications or deploying instances in a consistent and repeatable manner.
+
+
+#!/bin/bash
+set -e
+
+# Update package list
+sudo apt-get update -y
+
+# Install required packages
+sudo apt-get install -y apache2 git tree
+
+# Enable and start Apache
+sudo systemctl enable apache2
+sudo systemctl start apache2
+
+# Create web application page
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team4tech Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            font-size: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Team4tech Web Application</h1>
+    <p>Application deployed successfully using EC2 User Data Script</p>
+</body>
+</html>
+EOF
+
+# Set proper permissions
+chown www-data:www-data /var/www/html/index.html
+chmod 644 /var/www/html/index.html
+
+# Restart apache
+systemctl restart apache2
+
