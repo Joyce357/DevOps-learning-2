@@ -2467,3 +2467,181 @@ chmod 644 /var/www/html/index.html
 # Restart apache
 systemctl restart apache2
 
+
+
+**LOAD BALANCER**
+
+`What is a Load Balancer ?`: 
+
+A load balancer is a device or software that distributes incoming network traffic across multiple servers (ec2-instances) or resources to ensure optimal performance, reliability, and scalability of applications. It acts as a reverse proxy, receiving client requests(end users , customers ) and forwarding them to the appropriate backend servers (ec2-instances) based on various algorithms and health checks . Load balancers help prevent `server overload`, improve response times, and enhance the overall availability of applications by distributing the workload evenly across multiple servers. They can be used in various scenarios, such as web applications, databases, and microservices architectures, to ensure that resources are utilized efficiently and that users experience consistent performance. 
+
+Summarise this by saying 
+
+A a load balanceris a device or software that helps to distribute your network or application trafic across multiple devices (e.g ec2 instances , eks pods , load balancers , http and we refer to these devices as targets).The goal is to ensure no single server should be overwhelmed with too much traffic , when your server is not overwhelmed with too much traffic this improves your application perfomance and reliability.
+
+
+**Benefits of A Load Balancer or Why do companies use a Load Balancer ?**
+
++ `Improved Performance`: Load balancers distribute incoming traffic across multiple servers, preventing any single server from becoming overwhelmed. This helps to maintain optimal performance and responsiveness of applications, even during high traffic periods. 
+
++ `High Availability`: Load balancers can detect server failures and automatically redirect traffic to healthy servers, ensuring that applications remain available and accessible to users. This helps to minimize downtime and improve the overall reliability of applications.
+
++ `Scalability`: Load balancers allow for easy scaling of applications by adding or removing servers from the pool of resources. This enables organizations to handle increased traffic and accommodate growth without disruption to users.
+
++ `Security`: Load balancers can provide an additional layer of security by acting as a barrier between clients and backend servers. They can help to protect against DDoS attacks, distribute SSL/TLS encryption, and enforce security policies.
+
++ `Flexibility`: Load balancers can support various types of applications and protocols, making them suitable for a wide range of use cases. They can be used for web applications, databases, microservices, and more.
+
++ `Cost Efficiency`: By distributing traffic across multiple servers, load balancers can help to optimize resource utilization and reduce the need for over-provisioning. This can lead to cost savings by allowing organizations to use their resources more efficiently.
+
++ `Centralized Management`: Load balancers provide a centralized point of control for managing traffic distribution and monitoring the health of backend servers. This allows administrators to easily configure and manage their applications from a single interface.
+
+
+Monolithue Architecture 
+Micro-service Architecture 
+serverless applicatin architecture 
+
+
+## HOW DOES A LOAD BALANCER DETERMINED WHEN AN EC2 INSTANCE (WEB SERVER) HAS LESS LOAD BEFORE IT ROUTES TRAFFIC TO IT .
+
+A load balancer will monitor seAvers 
+
+1. `A load balancer uses Perfomance Metrics`: 
+
+Load balancers can monitor various performance metrics of backend servers , such as CPU utilization, memory usage, and response times. By analyzing these metrics, the load balancer can determine which servers are under less load and route traffic accordingly.
+
+2. `Round Trip Time`:
+Some load balancers measure the round trip time ,which means a longer round trip time indicates the servers might be experiecing more workload .
+
+3. `Health Checks`:
+Load balancers perform regular health checks on backend servers to ensure they are functioning properly. If a server is deemed unhealthy or unresponsive, the load balancer will stop routing traffic to it until it becomes healthy again. It uses ping to check if the server is responding as expected . servers will respond with `HTTP 200 OK `
+
+*Ping*: Sending a simple network ping to see if the instance is responsive.
+*HTTP/HTTPS Request*: Making a request to a specific URL and checking for a healthy response (e.g., HTTP 200 OK).
+*TCP Connection*: Attempting to establish a TCP connection to a specific port.
+
+
+4. `Load Balancing Algorithms`  
+
+Load balancers uses `Round-Robin algorithm` to distribute request equally regardless of the load. it uses both the `health check and perfomance metrics` to do this .
+
+**There other alorithms** : 
+
+These are features you can set on your application loadbalancer to control it on how it distributes traffic to your backend servers.
+
++ *Round Robin*: Distributes traffic evenly across all healthy instances in a rotating order. our aws application loadbalancers by default uses round robin algothrithms 
+
++ *Least Connections*: Directs traffic to the instance with the fewest active connections.
+
++ *Least Response Time*: Sends traffic to the instance with the quickest response time.
+
++ *Weighted Round Robin*: Assigns more traffic to instances with greater capacity or better performance, based on predefined weights.
+
++ *IP Hash*: Routes requests based on a hash of the client’s IP address, ensuring consistent routing for the same client.
+
+
+`What is an algorithm ?`:
+
+An algorithm is a step-by-step procedure or set of rules designed to perform a specific task or solve a particular problem. It is a well-defined sequence of instructions that takes an input, processes it, and produces an output. Algorithms can be implemented in various programming languages and are fundamental to computer science and software development, as they provide a systematic way to approach and solve problems efficiently.
+
+5 `Timeout and Error Rates`: 
+
+Load balancers can monitor the timeout and error rates of backend servers. If a server is experiencing high timeout rates or error rates, it may indicate that the server is under heavy load or facing issues, prompting the load balancer to route traffic to other healthier servers.
+
+
+**DIFFERENT TYPES OF LOADBALANCERS ON AWS**
+
+1. `Application Load Balancer (ALB) (Layer 7)`: This type of load balancer operates at the application layer (Layer 7) and is designed to handle `HTTP and HTTPS` traffic. It provides advanced routing capabilities based on content, allowing you to route traffic to different backend services based on URL paths, hostnames, or HTTP headers. 
+
+What is 
+
+`http`: 
+HTTP (Hypertext Transfer Protocol) is a protocol used for transmitting data over the internet. It is the foundation of data communication for the World Wide Web and is used to transfer web pages, images, videos, and other resources between clients (such as web browsers) and servers.
+
+`https`: 
+
+HTTPS (Hypertext Transfer Protocol Secure) is an extension of HTTP that adds a layer of security by using SSL/TLS encryption. It ensures that the data transmitted between the client and server is encrypted and secure from eavesdropping or tampering. HTTPS is commonly used for secure communication on the web, such as online banking, e-commerce, and any website that handles sensitive information.
+
+Smart routing based on: Path-based (/api/* → microservice A, /user/* → microservice B).
+Host-based (shop.example.com → service A, blog.example.com → service B).
+Header or query string values.
+
+2. `Network Load Balancer (NLB) (Layer 4)`: This type of load balancer operates at the transport layer (Layer 4) and is designed to handle `TCP and UDP` traffic. It provides high performance and low latency, making it suitable for applications that require extreme performance, such as gaming or real-time streaming.
+
+What is : - 
+
+`TCP (Transmission Control Protocol)`: TCP is a connection-oriented protocol that provides reliable, ordered, and error-checked delivery of data between applications running on hosts communicating over an IP network. It establishes a connection before transmitting data and ensures that all packets are delivered correctly.
+
+`UDP (User Datagram Protocol)`: UDP is a connectionless protocol that allows applications to send messages (datagrams) without establishing a connection. It is faster than TCP but does not guarantee delivery, order, or error checking, making it suitable for applications that can tolerate some loss of data, such as video streaming or online gaming.
+
+3. `Classic Load Balancer (CLB) (Layer 4 and Layer 7)`: This is the original load balancer provided by AWS and can operate at both the transport layer (Layer 4) and the application layer (Layer 7). It is suitable for applications that require basic load balancing functionality without advanced routing capabilities.AWS 
+(does not recommend the use . old version) (supports layer 4 & 7 ) : `Older generation load balancer`.
+Supports both Layer 4 (TCP/SSL) and Layer 7 (HTTP/HTTPS), but limited features.
+
+4. `Gateway Load Balancer (Layer 3)`:
+This type of load balancer operates at the network layer (Layer 3) and is designed to handle `IP traffic`. It is used for deploying, scaling, and managing third-party virtual appliances, such as firewalls, intrusion detection systems, and deep packet inspection systems. It provides a transparent gateway for routing traffic to these appliances while maintaining high availability and scalability.
+
+
+
+**What Does different Layers mean in Load Balancing e.g Layer 2 , Layer 3 , Layer 4 etc**
+
+In the context of load balancing, different layers refer to the OSI (Open Systems Interconnection) model, which is a conceptual framework used to understand and implement network protocols in seven layers. Each layer has specific functions and responsibilities in the communication process.
+
+- `Layer 1` : Physical Layer :
+
+This layer is responsible for the physical connection between devices, including the transmission of raw bits over a communication channel. It deals with the hardware aspects of networking, such as cables, switches, and network interface cards.
+Key Elements: Electrical signals, cabling, connectors, network interface cards (NICs).
+
+Example: Ethernet cables, fiber optics, physical ports.
+
+- `Layer 2` : Data Link Layer :
+
+Function: Provides node-to-node data transfer and handles error detection and correction from the physical layer.
+Key Elements: MAC addresses, switches, frames.
+Example: Ethernet, Wi-Fi (802.11), MAC address.
+This layer is responsible for the reliable transfer of data frames between devices on the same local network. It handles error detection and correction, as well as flow control. Load balancers that operate at Layer 2 can distribute traffic based on MAC addresses.
+
+- `Layer 3` : Network Layer :
+Function: Responsible for routing packets (data or information) across different networks and handling logical addressing (IP addresses).
+Key Elements: IP addresses, routers, packets.
+Example: IP (Internet Protocol), ICMP (Internet Control Message Protocol).
+This layer is responsible for routing packets across different networks and handling logical addressing (IP addresses). Load balancers that operate at Layer 3 can distribute traffic based on IP addresses.
+
+- `Layer 4` : Transport Layer :
+Function: Provides end-to-end communication and manages data flow control, error handling, and connection management.
+Key Elements: Ports, TCP/UDP protocols, segments/datagrams.
+Example: TCP (Transmission Control Protocol), UDP (User Datagram Protocol).
+This layer is responsible for providing end-to-end communication and managing data flow control, error handling, and connection management. Load balancers that operate at Layer 4 can distribute traffic based on TCP/UDP ports and protocols.
+
+- `Layer 5` : Session Layer :
+Function: Manages sessions or connections between applications. It establishes, maintains, and terminates connections.  
+Key Elements: Sessions, dialogues, connections.
+Example: NetBIOS, RPC (Remote Procedure Call).
+This layer is responsible for managing sessions or connections between applications. It establishes, maintains, and terminates connections. Load balancers that operate at Layer 5 can manage sessions and maintain state information for client connections.
+
+- `Layer 6` : Presentation Layer :
+Function:
+This layer is responsible for translating data between the application layer and the network. It handles data encryption, compression, and formatting to ensure that data is presented in a way that applications can understand.
+Key Elements: Data translation, encryption, compression.
+Example: SSL/TLS (Secure Sockets Layer/Transport Layer Security), JPEG, ASCII.
+
+- `Layer 7` : Application Layer :
+
+Function: Provides end-user services and interfaces directly with applications. It facilitates communication between software applications and lower layers.
+Key Elements: Application protocols, interfaces.
+Example: HTTP (Hypertext Transfer Protocol), FTP (File Transfer Protocol), SMTP (Simple Mail Transfer Protocol), DNS (Domain Name System).
+Understanding Layer 7 (Application Layer)
+Layer 7 is the top layer in the OSI model and is closest to the end-user. This layer interacts directly with software applications to provide communication functions. It's responsible for:
+
+
+Protocol Implementation: Ensuring that network services are available to applications (e.g., web browsers, email clients).
+Data Formatting: Converting data into a format that applications can understand.
+User Interface: Providing network services directly to end-user applications.
+In the context of load balancing, a Layer 7 Load Balancer (like AWS Application Load Balancer) can make routing decisions based on:
+Content of the request (e.g., URL path, HTTP headers).
+
+
+
+
+
+
