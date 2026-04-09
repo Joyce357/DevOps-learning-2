@@ -1,0 +1,439 @@
+#!/bin/bash
+set -e
+
+# Update packages
+apt-get update -y
+
+# Install Apache2
+apt-get install -y apache2
+
+# Enable and start Apache2
+systemctl enable apache2
+systemctl start apache2
+
+# Create website
+cat > /var/www/html/index.html <<'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class10 E-commerce website</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f7f9fc;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a, #2563eb);
+      color: white;
+      padding: 20px 60px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #facc15;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(15,23,42,0.65), rgba(37,99,235,0.65)),
+        url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 110px 20px;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 25px;
+    }
+
+    .hero button {
+      background: #facc15;
+      color: #111827;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .hero button:hover {
+      background: #eab308;
+      transform: translateY(-2px);
+    }
+
+    .section {
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-title h3 {
+      font-size: 2rem;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #555;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .category-card {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+
+    .category-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .category-card h4 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 20px;
+    }
+
+    .product-info h4 {
+      margin-bottom: 10px;
+      color: #0f172a;
+    }
+
+    .product-info p {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .price {
+      font-size: 1.2rem;
+      color: #2563eb;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .product-info button {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .product-info button:hover {
+      background: #1d4ed8;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #2563eb, #0f172a);
+      color: white;
+      padding: 50px 30px;
+      border-radius: 18px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .banner h3 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .testimonial {
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .testimonial h4 {
+      color: #2563eb;
+      margin-top: 12px;
+    }
+
+    footer {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: 50px;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
+    @media (max-width: 768px) {
+      .hero h2 {
+        font-size: 2.2rem;
+      }
+
+      nav {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <h1>Class10 E-commerce website</h1>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <h2>Welcome to Class10 E-commerce website</h2>
+    <p>
+      Discover quality products, modern fashion, smart gadgets, and everyday essentials
+      in one beautiful online shopping experience.
+    </p>
+    <button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+      Shop Now
+    </button>
+  </section>
+
+  <section class="section" id="categories">
+    <div class="section-title">
+      <h3>Shop by Category</h3>
+      <p>Browse our popular collections made for modern shoppers.</p>
+    </div>
+    <div class="categories">
+      <div class="category-card">
+        <h4>Fashion</h4>
+        <p>Stylish clothing and accessories for every occasion.</p>
+      </div>
+      <div class="category-card">
+        <h4>Electronics</h4>
+        <p>Smart gadgets and devices built for everyday life.</p>
+      </div>
+      <div class="category-card">
+        <h4>Home Essentials</h4>
+        <p>Practical and elegant products for your home.</p>
+      </div>
+      <div class="category-card">
+        <h4>Beauty</h4>
+        <p>Premium self-care and beauty collections.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="products">
+    <div class="section-title">
+      <h3>Featured Products</h3>
+      <p>Here are some of our best-selling items.</p>
+    </div>
+    <div class="products">
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80" alt="Smart Watch">
+        <div class="product-info">
+          <h4>Smart Watch Pro</h4>
+          <p>Track your health, fitness, and productivity in style.</p>
+          <span class="price">$89.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80" alt="Sneakers">
+        <div class="product-info">
+          <h4>Classic Sneakers</h4>
+          <p>Comfortable and trendy sneakers for everyday wear.</p>
+          <span class="price">$59.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&q=80" alt="Headphones">
+        <div class="product-info">
+          <h4>Wireless Headphones</h4>
+          <p>Enjoy immersive sound with premium wireless comfort.</p>
+          <span class="price">$74.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=80" alt="Handbag">
+        <div class="product-info">
+          <h4>Luxury Handbag</h4>
+          <p>Elegant design and practical space for your essentials.</p>
+          <span class="price">$64.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?auto=format&fit=crop&w=900&q=80" alt="Perfume">
+        <div class="product-info">
+          <h4>Signature Perfume</h4>
+          <p>A refined fragrance that leaves a lasting impression.</p>
+          <span class="price">$49.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1511556820780-d912e42b4980?auto=format&fit=crop&w=900&q=80" alt="Chair">
+        <div class="product-info">
+          <h4>Modern Accent Chair</h4>
+          <p>Upgrade your home with comfort and modern style.</p>
+          <span class="price">$119.99</span>
+          <button>Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner">
+      <h3>Special Offer: Up to 30% Off</h3>
+      <p>Shop today and enjoy amazing discounts on selected items.</p>
+    </div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="section-title">
+      <h3>What Our Customers Say</h3>
+      <p>Trusted by shoppers who love quality and convenience.</p>
+    </div>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"Beautiful website, easy to shop, and the products look amazing."</p>
+        <h4>- Sarah M.</h4>
+      </div>
+      <div class="testimonial">
+        <p>"The layout is modern and the shopping experience feels premium."</p>
+        <h4>- Daniel K.</h4>
+      </div>
+      <div class="testimonial">
+        <p>"Class10 E-commerce website looks professional and ready for business."</p>
+        <h4>- Anita J.</h4>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Class10 E-commerce website</strong></p>
+    <p>Your one-stop online store for quality products.</p>
+    <p>&copy; 2026 Class10 E-commerce website. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
+EOF
+
+# Set permissions
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+
+# Restart Apache
+systemctl restart apache2
