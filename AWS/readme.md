@@ -2513,6 +2513,10 @@ Load balancers can monitor various performance metrics of backend servers , such
 2. `Round Trip Time`:
 Some load balancers measure the round trip time ,which means a longer round trip time indicates the servers might be experiecing more workload .
 
+`What is round trip time ?:`
+
+Round trip time (RTT) is the time it takes for a signal or data packet to travel from the source (client) to the destination (server) and back again. It is a measure of latency in a network connection and is typically expressed in milliseconds (ms). RTT includes the time taken for the data to reach the server, the time taken for the server to process the request, and the time taken for the response to return to the client. A lower RTT indicates a faster and more responsive connection, while a higher RTT may indicate network congestion or other issues that can affect performance.
+
 3. `Health Checks`:
 Load balancers perform regular health checks on backend servers to ensure they are functioning properly. If a server is deemed unhealthy or unresponsive, the load balancer will stop routing traffic to it until it becomes healthy again. It uses ping to check if the server is responding as expected . servers will respond with `HTTP 200 OK `
 
@@ -2643,5 +2647,70 @@ Content of the request (e.g., URL path, HTTP headers).
 
 
 
+---------------------------
+
+
+1. **Application Load Balancer:** 
+
++ This is good  loadbalancer to route traffic to your web applications 
++ Application load balancers are designed for `http and https traffic` or protocols 
++ It operates under layer 7 ( Operates at the OSI (Open system interconnection) Model Layer 7 )
++ Application loadbalancer supports features like `SSL/TSL terminations` ,websockets and HTTP/2 
++ Application loadbalancers are good for modern application archectures (micro service , monolithic applications)
++ Applications loadbalancers can be internet facing or internal facing . 
++ Load Balancers comes with security groups to enhance security 
++ Load balancers will reach instances through what we call a Target group . A target group  helps a load balancer to target specific resources base on your configurations . 
+
+
+**Application Load Balancer with HTTPS** 
+
++ Request a certificate under Certificate Manager (ACM )
++ Validate the certificate with Route 53 ( Note this is for those who already have a domain )
++ Use the Certificate to create a load balancer 
++ Create a DNS name 
+
+
+
+2. ## Network Load Balancer (Layer 4 )
+
++ Network load balancers are designed for TCP ,UDP and TLS traffic 
+TCP: Transmission Control Protocol (IP network)
+UDP: User Datagram Protocol 
+TSL: Transport Layer Security 
+
++ Network load balancer operates at layer 4 which offers high perfomance & low latency 
++ Network load balancers often provide a static IP address or a set of IP addresses that remain constant, which can be beneficial for applications that require predictable IP addresses. 
++ Network load balancers offers high perfomance because it operates at a lower layer and handles fewer data processing tasks compared to application-layer load balancers, NLBs typically offer lower latency and higher throughput.
++ Network Loadbalancers performs health checks on targets to ensure that traffic is only sent to healthy instances. These health checks are typically based on TCP connectivity.
++ Network loadbalancers are good for `Streaming applications , VOIP ,Video Games` 
+
+
+3. **Gateway Load Balancer (Layer 3)**
+
++ Its designed to work at layer 3 which is the network layer OSI model
++ It has a single entry point .Provides a single entry point for inbound traffic, simplifying network architecture and reducing the number of routing configurations.
++ It also supports healths check for the virtual instances to ensure traffic is sent to healthy instances 
++ Your target has a deployed Virtual Appliances ( EC2 Or a Third party service )
+e.g Firewalls , Intrustion Detection , Prevention systems , Deep Packet inspections 
+also u can Deploying 3rd-party firewalls (e.g., Palo Alto, Fortinet)
+
+
+4. **Classic Load Balancer** - Old version ( Legacy)
++ It Supports layer 4 (TCP) & and Layer7 (http & https) but its considered legacy 
++ It has limited features when compared to ALB /NLB 
++ Its used in old environments but its not recommended for new deployments 
+
+
+
+****HOW TO CREATE AN APPLICATION LOAD BALANCER**
+
+Hands on 
++ Create 2 instances and deploy a web application 
++ Create a Target group and configure the targets 
++ Create our loadbalancer ( application loadbalancer ) to target the target groups 
+
+
+Our applicaiont listen on port 80 
+application : http and https ( 80 , 443)
 
 
