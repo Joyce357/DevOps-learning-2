@@ -2714,3 +2714,126 @@ Our applicaiont listen on port 80
 application : http and https ( 80 , 443)
 
 
+
+
+-----------------------------------
+
+**Target Groups** :
+
+`What is a target group ?`:
+
+A target group is a logical grouping of resources (such as EC2 instances, IP addresses, or Lambda functions) that a load balancer can route traffic to. In AWS, target groups are used in conjunction with load balancers to define the backend resources that will receive traffic from the load balancer. Each target group has a specific protocol and port configuration, and it can be associated with one or more load balancers. The load balancer uses health checks to monitor the status of the targets in the group and routes traffic only to healthy targets. Target groups provide flexibility in managing and scaling your applications by allowing you to easily add or remove resources without affecting the overall architecture of your application.
+
+Different Target Types we have in AWS ?: 
+
++ `Instance Target Type`: This target type allows you to register EC2 instances as targets for your load balancer. The load balancer will route traffic to the registered instances based on the specified protocol and port configuration.
+
++ `IP Target Type`: This target type allows you to register IP addresses as targets for your load balancer. This is useful when you want to route traffic to resources that are not EC2 instances, such as on-premises servers or containers running outside of AWS.
+
++ `Lambda Target Type`: This target type allows you to register AWS Lambda functions as targets for your load balancer. This is useful for serverless applications where you want to route traffic directly to Lambda functions without the need for EC2 instances.
+
++ `Application Load Balancer (ALB) Target Type`: This target type is specific to Application Load Balancers and allows you to register targets based on the application layer (Layer 7) routing rules. It supports routing based on URL paths, hostnames, and HTTP headers.
+
+
+`Note` : You can add and remove instances from targets 
+
+
+
+**DIFFERENCE BETWEEN APPLICATION LOADBALANCER AND NETWORK LOADBALANCER**
+
+
+| Feature                | Application Load Balancer (ALB)                    | Network Load Balancer (NLB)                  |
+|-------------------------|---------------------------------------------------|----------------------------------------------|
+| **OSI Layer**           | Layer 7 (Application layer)                       | Layer 4 (Transport layer)                    |
+| **Supported Protocols** | HTTP, HTTPS, WebSockets                           | TCP, UDP, TLS                                |
+| **Routing**             | Path-based & Host-based routing                   | IP + Port based only (no content inspection) |
+| **Performance**         | Slightly higher latency due to packet inspection  | Ultra low latency, handles millions of req/s |
+| **SSL/TLS**             | Can terminate SSL/TLS at the load balancer        | TLS passthrough (end-to-end encryption)      |
+| **IP Addressing**       | Uses DNS name (no static IP)                      | Supports static IPs & Elastic IPs            |
+| **Health Checks**       | Application-level (HTTP codes, URL checks)        | TCP-level connectivity (port open/closed)    |
+| **Best For**            | Web apps, APIs, Microservices                     | Gaming, VoIP, Financial apps, Streaming apps |
+| **Example Use Case**    | E-commerce site with `/checkout` and `/products`  | Real-time trading system or multiplayer game |
+
+
+
+**sticky session in loadbalancers**
+`What is a sticky session ?`:
+
+A sticky session, also known as `session affinity`, is a feature of load balancers that allows them to route a client's requests to the same backend server (EC2 instance) for the duration of a session (time). This is achieved by using `cookies or other mechanisms to track the client's session` and ensure that subsequent requests from the same client are directed to the same server. Sticky sessions can be beneficial for applications that require session persistence, such as e-commerce websites or applications that maintain user state. However, they can also lead to uneven load distribution if certain servers become overloaded with sticky sessions, so it's important to use this feature judiciously based on the specific requirements of your application.
+
+
+
+
+**How Sticky Sessions Work**
+
++ *Session Identification*: The load balancer identifies and tracks client sessions, usually by using a session cookie, a URL parameter, or another method.
+
++ *Consistent Routing*: Once a client (end user or customer) is assigned to a backend server, subsequent requests from the same client are routed to the same server for the duration of the session.
+
++ *Session Data*: This is particularly useful for applications that store session data locally on the server. Without sticky sessions, the client’s requests might be distributed across different servers, which could lead to inconsistent experiences if session data is not shared or synchronized.
+
+
+**Common Methods for Sticky Sessions**
+
++ *Cookie-Based Sticky Sessions*: The load balancer inserts a special cookie into the client’s browser. This cookie identifies the server to which the client is assigned. On subsequent requests, the client sends the cookie back to the load balancer, which uses it to route traffic to the same server.
+
++ *IP Hashing*: The load balancer uses the client’s IP address to determine which server to route the request to. This method is simpler but less flexible and can lead to issues if clients share IP addresses or change IPs frequently.
+
++ *URL Parameter*: A unique identifier is included in the URL of each request, and the load balancer uses this identifier to route the request to the appropriate server.
+
+
+**WHY SHOULD WE USE STICKY SESSIONS IN LOADBALANCING ?**  
+
+1. `Stateful Applications` (An application with a database): Ensures that clients interact with the same server throughout their session, which is essential for applications that maintain state or session-specific information on the server.
+
+2. `Improved Performance` : Reduces the overhead of reloading session data from a shared store or database, which can improve application performance and responsiveness.
+
+3. `Consistency`: Provides a consistent user experience by ensuring that all requests within a session are handled by the same server.
+
+
+
+`How to setup sticky session` 
+
++ Click on Target Groups and under target groups select the target you want 
++ Under attributes click on edit attributes 
++ Under `Stickiness` select enable and choose the duration of the cookie ( e.g 300 seconds )
+
+
+
+
+`Cross Zone Loadbalancing` 
+
+This is when your load balancer distributes traffic to your application across multiple AZ(Aavailability zones) within an AWS region
+
++ By default application load balancers will route traffic across multiple availability zones with no charge . 
++ By Default network loadbalancer comes with cross zone load balancing disabled but you can enable it and you will be charge data transfer moving across different AZ's 
++ Classic load balancer by default cross zone load balancing is disabled , if you enable it you wont be charge . 
+
+
+
+
+**AWS Load Balancer Routing Rules**
+`What is a Load Balancer routing rule :`
+
+A load balancer routing rule is a `set of conditions and actions` that determine how `incoming traffic` is directed to backend servers (targets) based on specific criteria. These rules allow you to configure the behavior of your load balancer to route traffic in a way that best suits your application's needs. For example, you can create routing rules that direct traffic based on URL paths, hostnames, HTTP headers, or query string parameters. This enables you to implement advanced routing strategies, such as directing requests for different parts of your application to different backend services or instances, improving performance and scalability.
+
+A routing rule determines how the load balancer forwards traffic to target groups (EC2, ECS, Lambda, etc.).
+
+**Types of Routing Rules**
+
++ Path-based routing 
++ Host-based routing 
++ Query string or http header 
++ http request method 
++ Sourceip 
+
+1. `Host-based routing ( Host Header)`: 
+
+This routing rule directs traffic based on the hostname specified in the HTTP request header. For example, you can route requests for `shop.example.com` to one target group and requests for `blog.example.com` to another target group.
+This is useful when hosting multiple services or applications on the same load balancer but under different subdomains or hostnames. 
+
+`Why it’s important`: Many companies want to run multiple apps on the same load balancer but separate them by domain.
+and this can be cheaper . 
+
+
+
