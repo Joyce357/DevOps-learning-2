@@ -2979,6 +2979,12 @@ our example
 curl -k -H "User-Agent: iphone" https://devops.team4techsolutionsinc.com
 curl -k -H "User-Agent: android" https://devops.team4techsolutionsinc.com
 
+`WHY test using CURL instead of the BROWSER `? :
++ Browsers often add their own default headers (like User-Agent, Accept, etc.) which can interfere with testing specific header-based routing rules. It does not add our own custom header and our custom header here is Device Type 
++ Using cURL allows you to have full control over the headers you send, ensuring that you
+can accurately test your routing rules without unintended headers affecting the outcome.
+
+
 
 
 
@@ -3000,9 +3006,15 @@ GET /orders → goes to read-only replicas.
 POST /orders → goes to primary servers with database write access.
 
 
+Test :  
+
+`curl -X POST http://class10-alb-1732159905.ca-central-1.elb.amazonaws.com`
+`curl -X GET http://class10-alb-1732159905.ca-central-1.elb.amazonaws.com`
+
+
 6. **Source IP–Based Routing**
 
-Routes traffic based on the client’s IP address or CIDR range.
+Routes traffic based on the client’s IP address or CIDR (Classless interdomain routing ) range.
 
 `Why It’s Important`
 
@@ -3015,32 +3027,71 @@ Routes traffic based on the client’s IP address or CIDR range.
 
 **HEALTH CHECKS IN LOAD BALANCERS**
 
-This is when your load balancer uses the ping mechanism to check your backend servers (target groups) to make sure they are working properly before it routes traffic to it
+This is way a load balancer checks your backend services to ensure that they are ready to receive traffic before it routes the traffic to them it uses the ping mechanism to check your backend servers in the (target groups) to make sure they are working properly before it routes traffic to it.
 
 `Understanding Load balancers health checks`
 
 `Health Check Configurations`
 
-+ This are configured at the target group level within the load balancer
-You can specify the protocol type e.g HTTP , HTTPS , TCP
-+ Health Check Path : This is the specific endpoint path or url that your load balancer pings to determined weather the target (ec2 instance) server or application target is heathy and is able to handle or receive a request . / : this is the default path and it uses the root (/) to test but you can set your own custom path e.g /health /healthcheck
+`Health Check protocol ;`
++ Health Checks are configured at the target group level within the load balancer
++ You can specify the protocol type e.g HTTP , HTTPS , TCP
 
-Health Check port : by default load balancer carries out its health check using the target port configured for your application . you can change or overide this by using your own custom port
++ `Health Check Path` : This is the specific endpoint path or url that your load balancer pings to determined weather the target (ec2 instance) server or application target is heathy and is able to handle or receive a request  e.g `/` : this is the default path and it uses the root (/) to test but you can set your own custom path e.g /health /healthcheck depending on configurations 
 
 
-Target : 80 application port application webserver : 80 jenkins listen : 8080 sonarqube listen ; 9000 nexus listen : 8081
+Advance settings 
 
-UnHealthy threshold: This is the number of times your load balancer is going to ping your backend servers (targets) before it determines or mark the target as unhealthy .
++ `Health Check Port`:
+This is the port number that your load balancer uses to perform health checks on the targets. It can be the same as the application port or a different port specifically designated for health checks. For example, if your application listens on port 80, you can configure the health check to use port 80 as well, or you can choose a different port (e.g., 8080) if you have a separate endpoint for health checks.
+ 
+`Healthy Threshold` : 
+The number of consecutive health checks successes required before considering an unhealthy target healthy.
 
-Timeout : this is the period of time your load balancer will wait for a response before it marks the target as unhealthy
+`UnHealthy threshold`: This is the number of times your load balancer is going to ping your backend servers (targets) before it determines or mark the target as unhealthy .
 
-Interval
+`Timeout` : this is the period of time your load balancer will wait for a response before it marks the target as unhealthy
+
+
++ `Interval` : 
+The approximate amount of time between health checks of an individual target
+This is the time period between each health check ping. For example, if you set the interval to 30 seconds, the load balancer will ping the target every 30 seconds to check its health status.
+
++ `Success code `:
+
+This is the HTTP status code that your load balancer expects to receive from the target in response to a health check ping. For example, if you set the success code to 200, the load balancer will consider the target healthy if it receives an HTTP 200 OK response from the target during a health check. 
+other status codes 404,  405 issues 
+
+
+**NOTE**: TCP does not use status codes instead it uses connection states : e.g 
+
++ `Open`: The load balancer successfully established a TCP connection to the target.
++ `Closed`: The load balancer attempted to establish a TCP connection but it was closed by the
+target or did not respond within the timeout period.
++ `Error`: An error occurred while trying to establish a TCP connection to the target (e
+.g., network issues, target not reachable).
+
+
+
+
 
 **Trust store**:
 
 A trust store is a repository that contains trusted certificates, usually public certificates of Certificate Authorities (CAs), that are used to verify the authenticity of the certificates presented by remote servers or clients.
 
 Purpose / Use case : The trust store ensures that only certificates signed by trusted CAs(Certificate Authority) are accepted, thereby establishing a secure connection between the client and the server.
+
+
+
+`Load Balancer Access Logs` : 
+
+Access logs provide detailed information about the traffic that is handled by your load balancer. They include data such as the time of the request, the client's IP address, the request path, the response status code, and more. Access logs are useful for monitoring and analyzing traffic patterns, troubleshooting issues, and gaining insights into how users are interacting with your application.
+
+
+`AWS Loadbalancer X-Ray` :
+
+AWS X-Ray is a service that helps developers analyze and debug distributed applications, such as those built using microservices architecture. It provides insights into the performance of applications by tracing requests as they travel through various components, including load balancers, backend services, databases, and external APIs. With AWS X-Ray, you can identify bottlenecks (issues), understand latency issues, and gain visibility into the overall health of your application. It allows you to see how requests are processed across different services and helps you pinpoint where errors or performance issues may be occurring in your application stack.
+
 
 
 **AWS-specific best practices when setting up a load balancer** 
@@ -3050,15 +3101,18 @@ Purpose / Use case : The trust store ensures that only certificates signed by tr
 2. `High Availability & Redundancy` ; Always enable cross-zone load balancing so traffic distributes evenly across AZs,Register targets in multiple AZs for resilience.Use Route 53 health checks + failover if you need multi-region resiliency.
 
 3. `Security Best Practices`: 
+
 + Terminate TLS/SSL at the load balancer using AWS Certificate Manager (ACM)
 and ensure that the certificate matches the dns name for your application to avoid untrusted domain errors 
 + Redirect all HTTP traffic to HTTPS (enforce encryption in transit).
-+ Restrict inbound access via security groups (only required ports, e.g., ,80 ,443).
++ Restrict inbound access via security groups (only required ports, e.g., ,80 ,443) should be allowed 
 + Use AWS WAF on ALBs for protection against common web exploits.
 + Enable Access Logs to S3 for auditing and compliance.
 
 
+
 4. `Monitoring & Observability`: 
+
 + Enable CloudWatch metrics (latency, 4xx/5xx errors, request count).
 + Configure ALB/NLB access logs to track request patterns.
 + Use AWS X-Ray to trace requests through the LB to backend services.
@@ -3073,5 +3127,73 @@ and ensure that the certificate matches the dns name for your application to avo
 
 6. `Performance & Optimization`
 + Consider sticky sessions (session affinity) only if absolutely required, since it can create uneven load distribution.
-+ For high throughput, prefer NLB (millions of requests/second).
++ For high throughput, prefer to use  NLB (millions of requests/second).
 + Use ALB listener rules for routing by host/path instead of running multiple LBs.
+
+
+
+
+**AUTO SCALING GROUP (EC2-INSTANCE )**
+
+What is an `Auto Scaling Group` (ASG)
+
+An Auto Scaling Group (ASG) in AWS is a service that automatically adjusts the number of EC2 instances in a group based on defined policies, health checks, and schedules. It helps maintain application availability and allows you to scale your EC2 capacity up or down according to demand. ASGs can automatically replace unhealthy instances, ensuring that the desired number of instances is always running. This is particularly useful for applications with variable workloads, as it helps optimize costs while maintaining performance and availability.
+
+
+This is a logical grouping of your ec2-instances managed by aws to scale in and out when there is demand. In your auto scaling group you can setup Minimum , maximum and desired number of instances in the group . With this setup you want to make sure the number of instances running can handle the load ,so the auto scaling group will scale up and down to handle incoming request and traffic 
+
+
+**Benefits of an Auto-scaling Group or auto scaling**
+
+( High availability , cost optimization , performance , flexibity etc )
+1. `High Availability` :
+ASGs automatically replace unhealthy instances, ensuring that your application remains available even if some instances fail. This helps maintain a consistent user experience and reduces downtime.
++ You can automatically scale without any manual intervention which reduces operational overhead .
+
+2. `Cost Optimization` :
+ASGs allow you to scale your EC2 capacity up or down based on demand, which helps optimize costs. You only pay for the instances you need, and you can avoid over-provisioning or under-provisioning resources.It helps in reducing cost because without an auto-scaling you will provisioned the number of serves ahead of time and you can over provisioned which will cost you more money but with auto scaling you only pay for what you need .
+
+3. `scalability` : 
+ASGs can automatically adjust the number of instances based on defined policies, such as CPU utilization or request count. This allows your application to handle varying levels of traffic and ensures that you have enough resources to meet demand during peak times while scaling down during low traffic periods.
+
+
+4. `Performance` :
+ASGs can automatically adjust the number of instances based on defined policies, such as CPU utilization or request count. This helps maintain optimal performance during traffic spikes or periods of low demand.
+
+5. `Flexibility` :
+ASGs can be configured with various scaling policies, such as target tracking, step scaling, or scheduled scaling. This allows you to customize how your application scales based on specific metrics or time-based schedules.
+
+5. `Integration with Load Balancers` :
+ASGs can be integrated with Elastic Load Balancers (ELBs) to distribute incoming traffic across the instances in the group. This ensures that traffic is balanced and that new instances are automatically added to the load balancer when they are launched.
+
+6. `Health Checks` :
+ASGs perform health checks on the instances in the group. If an instance is deemed unhealthy, it can be automatically terminated and replaced with a new instance, ensuring that your application remains healthy and responsive.
+
+7. `Easy Management` :
+ASGs provide a simple way to manage the lifecycle of your EC2 instances. You can easily update the launch configuration, change scaling policies, or adjust the desired capacity without having to manually intervene in the instance management process.
+
+8. Auto scaling has the a feature call instance refresh and With Instance Refresh, you can roll out patched AMIs automatically across the fleet.Works well with AWS Config, CloudTrail, and IAM roles to ensure only the right instances run with the right permissions.
+
+
+
+
+**To create an Auto Scaling Group you need a Launch Template**
+
+What is a `Launch Template` : 
+
+A Launch Template in AWS is a resource that contains the configuration information required to launch EC2 instances. It serves as a blueprint for creating instances and includes details such as the Amazon Machine Image (AMI) ID, instance type, key pair, security groups, and other settings. Launch Templates allow you to define and reuse instance configurations, making it easier to launch multiple instances with consistent settings. They are commonly used in conjunction with Auto Scaling Groups to ensure that new instances launched by the ASG have the desired configuration. By using Launch Templates, you can simplify the process of launching instances and maintain consistency across your EC2 fleet.
+
+**What are some of the Advantages of using a Launch Template**
+
+1. `Consistency` : Launch Templates ensure that all instances launched from the template have the same configuration, which helps maintain consistency across your EC2
+fleet. This is particularly important when you need to launch multiple instances with the same settings, such as in an Auto Scaling Group.
+2. `Versioning` : Launch Templates support versioning, allowing you to create multiple versions of a template with different configurations. This enables you to easily manage changes to your instance configurations over time and roll back to previous versions if needed.
+3. `Integration with Auto Scaling Groups` : Launch Templates can be used directly with Auto Scaling Groups, making it easier to define the configuration for instances that will be automatically launched and terminated based on scaling policies.
+4. `Simplified Instance Launching` : Using a Launch Template simplifies the process of launching
+instances, as you can specify all the necessary configuration details in one place. This reduces the chances of errors and ensures that instances are launched with the correct settings.
+5. `Flexibility` : Launch Templates allow you to specify a wide range of configuration options
+for your instances, including AMI ID, instance type, key pair, security groups, user data, and more. This flexibility enables you to tailor the instance configuration to meet the specific needs of your application.
+6. `Cost Management` : By using Launch Templates, you can easily manage and optimize costs
+associated with launching instances. You can create different versions of the template with varying instance types or configurations to test and optimize for cost efficiency.
+7. `Automation` : Launch Templates can be used in automated workflows, such as with AWS
+CloudFormation or AWS CLI, to streamline the process of launching instances as part of larger infrastructure deployments or updates. This helps improve efficiency and reduces manual intervention in instance management.
