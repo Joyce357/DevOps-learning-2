@@ -3177,7 +3177,7 @@ ASGs provide a simple way to manage the lifecycle of your EC2 instances. You can
 
 
 
-**To create an Auto Scaling Group you need a Launch Template**
+**To create an Auto Scaling Group you need the following** 
 
 What is a `Launch Template` : 
 
@@ -3197,3 +3197,142 @@ for your instances, including AMI ID, instance type, key pair, security groups, 
 associated with launching instances. You can create different versions of the template with varying instance types or configurations to test and optimize for cost efficiency.
 7. `Automation` : Launch Templates can be used in automated workflows, such as with AWS
 CloudFormation or AWS CLI, to streamline the process of launching instances as part of larger infrastructure deployments or updates. This helps improve efficiency and reduces manual intervention in instance management.
+
+
+Dont specify the subnet when creating a template for an auto scaling group template this is because when you are creating your auto scaling group you will need to specify the availability zone and subnets at the time of creation. instance is in a public subnet : aws recognizes template based on the subnet
+
+
+
+`AMI `
+An Amazon Machine Image (AMI) is a pre-configured virtual machine image that contains the necessary information to launch an EC2 instance. It includes the operating system, application server, and any additional software or configurations needed to run your application. AMIs can be created from existing instances or provided by AWS, and they serve as a template for launching new instances with the same configuration. By using AMIs, you can quickly and easily deploy instances with consistent settings, which is particularly useful when scaling applications or creating multiple instances for high availability.
+
+
+HANDS 
+
+HOW TO CREATE AN AUTO-SCALING GROUP 
+
+1. Create a launch template with the desired configuration (AMI, instance type, security groups, etc.).
+2. Go to the Auto Scaling Groups section in the AWS Management Console.
+3. Click "Create Auto Scaling Group" and follow the prompts to set up the group.
+4. Select the launch template you created in step 1.
+5. Select the network (VPC)
+6. Choose the availability zones and subnets for your instances.
+7. Configure availability zone distribution . we have Balanced best effort and Balanced Only 
+
++ **Balanced best efffort* : 
+
+If our autoscaling fails in one availability zone , auto scaling will attempt to launch in another availability zone 
+
++ **Balanced Only* : 
+
+Auto scaling will only attempt to launch in the availability zones you specified and if it fails in one availability zone it will not attempt to launch in another availability zone it will continue it attempts on the unhealthy availability zone 
+
+8. Intergrate auto scaling with other services in our case we will integrate with a loadbalancer. 
++ Select create a new load balancer  
++ Select the load balancer type (application load balancer or network load balancer).
++ Configure the load balancer settings (listeners, security groups, etc.).
++ allow auto-scaling to create a new target group
+
+9. Configure Group Size and Scaling 
++ Set the desired capacity (initial number of instances) that will run in the auto scaling group 
++ Set the minimum capacity (the minimum number of instances that should always be running)
++ Set the maximum capacity (the maximum number of instances that can be launched) on your behalf by the auto scaling group 
+
+10. Configure Scaling Policies
+
++ No Scaling Policy ( Auto scaling will not add or remove instances )
+
++ Target Tracking Scaling Policy (e.g., maintain average CPU utilization at 50%)
+
+11. Select Instance Maintenance Policy 
+
++ Mixed Behaviour ( No Policy ): 
+
+If an instance becomes unhealthy, the auto scaling group will terminate it and launch a new instance to replace it. This is the default behavior and helps maintain the desired capacity of the group.
+The auto scaling might create a new instance before terminating the old one and it can just simply terminate the instance before creating a new one 
+
+
++ Prioritized Availability ( Launch before terminating ) : 
+
+If an instance becomes unhealthy, the auto scaling group will first launch a new instance before terminating the unhealthy one. This approach helps ensure that there is no downtime during the replacement process, as the new instance will be up and running before the old one is terminated.
+
++ Control cost ( Terminate before Launch ) : 
+
+If an instance becomes unhealthy, the auto scaling group will first terminate the unhealthy instance before launching a new one. This approach can help control costs by ensuring that you are not running more instances than necessary during the replacement process. However, it may result in a brief period of downtime while the new instance is being launched and initialized.
+
++ Flexible ( Custom Behaviour ): 
+
+You can create a custom maintenance policy that defines specific actions to take when an instance becomes unhealthy. For example, you could configure the policy to send a notification to administrators, perform additional health checks, or trigger a Lambda function before launching a new instance or terminating the old one. This allows for greater flexibility in handling unhealthy instances based on your specific application requirements and operational preferences.
+
+
+12 . Additional capacity settings : 
+
++ Set up Capacity reservation settings by selecting one of the options -- select default 
+
+1. Default 
+2. None 
+3. Capacity resevation only 
+4. Capacity reservation first 
+
+13 : Additional settings
++ Instance scale-in protection : 
+
+This setting allows you to protect specific instances from being terminated during scale-in events. When enabled, instances with scale-in protection will not be automatically terminated by the Auto Scaling Group when scaling down, which can be useful for critical instances that need to remain running even during periods of low demand. You can enable this setting for individual instances within the Auto Scaling Group to ensure that they are not inadvertently terminated during scaling activities.
+
++ Monitoring 
+
+Enable detailed monitoring to get more granular metrics for your instances, which can help you make informed decisions about scaling policies and understand the performance of your application. Detailed monitoring provides additional insights into CPU utilization, network traffic, disk activity, and other important metrics that can help you optimize your Auto Scaling Group's performance and cost-efficiency.
+
++ Auto Scaling group deletion protection
+
+This setting prevents the accidental deletion of your Auto Scaling Group. When enabled, it requires an additional confirmation step before the group can be deleted, providing an extra layer of protection against unintended deletions that could lead to downtime or loss of resources. This is particularly important in production environments where the Auto Scaling Group is critical for maintaining application availability and performance. 
+
+You can select any of the following options 
+
++ None default ( auto scaling can be deleted )
++ Prevent force deletion ( Means auto scaling before deleted all instances inside must be terminated and detached )
++ prevent all deletion : auto scaling group cant be deleted
+
+i highly recommend to select prevent all deletion in production 
+
+
+13. Set up Notifications 
+
++ You can configure notifications to be sent to an SNS topic when certain events occur within your Auto Scaling Group, such as instance launches, terminations, or scaling activities. This allows you to stay informed about the status and changes in your Auto Scaling Group and take appropriate actions if needed. You can choose to receive notifications for specific events or all events related to your Auto Scaling Group, depending on your monitoring and operational requirements.
+
+
+
+
+**HOW DOES AUTO SCALING WORK** 
+
++ Auto scaling monitors your instances. It continously monitor metrics from your ec2 instances or services.When this metric cross predefined thresholds . it triggers the scaling actions e.g cpu is over 80% it should create new instances , it can be an unhealthy instance and it creates a new instance to replace 
+
++ `Scaling Actions` : Scale up or down . When it scales up that means there is `increase in demand` , new instances are launched and traffic is routed to that instance and when scales down this means `demand has decreased` and it will go back to your desired state(number of instances you want at all time). 
+
++ `Maintained desired capacity`: Auto Scaling ensures that the number of running instances matches the `desired capacity`, even if some instances fail or become unhealthy. This capacity is defined in the Auto Scaling Group configuration
+
++ `Health Management`. Auto Scaling performs health checks on the instances in the Auto Scaling Group. If an instance is found to be unhealthy, it is terminated and replaced with a new one to maintain the desired capacity.
+
+
+**AUTO SCLAING POLICIES**
+
+`What is an Auto scaling policy` : 
+
+An Auto Scaling policy is a set of rules and conditions that define how an Auto Scaling Group should respond to changes in demand or specific metrics. These policies determine when to scale up (add instances) or scale down (remove instances) based on predefined thresholds, such as CPU utilization, request count, or custom metrics. Auto Scaling policies can be configured to maintain optimal performance and cost-efficiency by automatically adjusting the number of instances in the group according to the current workload. There are different types of Auto Scaling policies, including target tracking, step scaling, and scheduled scaling, each offering different ways to manage scaling actions based on your application's needs.
+
+**Types of Auto Scaling Policies**
+
+1. `Dynamic Scaling Policy` : Dynamic scaling policies uses real time metrics to scale in aws and it gets the metrics from cloudwatch ( we have 3 times of this dynamic scaling policy type  which are `Target Tracking , Step and simple scaling`)
+
++ Target Tracking Scaling : 
+
+This policy type automatically adjusts the number of instances in an Auto Scaling Group to maintain a specified target value for a particular metric, such as average CPU utilization or request count. For example, you can set a target tracking policy to maintain an average CPU utilization of 50%. If the average CPU utilization exceeds 50%, the policy will trigger a scale-up action to add more instances. Conversely, if the average CPU utilization falls below 50%, it will trigger a scale-down action to remove instances. Target tracking policies provide a simple and effective way to maintain optimal performance while minimizing costs by automatically adjusting capacity based on real-time metrics.  
+
++ Step scaling 
++ Simple scaling 
+
+
+install stress
+
+sudo apt install stress 
+stress --cpu 4
