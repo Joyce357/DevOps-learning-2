@@ -3322,9 +3322,9 @@ An Auto Scaling policy is a set of rules and conditions that define how an Auto 
 
 **Types of Auto Scaling Policies**
 
-1. `Dynamic Scaling Policy` : Dynamic scaling policies uses real time metrics to scale in aws and it gets the metrics from cloudwatch ( we have 3 times of this dynamic scaling policy type  which are `Target Tracking , Step and simple scaling`)
+1. **Dynamic Scaling Policy**` : Dynamic scaling policies uses real time metrics to scale in aws and it gets the metrics from cloudwatch ( we have 3 times of this dynamic scaling policy type  which are `Target Tracking , Step and simple scaling`)
 
-+ Target Tracking Scaling : 
++ `Target Tracking Scaling` : 
 
 This policy type automatically adjusts the number of instances in an Auto Scaling Group to maintain a specified target value for a particular metric, such as average CPU utilization or request count. For example, you can set a target tracking policy to maintain an average CPU utilization of 50%. If the average CPU utilization exceeds 50%, the policy will trigger a scale-up action to add more instances. Conversely, if the average CPU utilization falls below 50%, it will trigger a scale-down action to remove instances. Target tracking policies provide a simple and effective way to maintain optimal performance while minimizing costs by automatically adjusting capacity based on real-time metrics.  
 
@@ -3336,3 +3336,25 @@ install stress
 
 sudo apt install stress 
 stress --cpu 4
+
++ `Step Scaling`: 
+
+This policy type allows you to define specific scaling actions based on different thresholds for a particular metric. For example, you can configure a step scaling policy to add 2 instances if CPU utilization exceeds 70% and add an additional 2 instances if it exceeds 90%. Similarly, you can define steps for scaling down when CPU utilization falls below certain thresholds. Step scaling policies provide more granular control over scaling actions when compared to target tracking policies, allowing you to specify different responses based on varying levels of demand. 
+
++ `Simple Scaling`: Adds or removes a fixed number of instances based on a single scaling action.e.g cpu more than 80% you can choose how many instances it should add .
+
+This policy type allows you to define a single scaling action that is triggered when a specific metric crosses a defined threshold. For example, you can set a simple scaling policy to add 1 instance when CPU utilization exceeds 80% and remove 1 instance when it falls below 20%. Simple scaling policies are straightforward and easy to configure, making them suitable for basic scaling needs where you want a consistent response to changes in demand without the need for multiple thresholds or steps.
+
+
+2. **Predictive Scaling Policy** : 
+
+Predictive scaling policies use machine learning algorithms to analyze historical data and predict future traffic patterns. Based on these predictions, the policy can proactively scale your Auto Scaling Group up or down before the actual demand changes occur. This allows you to maintain optimal performance and cost-efficiency by ensuring that you have the right number of instances running at all times, even during unexpected spikes in traffic. Predictive scaling is particularly useful for applications with variable workloads or seasonal traffic patterns, as it helps you stay ahead of demand and avoid performance issues caused by under-provisioning or over-provisioning resources.
+
+3. **Scheduled Action Policy**:
+
+Scheduled action policies allow you to define scaling actions that occur at specific times or on a recurring schedule. For example, you can set a scheduled action to scale up your Auto Scaling Group every weekday at 9 AM and scale down at 5 PM. This is particularly useful for applications with predictable traffic patterns, such as business hours or seasonal spikes, allowing you to ensure that you have the appropriate number of instances running during peak times while minimizing costs during off-peak periods. Scheduled action policies provide a simple way to automate scaling based on time-based patterns without the need for real-time metrics or predictions.
+
+
+`What is an Auto scaling cool down period `:
+
+A cool down period in Auto Scaling is a specified amount of time that must pass after a scaling activity before another scaling activity can occur. This period allows the system to stabilize after a scaling action, preventing rapid fluctuations in the number of instances due to temporary spikes or drops in demand. During the cool down period, the Auto Scaling Group will not initiate any new scaling actions, even if the metrics indicate that scaling is needed. This helps ensure that the scaling process is more controlled and prevents unnecessary scaling activities that could lead to increased costs or performance issues. The cool down period can be configured based on your application's needs and typical traffic patterns.
