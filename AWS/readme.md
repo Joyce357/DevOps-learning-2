@@ -3358,3 +3358,319 @@ Scheduled action policies allow you to define scaling actions that occur at spec
 `What is an Auto scaling cool down period `:
 
 A cool down period in Auto Scaling is a specified amount of time that must pass after a scaling activity before another scaling activity can occur. This period allows the system to stabilize after a scaling action, preventing rapid fluctuations in the number of instances due to temporary spikes or drops in demand. During the cool down period, the Auto Scaling Group will not initiate any new scaling actions, even if the metrics indicate that scaling is needed. This helps ensure that the scaling process is more controlled and prevents unnecessary scaling activities that could lead to increased costs or performance issues. The cool down period can be configured based on your application's needs and typical traffic patterns.
+
+
+
+
+**ROUTE 53** 
+
+`What is Route 53`: ?
+
+Amazon Route 53 is a scalable and highly available `Domain Name System (DNS)` web service provided by AWS. It is designed to route end-user requests to applications hosted on AWS or outside of AWS. Route 53 translates human-readable domain names (like www.example.com) into IP addresses that computers use to connect to each other. It also offers features such as `health checks, traffic routing policies, and domain registration, making it a comprehensive solution for managing DNS and directing traffic to your applications efficiently and reliably. 
+
+Route 53 is an `AWS service` that you use to manage your DNS (Domain Name System) and you can use it for `DNS management , Traffic management ,domain registration , health checks and DNS security` . 
+
+**Key Features of Route 53**
+
+1. `DNS Management` : Route 53 allows you to manage your domain names and their associated DNS records, such as A records, CNAME records, MX records, and more. You can create and manage these records to route traffic to your applications hosted on AWS or elsewhere.
+
++ This allows you to perform DNS queries globally and manage domains on route 53
++ Supports public hosted zones (for internet-facing apps) and private hosted zones (for internal AWS networks).
++ Fully integrated with AWS resources like EC2, ALB, CloudFront, and S3 using Alias records (unique to AWS).
+
+2. `Traffic Management` : Route 53 provides various traffic routing policies to help you manage how traffic is directed to your applications. These policies include:
+
++ `Simple routing`: Routes traffic to a single resource.
++ `Weighted routing`: Distributes traffic across multiple resources based on specified weights.
++ `Latency-based routing`: Routes traffic to the resource with the lowest latency for the user.
++ `Failover routing`: Routes traffic to a secondary resource if the primary resource is unhealthy.
++ `Geolocation routing`: Routes traffic based on the geographic location of the user.
++ `Geoproximity routing`: Routes traffic based on the geographic location of the user and the
+resources, allowing for biasing towards certain resources.
++ `Multi-value answer routing`: Returns multiple healthy resources in response to DNS queries, allowing for client-side load balancing.
+
+3. `Domain Registration` : Route 53 allows you to register new domain names directly through the AWS Management Console. You can search for available domain names, register them, and manage your domain settings all in one place.
++ When you register a domain ,Route 53 automatically creates a public hosted zone when you register a domain.
++ Supports top-level domains (TLDs) like .com, .net, .org, .ca, etc.
++ You can renew, transfer, or manage WHOIS contact info all inside the AWS Console.
+
+4. `Health Checks` : Route 53 can monitor the health of your resources (like web servers or endpoints) using health checks. If a resource becomes unhealthy, Route 53 can automatically route traffic away from it to healthy resources based on your routing policies.
++ You can configure health checks to monitor endpoints, such as HTTP, HTTPS, or TCP.
++ Health checks can be associated with DNS records to enable failover routing.
++ You can set up CloudWatch alarms based on health check status for proactive monitoring.
+
+5. `DNS Security` : Route 53 supports DNSSEC (Domain Name System Security Extensions) to help protect against DNS spoofing and ensure the integrity of your DNS data. With DNSSEC, you can digitally sign your DNS records, allowing clients to verify that the responses they receive are authentic and have not been tampered with.
+
+
+**Key terminologies**
+
+`What is a DNS in simple words`?
+
+DNS stands for `Domain Name System`. It is like the phone book of the internet that translates  human-friendly domain names (like www.example.com) into IP address that computers use to identify each other on the network. When you type a website address into your browser, DNS is responsible for finding the corresponding IP address so that your browser can connect to the correct server and load the website.
+
+
+**Domain Names** 
+
+A domain name is a human-readable or human friendly address that is used to access websites and other resources on the internet. It is a unique identifier that maps to an IP address, allowing users to easily remember and access websites without needing to remember complex numerical IP addresses. For example, "www.team4techsolutions.com" is a domain name that can be used to access a website hosted on a server with a specific IP address. Domain names are hierarchical and typically consist of multiple levels, such as top-level domains (TLDs) like .com, .net, or .org, and second-level domains like "example" in "www.example.com". They play a crucial role in the functioning of the internet by providing a user-friendly way to access online resources.
+
++ In route 53 we can register a new domain 
++ In route 53 we can transfer an existing domain name from another domain registrar like godaddy , namecheap etc 
++ In route 53 when you register your domain and its approved a Public hosted zone is created by default and you will need to create a private hosted zone for internal facing dns records . 
+
+**Domain Registrar** :
+
+A domain registrar is a company or organization that manages the reservation of domain names on the internet. They are accredited by the `Internet Corporation for Assigned Names and Numbers (ICANN`) to sell and manage domain name registrations. Domain registrars provide services such as registering new domain names, renewing existing domain names, transferring domain names from one registrar to another, and managing DNS settings for registered domains. Examples of popular domain registrars include `GoDaddy, Namecheap, Google Domains, and AWS Route 53`. When you register a domain name through a registrar, you typically pay an annual fee to maintain ownership of that domain name.
+
+On aws to register a domian you will have to check if the domain name is available. Once the domain name is available you can purchase or register the domain . AWS will deduct the cost of the domain using the card associated to the aws account . 
+
+Domains have different Classifications or Hierachy 
+
+`Domain Classification `
+
+Our case study will be team4techsolutions.com 
+
+1 `Root Level (Invisible)` : 
+This is the highest level of the domain hierarchy, represented by a dot (.) at the end of a domain name. It is not visible in regular domain names but serves as the starting point for the DNS resolution process. example team4techsolutions.com. but in real life the dot (.) is not visible
+
+2. `Top-Level Domain (TLD)`:
+
+We have different types of Top Level Domains.But when we talk about top level domain we are referring to the part of the domain name that ends with dot (.) e.g .com , .org .ca   ---> team4techsolution  (TLD)--> .com . 
+There are different types of Top Level Domain (TLD)
+
++ `Generic or General TLDs (gTLDs)` : These are the most common type of TLDs and include extensions like .com, .org, .net, .info, etc. They are not restricted to any specific purpose and can be registered by anyone for various uses.
+
++ `Country Code Top Level Domain (ccTLDs)` : These TLDs are specific to countries or territories and consist of two letters, such as .us for the United States, .ca for Canada, .uk for the United Kingdom,ng for Nigeria , cm for Cameroon etc. They are often used by organizations or individuals associated with a particular country.
+
++ `Sponsored Top Level Domain (sTLDs)` : These TLDs are sponsored by specific organizations or communities and have certain eligibility requirements for registration. Examples include .edu for educational institutions, .gov for government entities, and .mil for military organizations. , ,corp for co-operations etc 
+
+3. `Second-Level Domain (SLD)`:
+
+This is the part of the domain name that is located directly to the left of the top level domain. In other words the SLD is directly below the top level domain and is often used to identify the organization or individual entity that owns the domain e.g team4techsolutions.com is a domain name but team4techsolutions is the second level domain . 
+e.g team4techsolutions  .com 
+     SLD                 TLD
+
+4. `Sub Domains`: Anything left after the second level domain (SLD) is the subdomain . In other words These are the extension of a domain name and its used to organized and categorize different sections or services within a domain e.g jenkins.team4techsolutionsinc.com , apps.team4techsolutionsinc.com
+
+or
+
+Subdomains are additional levels of a domain that are created by adding a prefix to the second-level domain. They are used to organize and navigate to different sections or services of a website. For example, in the domain name "blog.team4techsolutions.com", "blog" is a subdomain of the second-level domain "team4techsolutions.com". Subdomains can be used to create separate areas for different purposes, such as "shop.team4techsolutions.com" for an online store or "support.team4techsolutions.com" for customer support. They help improve the structure and organization of a website while still being part of the same overall domain.
+
+
+https;//masterclass.team4techsolutionsinc .com/api
+      Sub domain      SLD                  TLD        
+
+
+**Summary 
+
++ Root Domain: .
++ Top-Level Domain: .com
++ Second-Level Domain: team4techsolutions
++ Subdomains: https;//masterclass
+
+
+
+www.google.com
+sub  sld   tld
+
+
+
+**DNS RESOLUTIONS** 
+DNS resolution is the process of translating a human-readable domain name (like www.google.com) into an IP address that computers use to identify each other on the network. When you enter a domain name into your web browser, the DNS resolution process begins, and it involves several steps:
+
+1. The browser (Mozilla Firefox , Google Chrome ) checks its local cache to see if it has recently resolved (accessed) the domain name. If it finds a cached entry, it uses that IP address to connect to the server.
+
+2. If the browser does not have a cached entry, it sends a DNS query (DNS request) to the configured DNS resolver (usually provided by your Internet Service Provider or a public DNS service like Google DNS or Cloudflare DNS).
+
+3. The DNS resolver checks its own cache for the requested domain name. If it finds a cached entry, it returns the corresponding IP address to the browser.
+
+4. If the DNS resolver does not have a cached entry, it starts a recursive query process to find the authoritative DNS server for the domain. It first queries the root DNS servers to find out which top-level domain (TLD) server is responsible for the requested domain.
+
+5. The root DNS server responds with the IP address of the TLD DNS server (e.g., for .com domains).
+
+6. The DNS resolver then queries the TLD DNS server to find out which authoritative DNS server is responsible for the second-level domain (e.g., team4techsolutions.com).
+
+7. The TLD DNS server responds with the IP address of the authoritative DNS server for the requested domain.
+
+8. The DNS resolver then queries the authoritative DNS server for the requested domain to get the IP address associated with the domain name.
+
+
+
+                    ┌────────────────────────────────────────────┐
+                    │         You type team4techsolutions.com    │
+                    │            (Browser sends DNS query)       │
+                    └────────────────────────────────────────────┘
+                                       │
+                                       ▼
+                        ┌────────────────────────────┐
+                        │ 1. Browser Cache Check      │
+                        │ 2. OS Cache Check           │
+                        └────────────────────────────┘
+                                       │
+                      (Not Found)      ▼
+                        ┌────────────────────────────┐
+                        │ ISP / Public DNS Resolver  │
+                        │ (e.g., Bell, Rogers, 8.8.8.8)│
+                        └────────────────────────────┘
+                                       │
+                                       ▼
+                   ┌────────────────────────────────────────────┐
+                   │        ROOT NAME SERVER                    │
+                   │ Knows where to find TLD (.com) name servers│
+                   └────────────────────────────────────────────┘
+                                       │
+                                       ▼
+                   ┌────────────────────────────────────────────┐
+                   │        TLD NAME SERVER (.com)              │
+                   │ Points to authoritative server for domain  │
+                   └────────────────────────────────────────────┘
+                                       │
+                                       ▼
+             ┌────────────────────────────────────────────────────────┐
+             │     AUTHORITATIVE NAME SERVER (Route 53)               │
+             │  team4techsolutions.com Hosted Zone                    │
+             │  - A Record → 13.245.101.8                             │
+             │  - CNAME / MX / TXT etc.  TTL                          │
+             └────────────────────────────────────────────────────────┘
+                                       │
+                                       ▼
+                  ┌──────────────────────────────────────────────┐
+                  │ Resolver sends IP (13.245.101.8) to computer │
+                  │ Browser caches and connects to the webserver │
+                  └──────────────────────────────────────────────┘
+                                       │
+                                       ▼
+              ┌──────────────────────────────────────────────────────┐
+              │ Browser connects to Web Server (HTTP/HTTPS Request) │
+              │  Loads website: https://team4techsolutions.com      │
+              └──────────────────────────────────────────────────────┘
+
+
+Question 
+
+`When You Copy an EC2 Public IP and Paste It in a Browser — Does It Go Through Route 53?`
+
+Answer
+
+What Actually Happens When You Paste the IP
+
++ Browser sees a number (not a domain).
++ It skips DNS lookup.
++ It opens a direct connection to that IP using HTTP/HTTPS.
++ The request goes straight to your EC2 instance’s public IP via the internet gateway (if your EC2’s security group and NACL allow inbound access on port 80/443).
+
+
+**ICAAN : Internet Corporation for Assigned Names and Numbers :**
+
+ICANN is a nonprofit organization responsible for coordinating the global domain name system (DNS) and IP address allocation. It oversees the management of top-level domains (TLDs) and ensures the stable and secure operation of the DNS.Head Quarter is in California USA , Los Angeles .website icann.org 
+
+Functions 
+
++ Acredits domains registrar 
++ It manages the root DNS zone (.)
++ They coordinate the allocation of ip address spaces
++ Oversees domain name policy development 
+
+
+**IANA : Internet Assigned Numbers Authority** : This is a branch or function within ICANN responsible global coordination of the DNS root , ip addressing and other protocol resources  and it administers Top level domains including country code TLD , generic top level domain 
+
+
+
+
+**Hosted Zones in Route53** 
+We can say a hosted zone is a container that holds all DNS records for a specific domain 
+each hosted zone that you create will cost you $0.5 per month ( wether its a public or private )
+
+**Two Types of Hosted Zones in Route 53** 
+
+1. `Public Hosted Zones`: They used to managed DNS records for domain that would be accessible over the internet an example can be www.team4techsolutions.com is a public facing website so it would be great to create a record inside the Public hosted zone 
+
+2. `Private Hosted Zones` : Used for domains that are only accessible within one or more VPCs in AWS.
+e.g Example: db.internal.team4techsolutions.local (private application or database).
+
+
+`Take note` ; You can still create private domains in the public hosted zones that would not resolve publicly but this is not a good practise 
+
+
+
+**Hosted Zones in Route53** 
+
+We can say a hosted zone is a container that holds all DNS records for a specific domain 
+each hosted zone that you create will cost you $0.5 per month ( weather its a public or private )
+example if you create a register a domain called team4techsolutionsinc.com it comes with a public hosted zone. This public zone is where you can create and manage sub-domains , make other changes to the main domain you bought 
+
+**Two Types of Hosted Zones in Route 53** 
+
+1. `Public Hosted Zones`: They used to managed DNS records for domain that would be accessible over the internet an example can be www.team4techsolutions.com is a public facing website so it would be great to create a record inside the Public hosted zone 
+
+
+2. `Private Hosted Zones` : Used for domains that are only accessible within one or more VPCs in AWS.
+e.g Example: db.internal.team4techsolutions.local (private application or database).
+
+
+`Take note` ; You can still create private domains in the public hosted zones that would not resolve publicly but this is not a good practise and not strongly recommended . 
+
+
+
+**DNS RECORDS IN ROUTE 53** 
+DNS records are the instructions that tell the DNS how to route traffic for a specific domain or subdomain. In Route 53, you can create various types of DNS records to manage how your domain is accessed and how it interacts with other services. 
+
+when you register a domain , route 53 will automatically create you a  Public hosted zone for that domain and will also  creates 2 important record types which are
+: `NS (Name server) record`  & `SOA (start of Authority ) record`.
+
+
+Some common types of DNS records in Route 53 include:
+
+1. `NS (Name server ). Record` :
+
+This record specifies the authoritative name servers for a domain. When you register a domain, Route 53 automatically creates NS records that point to the Route 53 name servers responsible for managing the DNS records for that domain. These NS records are essential for the proper functioning of your domain, as they tell the DNS system where to look for the authoritative information about your domain.  
+
++ NS records tell the world which name servers are responsible for managing your DNS records for your domain 
++ Name servers are specialized to answer DNS queries , like "What is the IP address of google.com ? " 
+
+example of NS record type when you create a public hosted zone 
+
+ns-1641.awsdns-13.co.uk.
+ns-94.awsdns-11.com.
+ns-1137.awsdns-14.org.
+ns-965.awsdns-56.net.
+
+2. `SOA (start of Authority ) record`: 
+
+This record contains administrative information about the domain, such as the primary name server, the email address of the domain administrator, and various timing parameters for DNS zone transfers and caching. The SOA record is automatically created when you create a hosted zone in Route 53 and is essential for the proper functioning of your DNS records. It helps ensure that DNS information is propagated correctly across the internet and that changes to your DNS records are properly managed.
+
++ It contains important information about the domain and how DNS changes for the domain are managed 
++ It identifies the primary DNS server for the domain and includes administrative info like when the DNS was last updated and how dns records should check for updates 
+
+example of SOA record type when you create a public hosted zone
+ns-1641.awsdns-13.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
+
+
+3. `A RECORD (Address record)`: 
+This record maps a domain name to an IPv4 address. It is one of the most common types of DNS records and is used to direct traffic to a specific server or resource associated with the domain. For example, if you have a web server hosting your website, you would create an A record that points your domain name (e.g., www.team4techsolutions.com) to the IP address of that web server 
+
++ An A records routes traffic to IPV4 (123.456.4568) and some AWS resources (Load balancer , cloudfront distribution)  example of an ipv4 : `123.456.4568`
+www.team4techsolutions   record A ------> route traffic to IPv4 or Loadbalancer 
+
++ Use case : good when you want to point your domain or sub-domain to specific server e.g EC2 that uses IPV4 address typically for websites 
+
+4. `AAAA RECORD (IPv6 address record)`:
+
+This record maps a domain name to an IPv6 address. It serves the same purpose as an A record but is used for resources that have an `IPv6 address` instead of an IPv4 address. For example, if you have a server that is configured with an IPv6 address, you would create an AAAA record to point your domain name to that IPv6 address.
+
++ AAAA RECORD routes traffic to ipV6 (`2607:fea8:a5de:1200:90f6:8fa6:ee81:aa7`) and some AWS resources (alias to application loadbalancer , alias app runner , alias to cloud distribution)
+
++ USE CASE : similar with ipv4 but for websites or services that uses IPV6 instead of IPV4 
+
+
+5. `CNAME RECORD (`Canonical Name Record`): 
+
+This record maps or route a domain name to another domain name. It is often used to create aliases for a domain, allowing you to point multiple domain names to the same resource. For example, you could create a CNAME record that points "www.team4techsolutions.com" to "team4techsolutionsinc.com", so that both addresses will resolve to the same IP address or resource.
+
+africa.team4techsolutions.com -----------> team4techsolutions.com
+canada.team4techsolutions.com -----------> team4techsolutions.com
+
++ Routes traffic to another domain name or aws resources (alaising) 
++ USE CASE : it can be used when you want multiple domain names to point to a single service , or domain e.g app.team4techsolutions.com ---> points to ---> team4techsolutions.com 
+
+
+END
