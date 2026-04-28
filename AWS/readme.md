@@ -3673,4 +3673,205 @@ canada.team4techsolutions.com -----------> team4techsolutions.com
 + USE CASE : it can be used when you want multiple domain names to point to a single service , or domain e.g app.team4techsolutions.com ---> points to ---> team4techsolutions.com 
 
 
-END
+6. `MX RECORD` (Mail Exchange Record) : 
+
+This record specifies the mail servers responsible for receiving email on behalf of a domain. It is used to route email messages to the correct mail server based on the domain name in the email address. For example, if you want to set up email services for your domain, you would create MX records that point to the mail servers that will handle incoming email for your domain. e.g team4techsolutions.com  
+calson@team4techsolutions.com 
+
+USE CASE : It can be used when you want to configure email delivery for a domain for instance you set a configuration to direct email traffic for team4techsolutions.com to a mail server.
+
+7. `TXT RECORD`:
+
+This record allows you to associate arbitrary text with a domain name. It is commonly used for various purposes, such as verifying domain ownership, implementing email security measures (like SPF, DKIM, and DMARC), and providing additional information about the domain. For example, you might create a TXT record to verify ownership of your domain with a third-party service or to set up email authentication to prevent spoofing. 
+
+
+USE CASE : Its used to verify domain ownership , its also used for setting SPF (Sender policy framwork) for emails or it stores other validation or configuration data .
+
+8. `PTR RECORD (POINTER RECORD)`:
+This record maps an IP address to a domain name, essentially performing the reverse function of an A record. It is used for reverse DNS lookups, allowing you to determine the domain name associated with a specific IP address. For example, if you have an IP address and want to find out which domain name it corresponds to, you would use a PTR record to perform this lookup.
+
+USE CASE : Its often used to verify the authenticity of servers especially for emails
+
+9. `SRV RECORD ( Service Locator)`:
+This record is used to specify the location of services within a domain. It allows you to define the hostname and port number for specific services, such as SIP (Session Initiation Protocol) or XMPP (Extensible Messaging and Presence Protocol). For example, if you have a service running on a specific port and want to make it discoverable through DNS, you would create an SRV record that points to the hostname and port of that service.
+
+USE CASE: Commonly used for services like SIP (Session initiation protocol) and microsoft services that requires port to connect
+
+10. `SPF RECORD `(Sender Policy Framework):
+
+This record is a type of TXT record that is used to specify which `mail servers are authorized to send email on behalf of a domain`. It helps prevent email spoofing by allowing domain owners to define a list of approved mail servers. For example, if you want to specify that only certain mail servers are allowed to send email for your domain, you would create an SPF record that lists those servers.
+
+11. `NAPTR RECORD` (Naming Authority Pointer Record ):
+
+This record is used to specify rules for how to rewrite domain names based on certain criteria. It is often used in conjunction with SRV records to provide additional information about how to route traffic for specific services. For example, if you have a service that requires specific routing based on the type of request, you might use NAPTR records to define those routing rules.
+
+12. `CAA (CERTIFICATE AUTHORITY AUTHORIZATION)`:
+
+This record allows domain owners to specify which certificate authorities (CAs) are authorized to issue SSL/TLS certificates for their domain. It helps enhance security by preventing unauthorized CAs from issuing certificates for your domain. For example, if you want to restrict which CAs can issue certificates for your domain, you would create a CAA record that lists the authorized CAs.
+
+USE CASE : The CAA record helps prevent Bad Certificate Authorities from issuing unauthorized certificates for your domain, increasing security.
+
+13. `DS RECORD ( Delegation signer record )`:
+
+This record is used in DNSSEC (Domain Name System Security Extensions) to establish a chain of trust between a parent zone and a child zone. It contains the hash of the public key used to sign the child zone's DNS records, allowing resolvers to verify the authenticity of the DNS data. For example, if you have a child zone that is signed with DNSSEC, you would create a DS record in the parent zone to link it to the child zone's signing key.
+
+
+USE CASE : DS records are used in conjunction with DNSSEC to provide cryptographic verification of DNS data, ensuring that the DNS records are genuine and have not been altered by an attacker.
+
+
+
+
+
+**TIME TO LIVE (TTL)** 
+
+`What is Time to Live (TTL)`? :
+
+Time to Live (TTL) is a value in DNS records that specifies the duration (in seconds) that a DNS resolver should cache the information before it needs to query (send another request) the authoritative DNS server again for updated information. When a DNS record is queried, the resolver stores the response in its cache along with the TTL value. The resolver will continue to use the cached information until the TTL expires, at which point it will need to perform a new DNS query to retrieve fresh data(information)
+
+
+
++ Setting a High Time to Live (TTL) for example 24 hours means less traffic to your route 53 but this can lead to outdated information especially if the website or resource is dynamic .High TLL is good for static websites or websites that the contain does not change very often
+
++ Setting a Low Time to Live (TTL) for example 5 minutes means more traffic to your route 53 but it ensures that users get the most up-to-date information. Low TTL is good for dynamic websites or websites that the content changes very often like news website or e-commerce website .
+
+
+Question ? 
+
+`What is the difference between Time to Live and Sticky Session ? `:
+
++ TTL is how often users will query dns (route 53) to get new information whereas sticky session is how long the dns will resolve with a specific backend server (ec2) application 
+
+
+**Route 53 Routing policy**
+
+`What is a Routing Policy in Route53` : 
+
+A routing policy in Route 53 is a set of rules that determine how DNS queries `( DNS request)` are routed to different resources based on specific criteria. Routing policies allow you to control the flow of traffic to your applications and services by defining how DNS queries are resolved. They can be used to implement various traffic management strategies, such as load balancing, failover, and geographic routing, to ensure that users are directed to the most appropriate resources based on factors like latency, health, and location.
+
+
+`TYPES OF ROUTING RULES IN ROUTE 53 `
+
++ Simple routing 
++ Weighted routing
++ Latency-based routing
++ Failover routing
++ Geolocation routing
++ Geoproximity routing
++ Multi-value answer routing
++ Ip based routing policy 
+
+1. `Simple Routing `:
+
+Simple routing is the most basic type of routing policy in Route 53. It allows you to route traffic to a single resource, such as an EC2 instance, load balancer, or S3 bucket, without any additional logic or criteria. With simple routing, all DNS queries for a specific domain or subdomain will be directed to the same resource, regardless of factors like latency, health, or geographic location. This type of routing is suitable for applications that do not require complex traffic management and can rely on a single endpoint to handle all requests. Simple routing is easy to set up and manage, making it a good choice for straightforward use cases where you want a consistent response to all DNS queries.
+
+Key points 
+
++ This routes dns queries or traffic to a single resource such as webservers , amazon s3 , cloudfront distribution. 
++ It is the default routing policy when you are creating record sets in route 53 
++ we can specify multiple values (ip addresses) in the same record (a random value is going to be choosen by the client
++ You can also use an alais to route traffic to different endpoints e.g loadbalancer and use simple routing 
++ This routing policy can not be associated with route 53 health check 
+
+USE CASE : You can use it when you want dns queries to be routed to a single resource or EC2 instance . 
+example : team4techsolutions.com to route or direct traffic -----> ec2 instance ip address its good for static websites or single instance websites 
+
+2. `Weighted Routing`:
+
+Weighted routing allows you to distribute traffic across multiple resources based on specified weights. With this routing policy, you can assign a weight to each resource, and Route 53 will route traffic to those resources in proportion to their weights. For example, if you have two resources with weights of 70 and 30, Route 53 will route approximately 70% of the traffic to the first resource and 30% to the second resource. This type of routing is useful for load balancing, testing new versions of an application (canary deployments), or gradually shifting traffic from one resource to another.
+
++ This policy will send all dns queries or request / route the traffic based on assigned weights . You can distribute traffic across multiple resources in proportion of  weight 
+
++ It controls the percentage of traffic that goes to a single or a specific resource e.g ec2 instance 
+
++ The weight does not really need to sum up to %100
++ The Record name (DNS name) must be same and the record type must be weighted 
++ Weighted Routing Policy can be associated with Health Checks 
++ When you assigned a weight of 0 (zero) route 53 stops sending any traffic to the resource ( ec2)
++ if you set the weight on all  records to 0 (zero) then all records will return equally 
+
+
++ Traffic % : Weight of a specific record 
+              ---------------------------
+              Sum of the weight of all records 
+
+
+`USE CASE` : This is useful for testing new versions of your application (A/B testing) or when you want to gradually roll out changes .
+e.g You have release a new version of your application and you want to send 70 % of traffic to production environment and 30% of traffic to the new version .
+
+3. `Geo-location Routing policies`: 
+
+Geolocation routing allows you to route traffic based on the geographic location of the user. With this routing policy, you can specify different resources to serve users from different regions or countries. For example, you could route users from North America to one set of servers and users from Europe to another set of servers. This type of routing is useful for improving performance by directing users to resources that are geographically closer to them, as well as for compliance with data sovereignty regulations.
+
++ It routes traffic based on the geographical location of the user making the request .
++ You can specify a contintent or a specific country 
++ You can associate health checks with geo-location routing policies
+
+USE CASE : This is good when companies want to rollout new versions of their application to specific group of people for test first . 
++ This also helps in serving content based on location for better perfomance 
+
+4. `Latency Routing Policy` :
+
+Latency-based routing allows you to route traffic to the resource that provides the lowest latency for the user. With this routing policy, Route 53 measures the latency between the user's location and the available resources and routes traffic to the resource with the lowest latency. This type of routing is useful for improving performance by directing users to resources that can respond more quickly to their requests.
+
+
+
+`what is latency?` : It refers to the time it takes for data to move or travel from its source (location) to (another) its destination and back .
+
++ When data moves faster from source (where data is coming from) to destination and back its considered low latency or on the other hand (good )
++ when data moves or travel slowly from source to destination and back its considered `high latency` . (bad)
++ When creating Latency routing policies  you need to specify where the resource is located or have been created within your aws account 
++ Latency routing policy routes traffic to resources that provides the lowest latency based on the geographical location of the user.
++ Route 53 measures latency between its `DNS servers` and `your resources` 
++ latency routing policies supports health checks
+
+
+5. `Failover Routing Policy` :
+
+Failover routing allows you to route traffic to a primary resource under normal conditions and automatically failover to a secondary resource if the primary resource becomes unhealthy. With this routing policy, you can set up health checks to monitor the status of your resources, and if the health check fails for the primary resource, Route 53 will route traffic to the secondary resource. This type of routing is useful for ensuring high availability and minimizing downtime for your applications.
+
++ This routing policy routes traffic to a specific resource under normal conditions . That is as long as the resource is healthy and available its going to route the traffic to it but if the resource becomes unavailable it will (failover)to the secondary resource you have configured .
++ Route 53 continously monitors health of the primary resource using health checks .
+
+USE CASE : This is good for high availability because of a backup resource in case something happens to the primary. 
+
+6. `Geoproximity Routing Policy`:
+
+Geoproximity routing allows you to route traffic based on the geographic location of both the user and the resources. With this routing policy, you can specify a bias value to influence the routing decisions, directing more traffic to resources that are geographically closer to the user. This type of routing is useful for improving performance by directing users to resources that are not only geographically closer but also have better network conditions.
+
+This routes traffic based on the geographical location of the users and resources and it allows you to adjust traffic distribution based on a bias 
++ You can change the size of the coverage using Bias and a positive bias value that is anything 1+ can increase the size of coverage and anything -0 will shrink the size coverage 
+
+
+7. `Ip-based Routing Policy`: 
+
+This routing policy allows you to route traffic based on the IP address of the user making the request. With this routing policy, you can specify different resources to serve users from different IP address ranges. This type of routing is useful for controlling access to your resources based on the user's IP address, such as allowing or blocking traffic from specific regions or organizations.
+
++ It supports health checks 
+
+
+
+8. `Multi-value Answer Routing Policy` :
+
+Multi-value answer routing allows you to return multiple values (such as IP addresses) in response to a DNS query. With this routing policy, Route 53 will return multiple healthy resources in response to a DNS query (request), and the client can choose which resource to connect to. This type of routing is useful for improving availability and load balancing by providing multiple options for clients to connect to.
+
+It routes traffic to multiple resources and returns multiple values ( such as ip addresses ) for DNS query.The DNS resolver will return selected value of its choice . 
+
+
+How can we encrypt a dns that is not using a ALB but uses dns pointing to an ec2 or a backend service 
+
++ Install and use certificates at the instance level for example Lets Encrypt 
++ Configure web server as reverse proxy ( e.g Nginx, HA proxy )
+google.com --http----> websever (nginx , ha proxy) ---> https -----> backend 
++ Api gateways ( encrypt )
+
+
+# HEALTH CHECKS IN ROUTE 53 
+
+Demo failover routing policy 
+Class contest 
+May - Class 9 engineer give his testimony 
+
+
+
+
+

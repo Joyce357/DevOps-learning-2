@@ -1,0 +1,48 @@
+#!/bin/bash
+apt update -y
+apt install apache2 -y
+systemctl enable apache2
+systemctl start apache2
+
+cat <<'EOF' > /var/www/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 80px;
+            background: linear-gradient(to right, #f6d365, #fda085);
+            color: #222;
+        }
+        .card {
+            width: 600px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        h1 {
+            font-size: 50px;
+        }
+        .product {
+            font-size: 24px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🛒 Shop Service</h1>
+        <div class="product">💻 Laptop - $900</div>
+        <div class="product">📱 Phone - $500</div>
+        <div class="product">🎧 Headphones - $150</div>
+    </div>
+</body>
+</html>
+EOF
+
+systemctl restart apache2
