@@ -3867,11 +3867,82 @@ google.com --http----> websever (nginx , ha proxy) ---> https -----> backend
 
 # HEALTH CHECKS IN ROUTE 53 
 
-Demo failover routing policy 
-Class contest 
-May - Class 9 engineer give his testimony 
+`What is health check in route53:`
+
+A health check in Route 53 is a monitoring mechanism that allows you to assess the health and availability of your resources, such as web servers, application servers, or other endpoints. Health checks are used in conjunction with routing policies (like failover routing) to determine whether a resource is healthy and can receive traffic. If a resource fails a health check, Route 53 can automatically route traffic to an alternate resource based on the routing policy you have configured. Health checks help ensure high availability and reliability for your applications by allowing you to proactively manage and route traffic based on the health status of your resources.
+
++ With Route 53 Health Checks, the checkers are publicly accessible, meaning they can only monitor public endpoints — such as public EC2 instances, load balancers, or websites that are reachable over the internet. However, these Route 53 health checkers operate outside of your VPC, so they cannot directly access private resources (like internal EC2 instances, private ALBs, or endpoints within a Private Hosted Zone).
+
+To work around this limitation, you can use Amazon CloudWatch as an intermediary:
+
++ Create a CloudWatch Metric that tracks the health or status of your private resource (for example, a custom metric that reports app health or instance availability).
+
++ Set up a CloudWatch Alarm that changes to ALARM state when the metric indicates a problem.
+
++ Create a Route 53 Health Check that monitors the CloudWatch Alarm instead of the endpoint directly.
+
+
+`TYPES OF HEALTH CHECKS WE CAN CREATE IN ROUTE53 `
+
+1. `Endpoint health checks` :
+This type of health check monitors the health of a specific endpoint, such as a web server or application server. It sends requests to the endpoint at regular intervals and checks for a successful response (e.g., HTTP 200 status code) to determine if the endpoint is healthy or unhealthy.
+
+2. `Calculated health checks` :(This checks the status of other health checks )
+
+This type of health check calculates the overall health status based on the results of multiple endpoint health checks. You can specify how many of the underlying health checks must be healthy for the calculated health check to be considered healthy.
+
++ A calculated Health check, checks other health checks . It evaluates the health of a resources based on the results of other health checks or multiple health checks .
+
++ You have the option to set when the parent health check can be deemed healthy . e.g if one out of the 3 or 4 health checks is healthy then the parent health is healthy and vice versa
+
++ You can use OR , AND , NOT conditions when setting this up
++ You can monitor upto 256 Child Health Checks
++ You can specify how many of the child health checks needs to pass before the parent pass
+
+3. `Cloudwatch Alarm heath check ` :
+
+This type of health check monitors the state of a CloudWatch alarm. It checks whether the alarm is in an OK, ALARM, or INSUFFICIENT_DATA state to determine the health status.
+
+Route 53  cloudwatch alarm health check doesnt support high resolution cloudwatch alarms . A high resolution cloudwatch alarm is any alarm that has a less than 1 mins threshold
+
+
+`ROUTE 53 RESOLVERS` : 
+
+A Route 53 Resolver is a service that provides DNS resolution for resources within a VPC. It allows you to resolve domain names to IP addresses for resources that are hosted within your VPC, such as EC2 instances, RDS databases, and other AWS services. The Route 53 Resolver acts as a DNS server for your VPC, handling DNS queries from your resources and providing responses based on the DNS records you have configured in Route 53. This service is essential for enabling communication between resources within your VPC and ensuring that they can resolve domain names correctly.
+
+By default route 53 resolver allows resources within a vpc to query DNS records . This includes resolving aws servce endpoints ,external domain names and resources in other vpcs .
+
+
+Resolver endpoints for Hybrid environments-
+
+it provides inbound and outbound endpoints to facilitate DNS queries (request).
+
+What are the methods we can achieve hybrid endpoint resolvers
+
+`Inbound resolver endpoints`
+( This allows DNS queries from on-premise networks or other vpcs to resolve domian names within a vpc )
+
+USE CASE --> Its useful if you want your on premise network to resolve domain names of aws resources
+
+`Outbound resolver endpoint` :
+
+Enables DNS queries from a VPC (aws) to reach an on-premise dns server for resolving domain names not hosted in AWS.
+
+USE CASE --> This is when you want aws resources or applications in aws that needs access to resources located in your cooperate data center ( office or physical location )
 
 
 
 
+What is route 53
+What are hosted zones and what are the different types of hosted zones in route 53
+Name 3 or 4 record types that you know and their use cases .
+What is a routing policy in route 53 ?
+Name 3 or 4 types of routing policies in route 53
+What happens when you type google.com
+What is a domain name and what are the different types of domain hierachy  ?
+What is a health check in route 53 ?
+What is a calculated health check , endpoint health check and a cloudwatch health check ?
+What is the core functionalities of route 53
 
+
+S3 
