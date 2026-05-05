@@ -3899,7 +3899,7 @@ This type of health check calculates the overall health status based on the resu
 + You can monitor upto 256 Child Health Checks
 + You can specify how many of the child health checks needs to pass before the parent pass
 
-3. `Cloudwatch Alarm heath check ` :
+3. `Cloudwatch Alarm heaLth check ` :
 
 This type of health check monitors the state of a CloudWatch alarm. It checks whether the alarm is in an OK, ALARM, or INSUFFICIENT_DATA state to determine the health status.
 
@@ -3945,4 +3945,302 @@ What is a calculated health check , endpoint health check and a cloudwatch healt
 What is the core functionalities of route 53
 
 
-S3 
+
+**S3**
+
+`What is an S3`:
+
+S3 stands for `simple storage service`.Its a cloud-based `object storage` service provided or offered by AWS. Multi-purpose object storage .Its not attached to any resource for example an EBS volume is a storage but its attached to an EC2 Instance . You can store data (Information) like files , images , backups , logs , videos etc from anywhere on the web ,
+
+
+
+`S3 Service is known for followings` 
+
++ `S3 is Durable and Reliable` : AWS (SLA-Service Level Agreement) Guarantees 99.9999999999% (11 nines ) durability ,meaning data is replicated across multiple servers within a region to prevent any data loss 
+
++ `Its Highly Scalable` : It can store unlimited data , weather you want to store KB ,MB , Megabytes , Terrabytes , S3 can handle the storage efficiently 
+
++ `S3 is Secure` : It provides multiple security features such as encryption (both at rest and in transit) , access control policies and integration with AWS Identity and Access Management (IAM) to manage permissions
+
++ `Accessible from anywhere` ; It allows you to store data and access data from anywhere as long as you have internet and right permissions.
+
++ `Cost effective` : With S3 you only pay for the storage you use and there are no upfront costs or minimum fees . You can also optimize costs by using different storage classes based on your access patterns and requirements
+
++ `S3 is integrated with other AWS services` : It can be easily integrated with other AWS services such as EC2, Lambda, CloudFront, and more to create powerful and scalable applications.
+
+
+S3 - Simple storage service 
+
+`Bucket ( S3 Bucket )`:
+
+`What is an s3 bucket ? :`
+
+An S3 bucket is a logical container within the Amazon S3 service that is used to store objects (files, videos, data etc.). Each bucket has a unique name and serves as a top-level namespace for storing and organizing your data in S3. Buckets are used to group related objects together and provide a way to manage access, permissions, and lifecycle policies for the stored data. When you upload an object to S3, you specify the bucket where it should be stored, and the object is then accessible through that bucket's namespace. Buckets can be configured with various settings such as versioning, logging, and access control to meet specific requirements for data storage and management.
+
+
++ **BUCKET** : A bucket is simply a container in amazon s3 for storing objects.It is the highest level structured in S3 (simple storage service) where data is stored and managed . Each S3 bucket has a unique characteristics and serves as a scalable container for files & data. 
+
+
+**Charateristics of A Bucket** 
+
+
++ Each bucket name must be globally unique across AWS ( not just within your account) 
++ Bucket name must meet the following criterias  reference doc : https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
+
+`Bucket names must be between 3 (min) and 63 (max) characters long.`
+`Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-).`
+`Bucket names must begin and end with a letter or number.`
+`Bucket names must not contain two adjacent periods.`
+`Bucket names must not be formatted as an IP address (for example, 192.168.5.4).`
+`Bucket names must not start with the prefix xn--.`
+`Bucket names must not start with the prefix sthree-.`
+`Bucket names must not start with the prefix sthree-configurator.`
+`Bucket names must not start with the prefix amzn-s3-demo-.`
+`Bucket names must not end with the suffix -s3alias. This suffix is reserved for access point alias names. For more information` 
+
++ Buckets are region specific . When creating an s3 bucket you must specify an aws region .The data in the buckets are going to be stored in the data centers in the specific region (AZ). This can be for various reasons for example to reduce the impact of latency , cost effective it avoids data moving from long distance which avoids data transfer cost , and compliance with data residency laws .
+
++ With an s3 bucket you can organise your files into folders within a bucket for better management , eventhough everything will still be in a flat structure (AWS does use a Hierachical file system)
+
++ Permissions and Policies control access to the bucket or buckets and their content . You can create a permission to permit someone to create , access and delete objects in a bucket
+
+Note : Permissions can be granted at the bucket level (meaning you want the user to only have access to the bucket) and at the object level (you want the user to also have access to the object)
+
+
++ You can configure the bucket to serve for different purposes ( use case ), to host static websites , storage  , software distribution  etc 
+
++ Though buckets are region specific which means you must specify region when creating the bucket , All your buckets on your aws account can be view in any region regardless of which region the bucket belongs to . 
+
+
++ When a bucket is empty you are not charge. You are only charge based on the size of the contents in your bucket
+
+
++ When creating a bucket you will choose if you want a `General Purpose or a directory bucket` and you can copy existing configurations or settings from existing buckets to your new bucket 
+
++ ACL : Access control list : This gives permission to who have ownership of the objects in a bucket . By default its disabled which means the aws account owns all the objects in the bucket , but if you enable it ,it means another aws accounts can have ownership of the objects in the bucket 
+
++ By default S3  Blocks all Public Access settings for your bucket .This means the objects inside your bucket will not be publicly accessible . Even if you uncheck to turn public access (i.e you want public access to the objects in the bucket) aws s3 wont allow it without you adding a Bucket policy . AWS added this layer of security to avoid instances of misconfiguration or unintended settings where you turn on public access to your objects. 
+
+
+
+
+**OBJECTS**  
+
+`What is an object in S3 ?`
+
++ An object is anything stored in an s3 bucket e.g (files , images ,videos).Each object consist of a file itself and any associated meta-data(information).Meta data can contain or include information in the objects like size , last modified date , time , creation time and any other properties 
+`example` : if you upload a photo called beach.jpg , the actual image is the object , and the meta-data might include details such as file type (JPEG) (PDF), date created , size (2 MB) , Last modified ETC 
+
++ Each object in your s3 bucket has an object url which enables you to access the object on the browser 
++ Data-Size in an s3 bucket can range from 0 bytes (empty file) to 5 terabytes (huge videos or files or datasets)
++ There is a unique identifier for each object in a bucket. Each object is stored in a bucket with a specific key that aws uses to retreive the object.
++ The objects that are stored in the bucket has a specific structure . The Key includes the full path to the object 
+
+`example` : if you have a folder structure in your bucket like this  /images/photos/2024/beach.jpg , the key will be the full path to the object (`images/photos/2024/beach.jpg`) .This allows s3 to locate the object eventhough it may appear to be a folder structure . `In other words ,a file path is what is refered to as a key`
+
+
+**KEY FEATURES OF AN S3 BUCKET** 
+1. **Under Properties you can see the following features** : 
+
++ S3 Bucket Overview
++ AWS bucket arn 
+
++ `Versioning` : This allows you to keep multiple versions of an object in the same bucket. This is useful for data protection and recovery as it allows you to restore previous versions of an object if it gets deleted or overwritten.
+
++ `Bucket ABAC` : 
+This feature allows you to control access to your S3 bucket using Attribute-Based Access Control (ABAC). With ABAC, you can define access policies based on user attributes, such as tags or metadata, rather than just relying on traditional identity-based access control. This provides more granular and flexible access control for your S3 resources.
+
++ `Default encryption`:
+This feature allows you to automatically encrypt all objects stored in your S3 bucket using a specified encryption method. You can choose to use AWS-managed keys (SSE-S3), AWS Key Management Service (KMS) keys (SSE-KMS), or customer-provided keys (SSE-C) for encryption. This helps ensure that your data is protected at rest and meets security and compliance requirements.
+
++ `Intelligent-Tiering Archive configurations`:
+This feature allows you to automatically move objects between different storage tiers based on access patterns. The Intelligent-Tiering storage class has two access tiers: frequent access and infrequent access. When you enable this feature, S3 will automatically move objects that have not been accessed for a certain period of time (e.g., 90 days) to the infrequent access tier, which has lower storage costs. If an object in the infrequent access tier is accessed again, it will be moved back to the frequent access tier. This helps optimize storage costs while ensuring that your data is still accessible when needed.
+
++ `Server access logging`:
+This feature allows you to log requests made to your S3 bucket. When enabled, S3 will create log files that contain details about the requests, such as the requester, bucket name, request time, action performed, and response status. These logs can be useful for auditing, monitoring, and troubleshooting access to your S3 bucket.
+
++ `AWS CloudTrail data events`
+This feature allows you to log API calls made to your S3 bucket using AWS CloudTrail. When enabled, CloudTrail will capture data events for S3, which include object-level API operations such as GetObject, PutObject, and DeleteObject. This provides detailed visibility into the actions performed on your S3 objects, allowing you to track access and changes to your data for security and compliance purposes.
+
++ `Event notifications `:
+This feature allows you to configure notifications for specific events that occur in your S3 bucket. You can set up notifications to trigger when certain actions happen, such as when an object is created, deleted, or modified. These notifications can be sent to various destinations, such as Amazon Simple Notification Service (SNS), Amazon Simple Queue Service (SQS), or AWS Lambda functions. This enables you to automate workflows and respond to changes in your S3 bucket in real-time.
+
+`Amazon EventBridge`:
+This is a serverless event bus service that allows you to connect applications using data from your S3 bucket. You can create rules in EventBridge to trigger actions based on specific events that occur in your S3 bucket, such as object creation or deletion. This enables you to build event-driven architectures and automate workflows based on changes in your S3 data.
+
+`Transfer acceleration`:
+This feature allows you to speed up the transfer of files to and from your S3 bucket by using Amazon CloudFront's globally distributed edge locations. When you enable transfer acceleration, S3 will route your uploads and downloads through the nearest CloudFront edge location, which can significantly reduce latency and improve transfer speeds, especially for large files or when transferring data over long distances. This is particularly beneficial for applications that require fast and efficient data transfers to and from S3.
+
+`Object Lock`:
+This feature allows you to prevent objects in your S3 bucket from being deleted or overwritten for a specified period of time. Object Lock can be used to meet regulatory compliance requirements or to protect critical data from accidental deletion. When you enable Object Lock, you can set a retention period for each object, during which it cannot be deleted or modified. This helps ensure the integrity and durability of your data in S3.
+
+`Requester pays`:
+
+This feature allows you to configure your S3 bucket so that the requester (the person or application making the request) is responsible for paying the costs associated with accessing the data in the bucket. When you enable requester pays, anyone who wants to access the objects in your bucket will need to include a specific parameter in their request to indicate that they are willing to pay for the access. This can be useful in scenarios where you want to share data with others but do not want to incur the costs of data transfer and retrieval yourself.
+
+`Static website hosting`:
+This feature allows you to host a static website directly from your S3 bucket. When you enable static website hosting, S3 will serve the content of your bucket as a website, allowing you to specify an index document (e.g., index.html) and an error document (e.g., error.html). This is a cost-effective way to host simple websites or web applications that do not require server-side processing, as S3 can handle the storage and delivery of your website content without the need for additional infrastructure.
+
+2. **Permissions** :
+
+
+
++ Block public access (bucket settings) : These restricts public access to all the content in your s3 bucket . You can enable if you want public access into the content of the bucket 
+
++ `s3 Bucket policy` : This is a resource-based policy that you can attach to your S3 bucket to define permissions for the bucket and its contents. A bucket policy is written in JSON format and specifies who can access the bucket, what actions they can perform, and under what conditions. Bucket policies allow you to grant or deny permissions to specific AWS accounts, IAM users, or groups, and you can also specify conditions such as IP address restrictions or time-based access. This provides a powerful way to manage access control for your S3 bucket and ensure that only authorized users can interact with your data.
+
+`Difference S3 Bucket Policy and IAM policy for s3 bucket `:
++ S3 bucket policy is a resource-based policy that is attached directly to the S3 bucket, while an IAM policy is an identity-based policy that is attached to an IAM user, group, or role.
+
+
++ `Object Ownership`:
+This feature allows you to control ownership of objects in your S3 bucket. By default, the AWS account that uploads an object to the bucket owns that object. However, with Object Ownership, you can configure the bucket to automatically take ownership of all objects uploaded to it, regardless of which AWS account uploads them. This can simplify access management and permissions for objects in the bucket, as all objects will be owned by the same account.
+
+
++ `Access control list (ACL)`:
+This is a legacy access control mechanism that allows you to manage permissions for individual objects and buckets. ACLs are less flexible than bucket policies and IAM policies, and AWS recommends using bucket policies or IAM policies for most access control scenarios. However, ACLs can still be used in certain cases, such as when you need to grant access to specific AWS accounts or when working with cross-account access.
+
+
++ `Cross-origin resource sharing (CORS)`: 
+
+This feature allows you to configure your S3 bucket to allow cross-origin requests from web browsers. CORS is a security feature implemented by web browsers that restricts web pages from making requests to a different domain than the one that served the web page. By configuring CORS for your S3 bucket, you can specify which origins (domains) are allowed to access the resources in your bucket, as well as which HTTP methods (GET, POST, etc.) are permitted. This is useful when you want to allow web applications hosted on different domains to access resources stored in your S3 bucket.
+
+
+team4techsolutions.com --permission--> apple.com
+
+
+
+3: **Metrics **
+
++  `Bucket Metrics`:
+This feature allows you to monitor the performance and usage of your S3 bucket by providing various metrics such as the number of requests, data transfer, and storage usage. You can use these metrics to gain insights into how your bucket is being used and to identify any potential issues or areas for optimization.
+
++ `Storage class analysis`:
+
+This feature allows you to analyze the storage class usage of your objects in S3. It provides insights or information into how your objects are distributed across different storage classes (e.g., Standard, Intelligent-Tiering, Glacier) and can help you optimize your storage costs by identifying objects that may be better suited for a different storage class based on their access patterns.
+
++ `Replication Metrics`:
+This feature allows you to monitor the replication status of your objects in S3. If you have set up cross-region replication or same-region replication for your bucket, you can use these metrics to track the progress of replication and ensure that your data is being replicated as expected.
+
+
+4. **Management**
+
++ `Lifecycle rules`:
+This feature allows you to define rules for automatically transitioning objects between different storage classes or for expiring objects after a certain period of time. For example, you can set up a lifecycle rule to transition objects that have not been accessed for 30 days to the Infrequent Access storage class, or to expire objects that are older than 365 days. This helps you manage your storage costs by automatically optimizing the storage class of your objects based on their access patterns and retention requirements.
+
++ `Replication rules`:
+This feature allows you to set up rules for replicating objects from one S3 bucket to another. You can configure replication rules to specify which objects should be replicated, where they should be replicated to (e.g., another region), and how the replication should be performed (e.g., asynchronously). This is useful for disaster recovery, data backup, or for maintaining copies of your data in different locations for compliance or performance reasons, migrating data from one region to another or aws account to another .
+
++ `Inventory Configurations:`
+This feature allows you to generate reports about the objects in your S3 bucket. You can configure inventory reports to include details such as object size, storage class, encryption
+status, and more. These reports can be generated on a daily or weekly basis and can help you gain insights into the contents of your bucket, identify trends in object storage, and assist with auditing and compliance requirements.
+
+
+
+5. **File systems** : ( Take this away )
+
++ Versioning needs to be enabled to create a file system 
+
+6. `Access Points in s3 bucket`:
+
+This feature allows you to create custom access points for your S3 bucket. An access point is a named network endpoint that you can create to provide specific permissions and access controls for a subset of objects in your bucket. Access points allow you to manage access to your S3 bucket at a more granular or fined grained or narrow  level, enabling you to define different permissions for different groups of users or applications. You can create multiple access points for the same bucket, each with its own set of permissions and policies, which can help simplify access management and improve security for your S3 resources.
+
+**USE CASE OF AN S3 BUCKET** 
+
++ `Backup and Recovery`:  It can be used to backup data which the data can be used for disaster recovery
++ `Data Storage` : You can store any amount of data 
++ `Static Website hosting` : S3 buckets can host HTML , CSS , Javascript and other web files .You can intergrate with other aws services like Route53 , Cloudfront Distribution (CDN)
++ `Software Delivery or File Distribution` : 
++ `Data Migration` : it can help you to migrate data from on premise to the cloud & verse versa 
++ `Archiving Data` : S3 has a Glacier which provides cost effective archiving solutions for data that needs to be retained for compliance , and long term access 
++ `Versioning`: to keep duplicate of your data and also protect your data for unintended delete etc 
++ `Big data analytics` : S3 can be used to store and analyze big data sets using services like Amazon Athena, Amazon EMR, and AWS Glue.
+
+
+
+Amazon S3 SECURITY 
+
+1.  `Enforced User Base Security on AMAZON S3` : This is how we conrol users to access s3 resources within our aws account 
+
++ Use AWS Identity and Access Management (IAM) to manage access to your S3 buckets and objects. Create IAM policies that grant the least privilege necessary for users and applications to perform their tasks. 
+
++ We grant access both at the Bucket Level permission and Object level permission .When the user has bucket level permission they can configure the settings on the bucket . 
++ You can enable MFA (Multi Factor Authentication) .You can set your aws s3 to require MFA for users trying to access your S3 buckets through aws console 
++ You can enable MFA delete to prevent users from trying to delete objects or turn off versioning on your s3 bucket ( Data protection)
+
+2. `Resource Base Security S3`
+This is how we control access to our s3 resources from other aws accounts or from the public . This is done using bucket policies and access control lists (ACLs) .
+
++ Bucket Policies:  Use bucket policies to define permissions for your S3 buckets and objects. Bucket policies are written in JSON format and allow you to specify who can access your bucket, what actions they can perform, and under what conditions. You can use bucket policies to grant access to specific AWS accounts, IAM users, or groups, and you can also specify conditions such as IP address restrictions or time-based access 
+
+example of a Bucket Policy 
+
+
+
+`Example of a Bucket Policy`
+
+{
+    "Version": "2012-10-17", 
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::mydemobucket067/202408112343_cover.jpeg"
+        }
+    ]
+}
+
+
+`Version` : Specifies the version of the s3 policy language 
+`statement`: The statement specifies specific permissions and conditions 
+`Sid` : This helps to identify statements within a policy giving more information about what the statement (permissiobn) will do . 
+`Effect` : This simply specifies weather the permission in the statement is allowed or denied 
+`Principal` : It specifies who the policy applies to or who can use the policy 
+`Action`: This specifies what the user (principal) can do with the permission 
+`resource` : This specifies which resources the policy applies to . it can be a single resource or multiple resources . 
+
+
+
+
++ `ACL ( Access control list)`:
+
+This is a legacy access control mechanism that allows you to manage permissions for individual objects and buckets. ACLs are less flexible than bucket policies and IAM policies, and AWS recommends using bucket policies or IAM policies for most access control scenarios. However, ACLs can still be used in certain cases, such as when you need to grant access to specific AWS accounts or when working with cross-account access.
+
+`Object ACL` : This will manage permission for individual objects in the bucket
+
+`Bucket ACL` : This will manage permissions for the entire bucket and all objects in the bucket 
+
+3. Enforcing Data Security in S3 :
+
++ Use encryption to protect your data at rest and in transit. S3 provides several options for encryption, including server-side encryption (SSE) with AWS-managed keys (SSE-S3), server-side encryption with AWS Key Management Service (KMS) keys (SSE-KMS), and client-side encryption. Choose the appropriate encryption method based on your security requirements and compliance needs.
+
++ Setup Data encryption in transit by setting a bucket policy to allow https request to and from your bucket 
+
++ Enable versioning on your S3 bucket to protect against accidental deletion or overwriting of objects. With versioning enabled, you can restore previous versions of objects if they are deleted or modified.
+
++ Use Object Lock to prevent objects from being deleted or overwritten for a specified period of time. This can help meet regulatory compliance requirements and protect critical data.
+
++ Implement access logging to monitor and audit access to your S3 bucket. This can help you identify unauthorized access attempts and ensure compliance with security policies.
+
++ Regularly review and update your bucket policies and IAM policies to ensure they follow the principle of least privilege and do not grant unnecessary permissions.
+
++ Use AWS CloudTrail to log API calls made to your S3 bucket for auditing and compliance purposes. This provides visibility into who is accessing your S3 resources and what actions they are performing.
+
++ Consider using AWS Config to monitor and evaluate the configuration of your S3 buckets against best practices and compliance standards. AWS Config can help you identify any misconfigurations or security vulnerabilities in your S3 setup.
+
+
+
+
+**HOW TO CREATE A STATIC WEBSITE IN AN S3 BUCKET**
+
++ First enable Public access to your s3 bucket 
++ Add a bucket policy to allow access to the objects in the bucket (index.html)
++ Click on the s3 bucket go to properties , scroll down and look for `Static website hosting` and click on edit 
++ Configuration change from disable to enable , hosting type `host static website` : next type the index document e.g index.html and save changes > it will give you an s3 bucket endpoint 
+
+
+
+
+
