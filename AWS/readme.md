@@ -4244,3 +4244,103 @@ This is a legacy access control mechanism that allows you to manage permissions 
 
 
 
+**VERSIONING IN S3 BUCKET**
+
+`What is versioning ?`
+
+Versioning is a feature in Amazon S3 that allows you to keep multiple versions of an object in the same bucket. When you enable versioning on a bucket, every time you upload a new version of an object with the same key (name), S3 automatically creates a new version of that object instead of overwriting the existing one. This means that you can have multiple versions of the same object stored in your bucket, and you can easily retrieve or restore previous versions if needed. 
+
+This feature is useful for data protection and recovery because it preserves every version of every object stored in the bucket, even if a user accidentally deletes or modifies an object. 
+
++ You can version all the objects in your s3 bucket 
++ Versioning is enabled at the bucket level 
++ When versioning is enabled ,existing objects do not have any versions only new objects uploaded will have version ID 
+
+
+*Managing Versions* 
+
+
++ Each version of an object is assigned a unique version ID.(example of a version i.d `BCAbow4u7_Di.xPwKXZCBrEd2V5r1_Pe`)
++ You can list, retrieve, and restore previous versions of an object using the `version ID`.
++ Deleting an object with versioning enabled does not actually remove the object; it adds a `delete marker` to indicate that the object is logically deleted.
+
++ `What is a delete marker`: When you delete an object that has versioning enabled, S3 does not permanently remove the object. Instead, it adds a delete marker, which is a placeholder that indicates the object has been deleted.You can restore the object by deleting the delete marker 
+
+**USE CASES OF VERSIONING** or `Advantages of Versioning in S3 Bucket` 
+
++ Protect against accidental deletion or overwriting of objects. If a user accidentally deletes an object or uploads a new version that overwrites an existing one, you can easily restore the previous version using versioning.
+
++ Maintain a history of changes to your objects. Versioning allows you to keep track of all changes made to an object over time, which can be useful for auditing and compliance purposes.
+
++ Enable data recovery. If an object is accidentally deleted or modified, you can quickly recover the previous version without needing to restore from a backup.
+
++ Facilitate application development and testing. Versioning allows developers to test changes to objects without affecting the production version, making it easier to iterate ( move through ) and improve applications.
+
++ Support for data retention policies. With versioning, you can implement data retention policies that require keeping multiple versions of objects for a certain period of time to meet regulatory compliance requirements.
+
+
+**Disadvantages of Versioning in S3** 
+
++ Increased storage costs: Since versioning keeps multiple versions of objects, it can lead to increased storage costs if you have a large number of versions or if you frequently update objects.
+
++ Complexity in managing versions: Managing multiple versions of objects can add complexity to your application logic, especially when it comes to retrieving and restoring specific versions.
+
++ Potential for confusion: If not properly managed, having multiple versions of objects can lead to confusion about which version is the most current or which version should be used in a given context.
+
++ Performance impact: In some cases, retrieving specific versions of objects may take longer than retrieving the latest version, especially if you have a large number of versions to sift through.
+
+**Best Practices for Versioning in S3**
+
++ Enable versioning for critical buckets to prevent accidental data loss.
++ Implement MFA (Multi-Factor Authentication) Delete for added security to prevent versioning from being disabled and objects deleted . 
++ Regularly review and clean up old versions of objects that are no longer needed to manage storage costs effectively 
++ Use versioning in combination with other S3 features such as lifecycle policies and Object Lock to optimize data management and protection.
++ Implement proper naming conventions and documentation for your versions to avoid confusion and ensure that you can easily identify and restore the correct version when needed.
++ Monitor your versioning usage and costs using S3 metrics and AWS Cost Explorer to ensure that your managing cost effieciently 
+
+
+how do we identity sensitive data 
++ ( data source )
++ Company data classification documentation - compliance doc 
++ Amazon Macie can scan ur s3 buckets to check for sensitive data 
+
+
+
+**S3 Replication** 
+
+`What is S3 Replication ?`
+
+S3 Replication is a feature in Amazon S3 that allows you to automatically replicate objects from one S3 bucket (the source bucket) to another S3 bucket (the destination bucket) in the same or different AWS region. This feature is useful for disaster recovery, data backup, and maintaining copies of your data in different locations for compliance or performance reasons . It can also be used for data migration . With S3 Replication, you can ensure that your data is available and protected across multiple locations, providing increased durability and availability for your S3 objects.
+
+
+You can configure s3 replication under `Management` by creating a replication rule 
+
+Amazon S3 offers two types of replication to help you manage your data across different regions and accounts: `Cross-Region Replication (CRR)` and `Same-Region Replication (SRR)`. Here’s a breakdown of both:
+
+1. `Cross-Region Replication (CRR)`:
++ CRR allows you to replicate objects from a source bucket in one AWS region to a destination
+bucket in a different AWS region. This is useful for disaster recovery, compliance,data migration and latency reduction by keeping copies of your data closer to your users.
+
++ *Automatic replication* : Objects uploaded to the source bucket are automatically replicated to the destination bucket in another region.
++ Versioning has to be turned on , on both buckets ( source and destination)
++ Replication can take some time depending on the size and the number of objects
++ You can replicate specific objects based on tags and prefixes
++ when it comes to object ownership , The destination bucket can have a different owner than the source bucket. To replicate existing objects you will need to use a `Batch Operation Job`
++ You can replicate existing objects in the s3 bucket prior to setting replication and you can choose not to replicate existing objects but after replication is setup any new objects will be replicated from the source bucket to the destination bucket 
+
+Source bucket ----> This is the bucket that has the data you need to replicate 
+Destination bucket ---> This is the bucket where the data needs to be send to . 
+
+
+
+*Use case* 
+
++ Disaster recovery backing up data in another region just in case something in the current region you can restore back the data 
++ Lower latency for users accessing the data ( sending data closer to the user)
++ Migrating data from one region to another during migration process
++ Compliance with data residency requirements 
+
+e.g replicating data from us-east-1 to ca-central-1
+
+
+9:25 pm est 
