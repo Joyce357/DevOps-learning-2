@@ -4343,4 +4343,197 @@ Destination bucket ---> This is the bucket where the data needs to be send to .
 e.g replicating data from us-east-1 to ca-central-1
 
 
-9:25 pm est 
+
+
+2. `Same Region Replication (SRR)`
+
+SRR allows you to replicate objects within the same AWS region, essentially creating duplicates in the same region's bucket. This is useful for data protection and backup within the same region.
+
++ Automatic Replication same as CRR
++ Versioning: Like CRR, SRR requires versioning to be enabled on both buckets.
++ SRR can help protect against accidental deletions or overwrites by keeping multiple copies of the data.
++ You can also specify which objects to replicate using prefixes and tags.
++ Configure Bucket policies and IAM permissions
++ when setting up replication we can select if we want the objects from our source bucket to move into a different storage class in our destination. 
++ Add a bucket policy to the destination bucket 
+
+`Example`:
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags"
+      ],
+      "Resource": "arn:aws:s3:::backupreplicatedbucket01/*"
+    }
+  ]
+}
+
+
+
+3. `Cross Account Replication` 
+
+Allows you to replicate objects from one aws account to another within an Organisational Unit.
+
++ Automatic Replication same as CRR
++  Versioning: Like CRR, SRR, cross account replication requires versioning to be enabled on both buckets.
++ Configure Bucket policies and IAM permissions
+
+
+`example of cross account bucket policy`
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::<SOURCE-ACCOUNT-ID>:root"
+      },
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags"
+      ],
+      "Resource": "arn:aws:s3:::<DESTINATION-BUCKET-ARN>/*"
+    }
+  ]
+}
+
+
+`additional replication options `
+
+
+`replication time controller  (additional fees)` : S3 Replication Time Control (RTC) is an add-on feature for S3 Replication (CRR/SRR) that guarantees your objects will be replicated to the destination bucket within 15 minutes, 99.99% of the time.
+
+`replication metrics   (additional fees)`:
+S3 Replication Metrics is a feature that provides detailed metrics and insights into the replication status of your objects in S3. With S3 Replication Metrics, you can monitor the progress of replication, track the number of objects replicated, and identify any replication failures or issues. This feature helps you ensure that your data is being replicated as expected and allows you to troubleshoot any replication problems effectively.
+`delete marker replication` :
+Delete Marker Replication is a feature in S3 Replication that allows delete markers (which indicate that an object has been deleted) to be replicated from the source bucket to the destination bucket. This ensures that when an object is deleted in the source bucket, the corresponding delete marker is also replicated to the destination bucket, helping to maintain consistency between the two buckets.
+`replica modification sync` : Replica Modification Sync is a feature in S3 Replication that allows changes made in the destination bucket to be synced back to the source bucket.
+
+
+
+**S3 storage classes** : 
+
+`What is an S3 Storage class ?`:
+An S3 storage class is a classification that defines the durability, availability, and cost of storing objects in Amazon S3. Each storage class is designed for different use cases and access patterns, allowing you to optimize your storage costs based on how frequently you access your data and how long you need to retain (keep) it. 
+
+Different Types of Storage Classes in S3 
+
+- Amazon S3 standard : General Purpose 
+- Amazon s3 Standard-infrequent Access  ( IA)
+- Amazon S3 One Zone-Infrequent Access 
+- Amazon S3 Glacier Instant retrieval 
+- Amazon S3 Glacier Flexible Retrieval  (formerly Glacier)
+- Amazon S3 Glacier Deep Archive 
+- Amazon S3 Intelligient Tiering 
+- Reduced redundancy 
+
+
+
+
+
+The main S3 storage classes include:
+1. `S3 Standard - General Purpose`: This is the default storage class for S3 and is designed for frequently accessed data. It provides high durability, availability, and performance, making it suitable for a wide range of use cases.
+
++ 99.9999 availability 
++ Provides low latency 
++ It can sustain two concurren facility failures 
+
+USE CASE ( frequently access data , Mobile and gaming application ,Content distribution )
+
+2. `S3 Standard-IA (Infrequent Access)`: This storage class is
+designed for data that is accessed less frequently but requires rapid access when needed. It offers lower storage costs compared to S3 Standard but has a retrieval fee for accessing objects.
+
++ Less expensive when compared to the  standard storage class
++ it offers durability as s3 standard storage class but at a lower cost and with a retrieval fee will be applied when retreiving data 
++ Its good for backups , disaster recovery data . 
++ Minimum Storage duration is 30 days 
+
+
+3. `S3 One Zone-IA (Infrequent Access )`: This storage class is similar to S3 Standard
+IA but stores data in a single availability zone, making it more cost-effective for infrequently accessed data that can be recreated if the availability zone is lost.
+- Its provides lower storage cost when compared to s3 standard cost
++ Minimum Storage duration is 30 days 
+
+`USE CASE` ( Cost optimization , compliance , secondary backup copies of on premise data , )
+
+
+4. `S3 Intelligent-Tiering`: This storage class automatically moves objects between two access tiers (frequent access and infrequent access) based on changing access patterns, helping to optimize costs without performance impact.
+
+5. `Glacier Instant Retrieval`:
+This storage class is designed for long-term archival of data that requires immediate access when needed. It provides low-cost storage with retrieval times in milliseconds, making it suitable for data that is rarely accessed but needs to be retrieved quickly when required.
+
++ Long-lived archive data accessed once a quarter with instant retrieval in milliseconds
++ Minimum storage duration is 90 days 
++ Use case : Backup Data , Compliance 
+
+6. `Glacier Flexible Retrieval (formerly Glacier)`:
+This storage class is designed for long-term archival of data that is rarely accessed and can tolerate retrieval times of several hours. It offers lower storage costs compared to Glacier Instant Retrieval but has a longer retrieval time.
+
++Long-lived archive data accessed once a year with retrieval of minutes to hours
+
++ Minimum storage duration is 90 days 
++ Use case : Backup Data , Compliance 
+
+7. `S3 Glacier Deep Archive`: This is the lowest-cost storage class for long-term
+archival of data that is rarely accessed and can tolerate retrieval times of up to 12 hours.
++ Long-lived archive data accessed less than once a year with retrieval of hours
++ Minimum storage duration is 180 days 
++ Use case : Backup Data , Compliance 
+
+
+8.`Reduced Redundancy` : Noncritical, frequently accessed data with milliseconds access (not recommended as S3 Standard is more cost effective)
+
+
+`S3 Life Cycle Rule`:
+
+Lifecycle rules allow you to automatically transition objects between different storage classes or expire objects after a certain period of time. For example, you can set up a lifecycle rule to transition objects that have not been accessed for 30 days to the Infrequent Access storage class, or to expire objects that are older than 365 days. This helps you manage your storage costs by automatically optimizing the storage class of your objects based on their access patterns and retention requirements.
+
+**How to Setup An S3 Life Cycle Rule**
+
++ Go to the s3 bucket and click on management
++ Click on `Create lifecycle rule`
++ Give the rule a name and description
++ Choose the scope of the rule ( apply to all objects or specific objects based on prefix or
+tags )
++ Define the lifecycle actions ( transition to another storage class or expire objects)
++ Set the timing for the lifecycle actions (e.g., after a certain number of days since
+object creation or last access)
++ Review and create the lifecycle rule
+
+
+
+**S3 event notification** - Monitoring actions in your s3 bucket 
+`What is S3 Event Notification ? `:
+
+This is a feature in s3 that helps to send notifications when certain actions takes places in your s3 bucket e.g `put request (Uploads an object into your bucket) , get request ( download an object from your bucket)`. This is good because you can monitor changes in your s3 objects 
+
+1. **Event Types**
+
++ Object creation 
++ Object removal 
++ Object restore
++ Object ACL  
++ Reduced Redundancy storage 
++ Replication 
++ Lifecyle 
++ Intelligent-Tiering 
+
+2. **Notification Destination** 
+
++ SNS (Simple Notification Service) : This sends a msg to multiple recepients or endpoints 
++ SQS :used for queueing messages that will be used or processed by other applications .
++ AWS lambda functions 
+
+
+
