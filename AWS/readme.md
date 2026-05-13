@@ -4536,4 +4536,165 @@ This is a feature in s3 that helps to send notifications when certain actions ta
 + AWS lambda functions 
 
 
+***AMAZON S3 DATA OR OBJECT SECURITY***
 
+ `S3 ENCRYPTION `
+
+This is when you secure your s3  objects from unauthorized access.It converts plain text or data into an encoded version (ciphertext).The process of  protecting data is called encryption and to read /unlock the data you need to decrypt THE data . (lock data = encryption  & unlock = decrypt data )
+
+`Types of S3 Encryption`
+
+1.  `Server-side encryption (SSE)` : This is when S3 handles the encryption and decryption of your data automatically.So this is a method of encrypting data at rest in any cloud storage which an example here is s3 . There are three options for server-side encryption:
+
+**Three Options of Server side enryption in S3:**
+
+a. `SSE-S3 (Server-Side Encryption with Amazon S3-Managed Keys)`:
+
++  This option uses keys managed by Amazon S3 to encrypt your data. It provides a simple and cost-effective way to encrypt your objects without the need for you to manage encryption keys.
++ This is the default key type that you can use . AWS manages the key for you .This means that aws will encrypt and decrypt automatically using AES-256 which is a strong block cipher 
+
+b. `SSE-KMS (Server-Side Encryption with AWS Key Management Service)`:
++ This option allows you to use keys managed by AWS Key Management Service (KMS) for encryption. It provides additional features such as key rotation, access control, and audit logging for your encryption keys.
++ With SSE-KMS, you have more control over your encryption keys and can manage them using
+AWS KMS. You can create and manage your own customer-managed keys (CMKs) or use AWS-managed keys for encryption.
++ You can create `customer managed keys` or `aws managed keys` to enhance security , This gives you more control and ability to audit key usage 
++ Keys are stored and managed in AWS Key Management Service (KMS).
+
+
+**Benefits*
+
++ Its provides you key rotation and you as the customer is responsible for rotating the key 
++ It provides Access control using IAM policies
++ It provides key usage audit through cloudtrail
+
+
+*Limitations of KMS* 
+
++ You may be impacted by the KMS (Key management service ) limits (Number of keys you can create) but to resolve this you will need to request an increase for the service quotas
++ To many api calls can be an issue for your KMS ( it generate data key API) and also when you download , it calls the decrypt kms api 
++ Slightly more expensive than SSE-S3 due to KMS API cost.
+
+`Use Case` : When you need auditing, fine-grained access control, compliance, and security governance for sensitive workloads (e.g., PHI, PCI, PII).
+
+
+c. ` Dual-Layer server side Encryption with AWS key Management Service Keys (DSSE-KMS)`
+
+DSSE-KMS is an enhanced encryption option for Amazon S3 that applies two independent layers of encryption at rest, both using AWS KMS–managed keys. It is designed for organizations that require higher assurance, defense-in-depth, and compliance with strict regulatory frameworks.
+
+Instead of relying on a single encryption key, S3 encrypts every object twice using this key — once with a data key, and again with a separate KMS key, and both layers must be decrypted for the data to be accessed. This reduces the chance of data exposure, even if a key is compromised.
+
+DSSE-KMS is typically required by customers with very sensitive workloads, such as:
+
++ Healthcare (HIPAA/PHI)
++ Government and Public Sector (FedRAMP, CJIS)
++ Financial Services (PCI-DSS, SOX)
++ Critical Infrastructure or National Security
+
+
+2. `Client Side Encryption (CSE)`
+
+This is when you encrypt data on the client side before uploading it to S3. With client-side encryption, you are responsible for managing your own encryption keys and performing the encryption and decryption operations on the client side. This gives you full control over the encryption process and allows you to use your own encryption algorithms if desired.
+
++ You can use the AWS Encryption SDK or other encryption libraries to perform client-side encryption.
++ You are responsible for securely managing your encryption keys and ensuring that they are not lost or compromised
++ Client-side encryption can be more complex to implement and manage compared to server-side encryption, but it provides an additional layer of security by keeping the encryption process entirely under your control.
++ AWS stores only the encrypted object, and never has access to the plaintext data or your keys.
++ When you manage your own keys, you are fully responsible for : Key storage , Key rotation , Access Control , Encryption and Decryption logic . 
+
+
+**Use Case**: When you want full control over encryption and key management, or when you need to use custom encryption algorithms that are not supported by AWS.
+
+3. `Encryption in Transit or in Flight`: 
+
+This is when you encrypt data while it is being transmitted between your client and S3, or between S3 and other AWS services. You can use HTTPS to encrypt data in transit, ensuring that it is protected from interception and tampering during transmission. Additionally, you can use AWS Key Management Service (KMS) to encrypt data in transit between S3 and other AWS services, providing an extra layer of security for your data as it moves within the AWS ecosystem.
+
++ Encryption in Transit : AWS S3 can encrypt Data in transit using HTTPS which uses ( SSL/TLS protocols ). Encryption in Transit ensures that data is protected while it is being transferred between a client and Amazon S3.To secure data in motion, S3 supports HTTPS, which uses SSL/TLS protocols to prevent eavesdropping, tampering, or man-in-the-middle attacks.
+
++ Amazon S3 Exposes or provides two endpoints ( HTTP and HTTPS ) ( http is unsecured while HTTPS ( Secured )
++ By default, most AWS SDKs, the AWS CLI, and modern browsers use the HTTPS endpoint automatically.
++ You can enforce HTTPS-only access at the bucket level using an S3 bucket policy to prevent insecure HTTP requests.
+
+`example of an https bucket policy to enforce ssl/tls (https)`
+
+{
+    "Version": "2012-10-17",
+    "Id": "EnforceHTTPS",
+    "Statement": [
+        {
+            "Sid": "DenyHTTP",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        }
+    ]
+}
+
+
+
+
+**S3 ACCESS LOGS**
+
+`What is an S3 Access Logs ? `
+
+This is a feature in S3 that allows you to log requests made to your S3 bucket. When access logging is enabled, Amazon S3 creates log files that contain details about each request, such as the requester’s IP address, the time of the request, the action performed, and the response status. These logs can be useful for `monitoring and auditing access to your S3 resources, troubleshooting issues, and analyzing usage patterns `. You can configure access logging to store the log files in a designated S3 bucket for easy access and analysis.
+
++ Helps you analyze access patterns (e.g., frequency, source IPs, top objects accessed).
++ Supports compliance frameworks like SOC, HIPAA, and PCI, where access visibility is required.
++ Access logs are stored in another S3 bucket that you specify (known as the target bucket).
++ The target logging bucket must be in the same AWS Region as the source bucket.
+
+
+**Access Log Format** ;
+The access log entries
+
+captures vital information such as 
+
++ Who accessed the bucket
++ When they accessed it
++ What operation they performed
++ From which (IP, browser, etc.)
++ Response status and protocol details
+
+
+The access log entries are recorded in a specific format, which includes fields such as:
+
++ *Bucket Owner*: The AWS account ID of the bucket owner.
++ *Bucket*: The name of the S3 bucket.
++ *Time*: The time the request was made (in UTC).
++ *Remote IP*: The IP address of the requester.
++ *Requester*: The AWS account ID of the requester (if applicable).
++ *Request ID*: The unique ID for the request.
++ *Operation*: The type of operation (e.g., GET, PUT, DELETE).
++ *Key*: The object key being accessed.
++ *HTTP Status*: The HTTP response status code.
++ *Bytes Sent*: The number of bytes sent in the response.
+
+Logs : its a series of events captured on your system and stored in a location 
+
+
++ Encryption (server side and client side encryption)
++ s3 Event notification 
+
+`NOTE`  : 
++ Do not use the same bucket as your logging bucket . Its going to cause a logging loop and this will cost you money for storage 
++ When you store logs and you want to analyze them you can use a tool called Amazon "Athena"
+
+
+Review s3 access logs bucket to ensure logs are coming in next class 
+
+
+
+Assignment 
+
+3. AMAZON S3 MFA DELETE 
+
+END 

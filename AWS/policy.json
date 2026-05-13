@@ -1,0 +1,28 @@
+{
+    "Version": "2012-10-17",
+    "Id": "EnforceHTTPS",
+    "Statement": [
+        {
+            "Sid": "DenyHTTP",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        },
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::class10bucket-demobucket/index.html"
+        }
+    ]
+}
