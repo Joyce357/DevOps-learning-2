@@ -4693,8 +4693,331 @@ Review s3 access logs bucket to ensure logs are coming in next class
 
 
 
-Assignment 
 
-3. AMAZON S3 MFA DELETE 
+3. **AMAZON S3 MFA DELETE**
 
-END 
+`What is S3 MFA Delete`:
+
+MFA Delete is a security feature in Amazon S3 that adds an extra layer of protection to prevent accidental or unauthorized deletion of objects in your S3 bucket. When MFA Delete is enabled, you must provide a valid multi-factor authentication (MFA) token in addition to your AWS credentials to delete objects from the bucket. This helps to ensure that only authorized users with access to the MFA device can delete objects, providing an additional safeguard against data loss due to accidental deletions or malicious actions. 
+
+MFA = Multi Factor Authentication 
+
+MFA Delete protects your objects from 
+
++ Accidental deletion by authorized users
++ Malicious deletion by unauthorized users who may have compromised AWS credentials
++ MFA Delete can only be enabled or disabled by the bucket owner using the AWS CLI only through the root account 
++ It protects your objects in the bucket from permament delete 
++ It also protects your bucket from users from turning off versioning 
+
+
+`Key points to note when it comes to MFA delete` 
+
++ MFA Delete can be enabled only by the Root User
++ Only works on Versioned S3 buckets
++ Cannot be managed via the AWS Console — only via AWS CLI or SDK
++ MFA Delete does not stop someone from deleting objects, but it protects permanent deletion of versions
+
+
+`What must you do for MFA to work** ( Prerequisites)`
+
++ Versioning must be enabled on the s3 bucket in order to setup MFA delete 
++ You need to have an MFA device configured (this can be virtual MFA device (mobile app ) or you can have a hardware MFA)
++ Only the bucket owner (root account) can enable / disable MFA delete 
+
+**How to enable MFA Delete using AWS CLI**
+
++ Enable versioning on the bucket if not already enabled. You can enable it on the aws console or through CLI By using the command below 
+`aws s3api put-bucket-versioning --bucket your-bucket-name --versioning-configuration Status=Enabled`
++ You need access to the root Account ( sign in as the root user)
++ If MFA is not already setup at the root account you will need to setup one . 
+
+In order to enabled and run the MFA delete command we will need the following 
+
++ The bucket name
++ You need the device arn 
++ AWS Profile 
+
+below is the command to enable MFA Delete 
+
+`aws s3api put-bucket-versioning --bucket your-bucket-name --versioning-configuration Status=Enabled,MfaDelete=Enabled --mfa "arn:aws:iam::account-id:mfa/root-account-mfa-device mfa-token"`
+
+`Actual example` 
+
+aws s3api put-bucket-versioning --bucket mfadeletebucket002 --versioning-configuration Status=Enabled,MFADelete=Enabled --mfa "arn:aws:iam::891377304437:mfa/myrootMFA 207309" --profile mfadelete
+
+
+`enable MFA `
+
+aws s3api put-bucket-versioning \
+  --bucket class9-demobucket \
+  --versioning-configuration Status=Enabled,MFADelete=Enabled \
+  --mfa "arn:aws:iam::891377304437:mfa/myrootMFA 100991" \
+  --profile root
+
+`disable MFA` 
+
+aws s3api put-bucket-versioning \
+  --bucket class9-demobucket \
+  --versioning-configuration Status=Enabled,MFADelete=Disabled \
+  --mfa "arn:aws:iam::891377304437:mfa/myrootMFA 123456" \
+  --profile root
+
+
+
+
+arn:aws:iam::891377304437:mfa/myrootMFA
+class10bucket-demobucket
+profile 
+
+aws s3api put-bucket-versioning \
+  --bucket class10bucket-demobucket \
+  --versioning-configuration Status=Enabled,MFADelete=Enabled \
+  --mfa "arn:aws:iam::891377304437:mfa/myrootMFA 100991" \
+  --profile root
+
+
+  4. **AMAZON S3 PRE-SIGNED URL**  
+
++ A pre-signed URL in Amazon S3 allows you to `grant temporary access` to a specific object in your S3 bucket to anyone who has the URL. This can be particularly useful for allowing users to download or upload files without needing to make them public or share your AWS credentials.
++ you can create a pre-signed url on the aws console and on the commandline 
+
+`What is the use case of using Pre-signed URL `
++ Sharing private content with users without making it public
++ Allowing temporary access to objects for specific operations (e.g., download, upload)
++ Enabling secure file uploads from client applications without exposing AWS credentials
++ Providing time-limited access to objects for third-party applications or services or individuals
+
+
+5. **S3 GLACIIER VAULT LOCK** 
+
++ Amazon S3 Glacier Vault Lock is a feature that allows you to enforce compliance controls on your S3 Glacier vaults. With Vault Lock, you can create a vault lock policy that specifies the retention period for objects stored in the vault, and once the policy is locked, it cannot be changed or deleted. This ensures that your data remains protected and compliant with regulatory requirements, as it prevents any modifications to the retention settings of the vault. Vault Lock is particularly useful for organizations that need to meet strict compliance standards for data retention and immutability.
+
+
+**Compliance control :** 
+
++ Designed to meet regulatory compliance (such as financial or healthcare regulations).
++ It Enforces write-once-read-many (WORM) storage models where data cannot be deleted or modified after it's written.(model)
+
+**Vault Lock Policy** 
+
++ This policy defines who can delete archives and what actions are allowed on the vault and its content
++ Once the policy is locked, it cannot be overwritten, ensuring data integrity for the duration specified.
+
+**Two-Step Process**
+
++ Initiate the Vault Lock: You can specify a Vault Lock policy, and it enters an in-progress state, allowing you to test the policy for a short period.
++ Lock the Vault: Once you are satisfied with the policy, you can lock it permanently. After this, it cannot be changed.
+
+**Use Case**
++ Long-term data archiving with strict compliance requirements.
++ Ensuring data immutability for regulatory audits.
++ Protecting critical data from accidental or malicious deletion.
++ Financial Services: Ensuring data retention for a specified number of years to comply with regulations like SEC Rule 17a-4.
++ Healthcare: Storing patient records for a minimum retention period.
++ Legal: Preserving legal documents for audits or litigation purposes.
+
+you can set a Vault Policy using AWS CONSOLE OR CLI OR SDK 
+
+`Example of a vault lock policy`
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyDelete",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "glacier:DeleteArchive",
+        "glacier:DeleteVault",
+        "glacier:DeleteVaultAccessPolicy",
+        "glacier:DeleteVaultNotifications"
+      ],
+      "Resource": "arn:aws:glacier:us-west-2:123456789012:vaults/my-vault"
+    }
+  ]
+}
+
+`Steps on how to set a fault policy on aws console `
+
++ Go to the S3 Glacier service in the AWS Management Console.
++ Click on "Vaults" in the left navigation pane.
++ Select the vault for which you want to set the Vault Lock policy.
++ Click on the "Vault Lock" tab.
++ Click on "Initiate Vault Lock" to start the process.
++ Define your Vault Lock policy by specifying the actions you want to allow or deny, and the
+resources it applies to.
++ Review the policy and click "Initiate Lock" to put the policy in place.
++ After the lock is initiated, you can test the policy for a specified period (e.g
+7 days ) to ensure it works as expected. During this time, you can make changes to the policy if needed.
++ Once you are satisfied with the policy, click "Complete Lock" to permanently lock the policy
+
+Note : Glacier standalone features no longer accepts new customers 
+
+
+ **S3 OBJECT LOCK** 
+
++ Amazon S3 Object Lock is a feature that allows you to store objects using a write-once-read-many (WORM) model, which prevents objects from being deleted or overwritten for a specified retention period. With Object Lock, you can set retention periods on individual objects or entire buckets, ensuring that data remains immutable and compliant with regulatory requirements. This is particularly useful for organizations that need to meet strict compliance standards for data retention and immutability, such as in financial services, healthcare, and legal industries. Object Lock helps protect critical data from accidental or malicious deletion while ensuring that it remains accessible for the duration of the retention period.
+
++ Versioning must be enabled 
++ Object Lock in place it can block an object version deletion for a specific amount of time 
+
+
+**Key Features of S3 Object Lock**
+
++ Write-Once-Read-Many (WORM) Model: Objects stored with Object Lock cannot be modified or deleted until the specified retention period expires.
++ Retention Modes: S3 Object Lock supports two retention modes: Governance Mode and Compliance Mode. In Governance Mode, users with specific permissions can override the retention settings, while in Compliance Mode, the retention settings cannot be overridden by any user, including the root user.
++ Legal Hold: You can apply a legal hold to an object, which prevents it from being
+deleted or overwritten until the legal hold is removed, regardless of the retention period.
++ Versioning Requirement: Object Lock requires versioning to be enabled on the S3 bucket,
+as it relies on versioning to manage the locked objects and their versions effectively.
+
+
++ It has two Lock Modes ( Governance Modes & Compliance Modes)
+
+`Governance Mode`: Allows specific users (with special permissions) to overwrite or delete objects during the retention period.
+example : you store an object and setup object lock for 3 months . If you have used the governanced mode , users with special permissions can still over write or delete the object before the 3 months elapses . 
+
+`Compliance Mode` : Strictest form of protection; no one, including the root user, can delete or modify objects until the retention period expires. 
+
+example : If you have used the Compliance mode , users no matter the type of permissions you have wont be able to delete or modify objects until after the retention period 
+
++`Retention Period` : 
+
+You can set a retention period during which the object is protected.
+The retention period can be based on regulatory or business requirements (e.g., retain for 7 years).
+After the retention period, objects can be deleted or modified unless explicitly locked again.
+
++ `Legal Hold` :
+
+S3 Object lock also has a feature called `legal hold` 
+Legal Holds prevent object deletion, similar to a lock, but without an expiry date.
+A legal hold can be applied and removed by authorized users at any time, without defining a retention period.
+
+`To enable object lock on your s3 bucket` , 
+
++ click on the specific bucket
++ click on properties and scroll down to object lock .Click on edit and enable object lock 
+
+
+
+
+7. **S3 ACCESS POINTS**
+
++ Amazon S3 Access Points is a feature that allows you to create unique access points with specific permissions and network controls for your S3 buckets. Each access point has its own hostname and can be configured with different access policies, making it easier to manage access to shared datasets in S3. Access Points provide a way to simplify data access for applications and users while maintaining security and control over who can access the data and how it can be accessed. This is particularly useful for organizations that need to provide controlled access to their S3 data across multiple teams, applications, or external partners without having to manage complex bucket policies or IAM permissions for each individual user or application.
+
++ It simplifies Access Management ( Each access point can have its own policy ,making it easy to control and manage permissions for specific use cases)
++ Custom network settings : we can setup access points to only accept request to our s3 buckets only within a VPC (Virtual Private Cloud) , it improves security by ensuring data access is restricted to certain environments 
++ We can have dedicated access points url : Each access point has its own DNS-compliant endpoint, allowing you to interact with a bucket via a unique and specific URL.This allows applications to use a dedicated access point instead of the bucket’s default endpoint, providing more granular control over traffic and requests.
++ It supports s3 Permissions and Policies : You can configure permissions using IAM policies, bucket policies, and access point policies, ensuring that only authorized users and roles can access the data through the access point.
+
+Note;
+
++ Each access point has its own policy 
++ Each access point has a unique endpoint for accessing objects 
++ It can be public ,private or vpc restricted 
+
+
+Diagram below shows how an access point can be 
+
+                +----------------------+
+                |     AWS Account      |
+                +----------------------+
+                           |
+                           |
+         -----------------------------------------
+         |                  |                    |
+         |                  |                    |
++----------------+ +----------------+ +----------------+
+| Access Point   | | Access Point   | | Access Point   |
+|  Dev-Team-AP   | | Finance-AP     | | App-Server-AP  |
++----------------+ +----------------+ +----------------+
+         |                  |                    |
+         |                  |                    |
+         -----------------------------------------
+                           |
+                           |
+                +----------------------+
+                |     S3 Bucket        |
+                | company-data-bucket  |
+                +----------------------+
+
+
+
+8. **S3 CORS** Cross-Origin Resource Sharing (CORS ): 
+
++ Amazon S3 CORS is a feature that allows you to configure cross-origin resource sharing (CORS) rules for your S3 buckets. CORS is a security mechanism that enables web applications running in one domain to access resources in another domain. By configuring CORS rules for your S3 bucket, you can specify which origins are allowed to access the bucket's resources, as well as the HTTP methods and headers that are permitted. This is particularly useful for enabling web applications hosted on different domains to interact with your S3 data securely and efficiently, without exposing your bucket to unauthorized access.
+
+
+webapp is team4techsolutions.com -----> needs to read from an s3 bucket ---> https or http : S3 might not allow the url (team4techsolutions ) to read from . We will force to setup CORS 
+
+
+
++----------------------------------+
+|  https://team4techsolutions.com  |
+|         Frontend App             |
++----------------------------------+
+                 |
+                 | HTTPS Request
+                 v
++----------------------------------+
+|          Amazon S3 Bucket        |
+|      team4tech-storage           |
++----------------------------------+
+                 |
+                 |
+         CORS Policy Checks
+                 |
+                 v
+"Is this domain allowed?"
+                 |
+                 v
+Allow or Block
+
+
+Note : 
++ CORS is not an aws firewall 
++ Its not IAM 
++ Its not a Bucket Policy 
+
+Its a browser securrity rule controlling which websites can access resources in our s3 storage 
+
+In production environments most of the time we wont allow browsers to download or access our s3 resources directly . we will go through 
+
+USER----> Cloudfront -----> s3 bucket 
+
+
++ `Origin` : 
+
+The domain (protocol, host , and port ) from which the request is coming from (originates) 
+e.g if a web page is hosted on https:team4techsolutions.com and it tries to access an s3 bucket the origin would be  https://team4techsolutions.com
+
+
++ `Cross Origin Requests`: 
+
+Requests made from one domain (origin) to a different domain (S3 in this case). These requests are typically blocked by browsers for security reasons unless allowed through CORS configuration.
+
+
++ `CORS Rules` 
+
+These rules define which origins can access your S3 resources, what HTTP methods are allowed, and what headers can be used in requests.
+
+Same Origin : team4techsolutions/app1  & team4techsolutions.com/app2
+Different Origins : team4techsolutions.com   & register.team4techsolutions.com
+
+
+
+example of CORS rules
+
+[
+  {
+    "AllowedOrigins": ["https://www.team4techsolutions.com"],
+    "AllowedMethods": ["GET", "PUT", "POST"],
+    "AllowedHeaders": ["*"]
+  }
+]
+
+
+
+Monday 
