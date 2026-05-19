@@ -5020,4 +5020,290 @@ example of CORS rules
 
 
 
-Monday 
+
+**HOW CAN WE ENHANCE THE PERFOMANCE OF OUR S3 BUCKET** 
+
+Optimizing performance in Amazon S3 focuses on improving upload speed, download speed, and request efficiency—especially for large datasets, high-traffic applications, and global users.
+
+1. **Multipart Upload**: For large files, use multipart upload to upload parts of the file in parallel, which can significantly reduce upload time and improve reliability.
+
+wwhat it does 
++  Splits large files into smaller parts
++ Retries only failed parts
++ Allows parallel uploads for faster performance
+
+`Steps to Upload a File Using Multi-Part Upload `:
+
++ Initiate the multipart upload to get an upload ID.
++ Upload each part of the file using the upload ID.
++ After all parts are uploaded, complete the multipart upload to assemble the parts into a single object
+
+`CLI commands`
+1. Initiate multipart upload:
+
+`aws s3api create-multipart-upload --bucket your-bucket-name --key your-object`
+
+2. Upload parts: 
+
+`aws s3api upload-part --bucket your-bucket-name --key your-object --part-number 1 --upload-id your-upload-id --body part1`
+
+`aws s3api upload-part --bucket your-bucket-name --key your-object --part-number 2 --upload-id your-upload-id --body part2`
+
+3. Complete multipart upload:
+
+`aws s3api complete-multipart-upload --bucket your-bucket-name --key your-object --upload-id your-upload-id --multipart-upload file://parts.json`
+
+
+2. **S3 Transfer Acceleration**: This feature uses Amazon CloudFront's globally distributed edge locations to accelerate uploads and downloads to and from S3 buckets, improving performance for users located far from the bucket's region.
+
+If users upload from different continents, enable S3 Transfer Acceleration to route traffic through CloudFront Edge locations for faster uploads.
+
++ Best for global teams, large media files, and SaaS apps
++ It cost more than normal transfers 
+
+
+`Steps to Use or setup Transfer Accelerator on aws`
+
++ Go to the S3 bucket in the AWS Management Console.
++ Click on the "Properties" tab. 
++ Scroll down to the "Transfer acceleration" section and click "Edit".
++ Select "Enabled" to turn on transfer acceleration for the bucket.
++ Click "Save changes" to apply the settings.
+
+or CLI 
+
+
+`aws s3api put-bucket-accelerate-configuration --bucket your-bucket-name --accelerate-configuration Status=Enabled`
+
+
+
+
+
+3. **S3 Object Caching**: Use Amazon CloudFront to cache frequently accessed S3 objects at edge locations, reducing latency and improving download performance for end-users.
++ Cache frequently accessed objects at edge locations
++ Reduces latency for global users
++ Ideal for static website hosting, media delivery, and APIs
+
+
+
+
+**Storage Lens**
+
+Amazon S3 Storage Lens is an analytics and visibility tool for S3 that provides organization-wide insights into your `storage usage`, `object counts`, and `activity trends` across all S3 buckets — not just one. It helps you `optimize costs`, `improve data lifecycle decisions`, and `detect anomalies (abnormal) ` such as unusual access or request spikes.
+
+Storage Lens gives two categories of metrics:
+
++ Total storage usage
++ Storage by bucket
++ Storage by prefix
++ Object count
++ Growth over time
++ Storage class breakdown (Standard, IA, Glacier, etc.)
+
+It has `free metrics` and `advanced metrics` 
+you will pay for advanced metrics .
+
+you can export the metrics into an s3 bucket 
+Note : You cant use the root account iam user to view storage lense 
+
+
+
+Summary of S3 Bucket 
+
++ What is S3 ? 
++ What is an s3 Bucket 
++ What is an Object in s3 
++ What are some of the use cases of an S3 bucket 
++ Explain some of the characteristics of an s3 bucket 
++ When it comes to permission there two levels of permission ( Object level and s3 bucket level permissions )
++ s3 security --> IAM policies and iam roles , encryption ( server side encryption (sse-s3 ,sse kms , ) , client side encryption ), S3 bucket policy to enforce https ( encryption in transit ) , MFA Delete , Object lock 
++ Storage classes (how can u optimise cost in s3 buckets )
++ Event notification 
++ Server access logs 
++ s3 Replication 
++ enable versioning 
++ S3 access points 
++ Presigned url 
++ Transfer acceleration 
++ Multi Upload 
++ Storage lens 
++ CORS - Cross Origin Resource Sharing 
++ Deploy a static website in s3 
+
+
+# CLOUDFRONT 
+
+`What is Cloudfront` 
+Amazon CloudFront is a `content delivery network (CDN)` service provided by AWS that delivers data, videos, applications, and APIs to `users globally with low latency and high transfer speeds`. It uses a network of edge locations around the world to cache and deliver content closer to end-users, improving performance and reducing load on the origin servers. CloudFront supports various use cases, including website acceleration, media streaming, API acceleration, and secure content delivery.
+
++ can integrate cloudfront with other AWS services to improve application performance and security . 
+
+
+
+Cloudfront will help to ensure that our users access our application , data , videos with 
+
++ Low latency 
++ Improve perfomance of your application , content is cached at the egde (locations)
++ Improve user experience 
++ Serve content globally 
+
+`Core concepts or Terminologies used in Cloudfront`
+
+1. `Edge Locations`:
+
+These are data centers ( Mini data centres) located around the world where CloudFront caches copies of your content. When a user requests content, CloudFront delivers it from the nearest edge location, reducing latency and improving performance. 
+
+These are part of AWS's global infrastructure for services like `Amazon CloudFront` (the content delivery network, or CDN) and `AWS global accelerators` . 
+
+
+2. `Points of Presence` :
+
+This is a general term for locations where AWS has infrastructure to serve content. It includes both edge locations and regional edge caches. Points of Presence are strategically located around the world to optimize content delivery and reduce latency for users accessing AWS services.
+
+
+`Note `: aws has over 400 Edge Locations and more than 750 total Points of Presence (PoPs) globally.
+
+**Cloudfront Features**
+
+1. `Global Content Delivery` : CloudFront is a global CDN that uses AWS’s network of edge locations to distribute content closer to users around the world, ensuring fast delivery of web pages, videos, APIs, and applications.
+
+2. `Build in security` 
+
++ You can integrate CloudFront with AWS WAF (Web Application Firewall) and AWS Shield to protect your application from DDoS attacks, Cross-Site Scripting (XSS), SQL Injection, and other common web exploits.
++ All content is delivered securely over HTTPS, ensuring data encryption in transit.
+
+3. `Dynamic and Static Content` : CloudFront can deliver both static content (e.g., images, CSS, JavaScript) and dynamic content (e.g., API responses, personalized web pages), making it suitable for a wide range of applications.
+
+4. `Cost Efficiency `
+
++ CloudFront offers a pay-as-you-go pricing model, where you only pay for the data transferred and requests made. This can be more cost-effective than maintaining your own global infrastructure for content delivery.
++ Since content is cached at edge locations, the number of requests reaching your origin (e.g., S3 or EC2) decreases, reducing data-transfer and compute costs.
+
+5. Low Latency & High Performance
+By caching your content at nearby edge locations, CloudFront ensures low latency, faster load times, and an improved user experience — no matter where your audience is located globally.
+
+6. `Customizable Content Delivery` : You can configure CloudFront to deliver content based on specific behaviors, such as URL patterns, HTTP methods, and query string parameters. This allows you to optimize content delivery for different types of requests and user scenarios.
+
+7. `Integration with AWS Services` : CloudFront seamlessly integrates with other AWS services like S3, EC2, Lambda@Edge, and API Gateway, allowing you to build powerful and scalable applications with enhanced performance and security.
+
+
+`USE CASE OR WHEN IS IT NECESSARY TO IMPLEMENT CLOUDFRONT` 
+
++ When you have a global audience and want to ensure low latency and fast content delivery.
++ When you want to improve the performance of your website or application by caching content at edge locations.
++ When you need to protect your application from DDoS attacks and web exploits using AWS WAF and AWS Shield.
++ When you want to deliver both static and dynamic content efficiently.
++ When you want to reduce costs by minimizing data transfer from your origin servers and leveraging CloudFront
+'s pay-as-you-go pricing model.
++ When you want to integrate with other AWS services for a seamless and powerful application architecture.
++ When you want to serve content securely over HTTPS, ensuring data encryption in transit.
++ When you want to customize content delivery based on specific behaviors and user scenarios. 
++ When you want to distribute Software globally.CloudFront can distribute large files like software installers, game updates, and security patches efficiently.It delivers media content smoothly to users around the world, reducing buffering and maintaining high quality.Its good for platforms or applications like YouTube-style video sites, training portals, or corporate live events.
+
+
+# AWS CLOUDFRONT ORIGIN :
+
+An `Origin` is the location where your original content is stored — this is where CloudFront fetches data before distributing it to users through its global edge locations.
+When a user requests content that isn’t already cached at the edge, CloudFront retrieves it from the origin, caches it, and then serves it to future users nearby.
+
+
+### Different or Types of  Cloudfront Origins
+
+1. `Amazon S3 Bucket` : You can use an S3 bucket as the origin for your CloudFront distribution. This is a common choice for serving static content such as images, videos, and web assets.
++ CloudFront pulls data directly from S3 and caches it at edge locations.
++ Combine with `Origin Access Identity (OAI)` to restrict S3 access only to CloudFront — this secures your bucket from public access.
+
+2. `Amazon EC2 Instance` : You can use an EC2 instance as the origin for your CloudFront distribution. This is suitable for serving dynamic content or applications that require server-side processing.
++ CloudFront acts as a front layer to improve performance and global reach.
+
+3. `Elastic Load Balancer (ELB)` : You can use an ELB as the origin for your CloudFront distribution. This is ideal for distributing traffic across multiple EC2 instances, providing high availability and scalability for your applications.
++ CloudFront can route requests to the ELB, which then distributes them to the backend instances
+
+4. `AWS Lambda Functions` : You can use AWS Lambda functions as the origin for your CloudFront distribution. This allows you to execute serverless code in response to requests, enabling dynamic content generation and custom logic at the edge.
++ CloudFront can trigger Lambda@Edge functions to modify requests and responses, providing a powerful way to customize content delivery.
+
+5. `Custom Origins` : You can use any HTTP/HTTPS server as a custom origin for your CloudFront distribution. This allows you to integrate with third-party services, on-premises servers, or any other content source that can serve HTTP responses.
++ CloudFront can fetch content from your custom origin and cache it at edge locations for improved performance.
+`Example of setting up a CloudFront distribution with an S3 bucket as the origin`
+
+6. `Api Gateways` ;
+You can use Amazon API Gateway as the origin for your CloudFront distribution. This is ideal for accelerating API responses and improving performance for API-driven applications.
++ CloudFront can cache API responses at edge locations, reducing latency for users accessing your APIs globally
+
+7. `Elemental MediaPackage `
+You can use AWS Elemental MediaPackage as the origin for your CloudFront distribution. This is suitable for delivering live and on-demand video content with adaptive bitrate streaming.
++ CloudFront can cache video segments at edge locations, ensuring smooth playback for viewers around the world
+
+8. `Vpc Origin `
+You can use an Amazon Virtual Private Cloud (VPC) as the origin for your CloudFront distribution. This allows you to serve content from resources that are not publicly accessible, such as EC2 instances or load balancers within a VPC.
++ CloudFront can access your VPC resources securely using VPC endpoints, ensuring that your content
+is delivered efficiently while maintaining the security of your private resources.
+
+
+# Concepts Related to CloudFront Origins
+
+`🌍 Origin Server`
+
++ This is the main source where your original content is stored.
++ It can be an S3 bucket, EC2 instance, Elastic Load Balancer, or any HTTP(S) backend.
+When CloudFront doesn’t find a requested object in its edge cache, it fetches it directly from this origin server.
+
+`Origin group` : 
+
+An Origin Group helps improve availability and fault tolerance.
+It allows you to configure multiple origins — typically a primary and a secondary.
+If the primary origin becomes unavailable, CloudFront automatically fails over to the secondary origin, ensuring users continue to receive content without interruption.
++ This setup is common in disaster recovery or multi-region architectures.
+
+`Origin Access Identity (OAI)` :
+An OAI is a special CloudFront user that you can associate with your distribution to securely access your S3 bucket origin.
+By creating an OAI and updating your S3 bucket policy to allow access only to that O
+AI, you can prevent direct public access to your S3 bucket while still allowing CloudFront to fetch and serve content from it.
++ By doing this, your S3 bucket remains private and secure, and CloudFront serves content safely to users on your behalf.
+
+
+
+`Features in Cloudfront` 
+
+1. **Geo Restriction**
+
++ Geo restriction (also known as geoblocking) allows you to control access to your content based on the geographic location of your users. With this feature, you can specify which countries are allowed or denied access to your CloudFront distribution. This is particularly useful for complying with regional licensing agreements, content distribution regulations, or simply restricting access to certain markets. By enabling geo restriction, you can ensure that your content is only accessible to users in approved locations, enhancing security and compliance while optimizing content delivery for your target audience. 
+
++ Allow-list (`whitelist`) certain countries where users can access your content.
++ Block-list (`blacklist`) specific countries from accessing it.
+
+If your application or website should not be accessible from China, Russia, or specific regions due to compliance or licensing, you can configure CloudFront to deny access for users from those countries.
+
+2. **Price Classes** : 
+
+CloudFront offers different price classes that allow you to control costs by specifying which edge locations can serve your content. By choosing a price class, you can limit the number of edge locations that CloudFront uses to deliver your content, which can help reduce costs while still providing good performance for your users. This is particularly useful for applications with a global audience, as it allows you to optimize content delivery based on your budget and performance requirements.
+
+- Price class All : All regions - all edge locations own by aws --> Best perfomance , highest cost
+- Price Class 200 : Most regions but it will exlude the most expensive edge locations - good balance of cost and reach 
+- Price Class 100 : least expensive region --> Lowest cost but limited coverage 
+
+3. **Cache Invalidations (TTL)**
+
++ Cache invalidation allows you to remove specific objects from CloudFront's cache before they expire. This is useful when you need to update content that has already been cached at edge locations, ensuring that users receive the most up-to-date version of your content. By creating an invalidation request, you can specify which objects to remove from the cache, and CloudFront will fetch the latest version from the origin server the next time those objects are requested. This helps maintain content freshness and consistency across your distribution.
+
+`Steps to Create a Cache Invalidation in CloudFront`
+
+You can do this through the aws console or CLI 
+
+for aws console --->
+
+1. Go to the CloudFront console in AWS Management Console.
+2. Select the distribution for which you want to create an invalidation.
+3. Click on the "Invalidations" tab.
+4. Click on the "Create Invalidation" button.
+5. In the "Create Invalidation" form, specify the paths of the objects you want
+to invalidate. You can use wildcards (e.g., /images/*) to invalidate multiple objects at once.
+6. Click on the "Invalidate" button to submit the invalidation request.
+
+
+for CLI
+
+`aws cloudfront create-invalidation --distribution-id your-distribution-id --paths "/*"`
+
+This command will invalidate all objects in the distribution, forcing CloudFront to fetch the latest versions from the origin server. You can specify specific paths instead of "/*" if you only want to invalidate certain objects.
+
