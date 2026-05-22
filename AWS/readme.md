@@ -5307,3 +5307,480 @@ for CLI
 
 This command will invalidate all objects in the distribution, forcing CloudFront to fetch the latest versions from the origin server. You can specify specific paths instead of "/*" if you only want to invalidate certain objects.
 
+
+
+**GLOBAL ACCELERATOR**
+
+What is Global Accelerator 
+
+AWS Global Accelerator is a networking service that improves the availability and performance of your applications by directing user traffic through the AWS global network infrastructure. It provides static IP addresses that serve as a fixed entry point for your application, allowing you to route traffic to optimal endpoints based on health, geography, and routing policies. Global Accelerator helps reduce latency, improve application responsiveness, and enhance user experience by leveraging the extensive AWS global network to route traffic efficiently and reliably.
+
+Instead of users connecting to your application over the public internet, Global Accelerator routes traffic over the `AWS global private network`, which is faster, more stable, and less congested.
+
+
++ It uses aws internal aws network to route traffic to your app
++ Global acelerator creates 2 anycast Ip for your application (static) anycast
++ The anycast ip sends traffic to the edge locations directly 
+
+`Why Use Global Accelerator or advantages of Global accelerator?`
+
+1. `Improved Performance` : By routing traffic through the AWS global network, Global Accelerator reduces latency and improves application responsiveness for users around the world.
+2. `High Availability` : Global Accelerator automatically routes traffic to healthy endpoints, ensuring that your application remains available even if some endpoints become unhealthy or unavailable.
+3. `Global Reach` : With AWS's extensive global infrastructure, Global Accelerator allows you to
+serve users from edge locations around the world, providing a better experience for a global audience.
+4. `Static IP Addresses` : Global Accelerator provides static IP addresses that serve as a fixed
+entry point for your application, simplifying DNS management and improving reliability.
+5. `Integration with AWS Services` : Global Accelerator seamlessly integrates with other AWS services like EC
+2, Elastic Load Balancing, and CloudFront, allowing you to build powerful and scalable applications with enhanced performance and availability.
+6. `DDoS Protection` : By routing traffic through the AWS global network, Global
+Accelerator can help mitigate DDoS attacks and improve the security of your applications.
+7. `Multi region support ; Global accelerator supports different aws regions which helps your app to become high availanle 
+8. + Health Checks and automatic failovers
+
+
+**What is Unicast and Anycast ip** 
+
+
+**Anycast IP**: 
+
++ One IP address is shared by multiple servers or endpoints across the globe or network.
++ The same IP is announced in many AWS edge locations.
++ When a user connects, routing automatically sends them to the nearest and healthiest endpoint.
+
+**Unicast IP**:
++ Each server or endpoint has its own unique IP address.
++ Users connect directly to that specific IP address, which may not be optimal for performance or availability
++  If the server is far away → higher latency
++ If that server goes down → no failover
+
+
+
+`USE CASES` 
+
++ To serve traffic to your users globally ( application)
++ Gaming and video streaming applications ( less latency )
++ Real time application (better perfomance -- streaming applications)
++ Web app or Mobile app 
+
+
+
+`Global Accelerator Architecture Terms`
+
+1. `Endpoint Group`: 
+
+An Endpoint Group represents a specific AWS Region where your application is deployed and where you want Global Accelerator to send traffic.
+
++ It defines which region users will be routed to.
++ You can have one or multiple endpoint groups depending on whether your app is deployed in one region or multi-region.
+
+endpoint : This is the endpoint origin (ec2 ,application / network loadbalancer , elastic ip address )
+
+Examples:
+
+Endpoint Group 1 → us-east-1 
+Endpoint Group 2 → eu-west-1
+
+
+2. `Endpoint` : 
+
+An Endpoint is the actual target resource inside the region that will receive the traffic.
+
++ Application Load Balancer (ALB)
++ Network Load Balancer (NLB)
++ EC2 instance
++ Elastic IP address
+
+
+**DIFFERENCES BETWEEN CLOUDFRONT DISTRIBUTION AND GLOBAL ACCELERATOR** 
+
+| Feature                           | AWS Global Accelerator                                 | Amazon CloudFront                                    |
+|-----------------------------------|------------------------------------------------------|-----------------------------------------------------|
+| **Purpose**                       | Improves availability and performance of applications | Content delivery network (CDN) for distributing content |
+| **Traffic Routing**               | Routes traffic to optimal endpoints via AWS network   | Caches and serves static and dynamic content from edge locations |
+| **Entry Point**                   | Provides static IP addresses as entry points(multicast)| Uses a unique CloudFront URL for each distribution   |
+| **Health Checks**                 | Monitors endpoint health and performs automatic failover | Not primarily focused on health checks; relies on origin health |
+| **Caching**                       | No caching capabilities                                | Caches content at edge locations for faster delivery  |
+| **Use Cases**                     | Suitable for global applications needing low latency  | Ideal for serving static content, APIs, and media    |
+| **Static Content Delivery**       | Not designed for static content delivery               | Optimized for static content with caching mechanisms   |
+| **Pricing Model**                 | Based on accelerator hours and data transfer          | Based on data transfer out, requests, and caching options |
+| **Global Reach**                  | Provides global reach with improved performance        | Global distribution with edge locations worldwide     |
+
+
+
+
+# Key Differences of Cloudfront Vs Global Accelerator 
+
+### Functionality:
+
+- CloudFront is primarily a CDN designed to cache content at various global edge locations to enhance delivery speed while 
+
+Global Accelerator uses the AWS global network to route traffic more efficiently to application endpoints, improving performance and availability without caching.
+
+### IP Addressing:   
+
+- CloudFront provides a DNS name that resolves to different IP addresses depending on the geographic location of the client/customer while 
+Global Accelerator uses static Anycast IP addresses that route user traffic to the nearest or most optimal AWS endpoint.
+
+### Content vs. Traffic Optimization:
+
+- CloudFront is more focused on content delivery—optimizing for reducing load times via caching mechanisms while 
+Global Accelerator is more about optimizing the path that user traffic takes through the internet, focusing on improving application responsiveness and availability.
+
+### Usage Scenarios:
+
+- Use CloudFront when the primary goal is to cache content close to users to reduce web and API response times while 
+Use Global Accelerator when the goal is to improve application availability and reduce latency by leveraging AWS’s global network to route user requests more efficiently.
+
+
+
+
+`HANDS ON GLOBAL ACCELERATOR` 
+
+**HANDS ON CODE** 
+
+
++ Create 2 or 3 ec2 instances in different regions e.g us-east-1 , ca-central-1 or eu-west-1 and use the user data scripts in our github repository 
++ Create a global accelerator and use port 80 as the protocol 
++ select ec2 instance as the endpoints 
++ create the accelerator 
+
+
+
+
+#############################
+# DATA MIGRATION (TRANSFER)
+############################
+
+
+How can we transfer Data from One AWS  account to another , one region to another or from on-premise to aws and verse versa. 
+
+What are some of the ways we have disccused so far when it comes to data migration 
+
++ S3 replication 
++ ec2 snapshots ( ebs , ami)
++ run scripts using aws cli or bash shell scripts 
+
+To migrate or transfer Large amount of data aws has this service called SNOW FAMILY 
+
+What is the `SNOW FAMILY `
+
+The AWS Snow Family is a collection of physical devices and services designed to facilitate the secure transfer of large amounts of data into and out of AWS. It includes devices like `AWS Snowcone, Snowball Edge, and Snowmobile`, which are ruggedized and portable to handle data migration in various scenarios, including on-premises to cloud, cloud to on-premises, and even between AWS regions. The Snow Family provides a cost-effective and efficient solution for transferring data when network connectivity is limited or when dealing with petabyte-scale datasets.
+
+
+
+NO NEW CUSTOMERS NEEDED 
+REMOVE FROM CURRICULUM 
+
+
+1. `Snowcone `
+
+This is the smallest member of the snow family ,portable , it is good for edge computing , it has 8TB of usage storage and it can run edge computing workloads using AWS iot greengrassor AND amazon ec2 instances
+
+`What is edge computing ? `
+
+Edge computing is a distributed computing paradigm that brings computation and data storage closer to the location where it is needed, typically at or near the source of data generation. This approach reduces latency, improves performance, and enables real-time processing of data without relying on a centralized cloud infrastructure. Edge computing is particularly beneficial for applications that require low latency, such as IoT devices, autonomous vehicles, and real-time analytics.
+
+Snowcones are ; 
+
++ Compact in size and its smaller and easy to fit in a backpack , suitable for remote and harsh environment ( waterproof , dust proof ,shockproof )
++ Storage capacity , it provides upto 8 TB of usage storage , which allows users to collect , process and transfer data into AWS
++ Its good for edge computing :it supports edge computing workloads ,helping users to run applications locally in their environments with limited connectivity 
++ Rugged Design : Its built to withstand tough conditions , which makes good for outdoor or industrial use 
++ Its sescure and comes with Data encryption capabilities to ensure data security and transfer or at rest . 
++ You can integrate it with other services . 
+ 
+
+2. **SnowBall**
+This is a larger device than snowcone , it has 50 TB and 80 TB of usage storage , it is good for data migration and edge computing workloads . It has two types of snowball edge ( Storage optimized and compute optimized ) 
+
++ Storage Optimized Snowball Edge : This version is designed for large-scale data transfer and storage. It provides high-capacity storage and is ideal for migrating large datasets to AWS or between AWS regions.
+
++ Compute Optimized Snowball Edge : This version is designed for edge computing workloads that require more processing power. It includes additional compute resources, making it suitable for running applications and processing data locally before transferring it to AWS.
+
+
++ Good for Data Transfer : Its used to transfer large amount of data into and out of aws cloud .Its good in situations where uploading data manually will be difficult ,slow or impractical 
+
++ Its a physical device that aws will send to you , you will upload your data , send it back to them and they will then upload the data to the chosen aws service you want e.g S3 bucket 
+
++ Capacity , the snowball device comes in different sizes , with options for up to 50TB or even more allowing you to transfer large or huge data sets 
+
++ Its secured : it uses strong encryption to keep your data safe during transportation , data is encrypted before it leaves your facility ensuring there is security through this data transfer process . 
+
+
++ Computing At edge : In addition to its main data transfer capabilities , snowball also supports computing at edge , You can process , analysize the data before uploading it to the cloud.
+
++ Cost effective , This is because transfering large datasets over the internet can be costly . it will save you bandwith cost , and reduce the time required to tranfer large amount of data .
+
+
+Video for snowball 
+
+https://www.youtube.com/watch?v=BIx9bbe58K8
+
+
+
+3. `Snowmobile`
+
+This is the largest member of the snow family , it is a shipping container that can hold up to 100 PB of data . It is designed for exabyte-scale data transfer and is ideal for large enterprises or organizations that need to migrate massive datasets to AWS. Snowmobile is transported via a semi-trailer truck and provides a secure and efficient way to transfer data when network connectivity is not feasible.
+
+Snowmobile are used for extremely large data transfers 
+It can transfer very large data . exabytes of data
+It has 100 pb of capacity 
+It highly secured 
+its better than a snowball when it comes to moving large datasets 
+
+
++ `Big Data Transfer` : Designed to transfer exabytes (millions of terabytes) of data Its good for companies that will be moving very large amout of data into aws cloud e.g `Media Companies` 
++ `Mobile Data centers` : 
++ `Its secured` , just like any other snow family device the snowmobile is also encrypted 
++ Physically transported , AWS will send a physical truck to your location , you willl then connect your onpremise data into the snowmobile , then you will transfer the data into the truck and the driver then drives away the druck to aws data center , aws then uploads this data to what ever service you want into your aws account 
++ `Cost effective` 
++ Its good for large data migration ( scientist ----> scientific research)
+
+
+
+Within the snowfamily you can set up preconfigure Iot greengrass on each device ;
+
+What is IOT : The Internet of Things (IoT) is a concept that refers to the connection of everyday objects and devices to the internet, allowing them to send and receive data e.g Sensors on Machines 
+
+
+
+
+
+What are some of the storage options we have studied so far in aws. 
+
++ S3 buckets 
++ EBS 
++ EFS 
++ FSx (Fsx Netapp Ontap, Fsx for OpenZFS , `FSx windows file system`, FSx For Lustre )
+
+
+**Storage options in AWS**
+
++  `Storage  gateway`
+
+AWS Storage Gateway is a hybrid cloud storage service that enables on-premises applications to seamlessly use AWS cloud storage. It provides a bridge between on-premises environments and AWS, allowing you to securely store data in the cloud while maintaining low-latency access to it. Storage Gateway supports various storage interfaces, including file, block, and tape, making it suitable for a wide range of use cases such as backup and restore, disaster recovery, and data archiving.
+
+ `Question`: You have an application on premise that you need to move to the cloud , when trying to move the application realized that the application needs some kind of re-archetecture to support cloud storage , what will you do ? 
+
+
+Hybrid environment : You have cloud resources and on-premise 
+cloud : everything is on the cloud 
+on premise : Everything in a physical location 
+
+
+
+**DIFFERENT TYPES OF STORAGE GATEWAYS**
+
+1. `File Gateway` : This type of storage gateway provides a file interface to AWS cloud storage, allowing you to store and access files in Amazon S3. It is ideal for applications that require file-based storage and can be used for backup and restore, content distribution, and data archiving.
+
+This allows you to store and retrieve files in Amazon S3 using standard file protocols like NFS and SMB. It acts like a file server, making it easy to integrate cloud storage with existing file-based applications on premise . 
+
+- It has caching mechanism which means most recent used files are cached at the file gateway 
+- Supports most of the s3 storage classes 
+- Transitioning to glacier will need to be done using `life cycle policy` 
+- SMB (SERVER MESSAGE BLOCK) which can be integrated with Active Directory for user authentication . 
+
+
+
+`USE CASE` :
+
++ Backup & Disaster recovery : Companies can connect their application data from on premise and store the data into an s3 bucket using this approach for disaster recovery 
++ Data migration 
+
+`Steps to Create a File Gateway`
+1. Sign in to the AWS Management Console and open the Storage Gateway console.
+2. Click on "Create gateway" and select "File Gateway" as the gateway type.
+3. Choose the activation method (e.g., download and deploy the gateway software on a host
+or use an Amazon EC2 instance).
+4. Follow the prompts to configure the gateway settings, including network settings and storage options.
+5. Once the gateway is activated, you can create file shares that connect to Amazon S3 buckets.
+6. Configure your on-premises applications to access the file shares using standard file protocols (NFS or SMB).
+`aws storagegateway create-gateway --gateway-name MyFileGateway --gateway-region us-east-1 --gateway-type FILE_S3 --activation-key your-activation-key`
+
+
+2. `Tape Gateway` 
+This type of storage gateway provides a virtual tape library (VTL) interface to AWS cloud storage, allowing you to store and access virtual tapes in Amazon S3 and Amazon Glacier. It is ideal for applications that require tape-based backup and archiving, providing a cost-effective and scalable solution for long-term data retention.
+This allows you to use virtual tapes to store data in Amazon S3 and Amazon Glacier. It acts like a tape library, making it easy to integrate cloud storage with existing tape-based backup applications on premise .
+
+
+- some companies may use physical tapes for backup but with Tape Gateway companies will use aws to eliminate the physical tape
+- VTL (Virtual Tape Library) backed up by AMAZON S3 and glacier 
+- It is used to backup data 
+- It works with other leading backup software vendors 
+
+# USE CASE FOR STORAGE GATEWAY 
+
+- Backup and Disaster Recovery 
+- Data Archiving 
+- Hybrid Cloud Storage 
+- Content Distribution 
+- Data Migration 
+
+`Steps to Create a Tape Gateway`
+1. Sign in to the AWS Management Console and open the Storage Gateway console.
+2. Click on "Create gateway" and select "Tape Gateway" as the gateway type.
+3. Choose the activation method (e.g., download and deploy the gateway software on a host
+or use an Amazon EC2 instance).
+4. Follow the prompts to configure the gateway settings, including network settings and storage options.
+5. Once the gateway is activated, you can create virtual tape libraries (VTLs)
+and virtual tapes that connect to Amazon S3 and Amazon Glacier.
+6. Configure your on-premises backup applications to use the virtual tape library for backup and arch
+iving operations.
+`aws storagegateway create-gateway --gateway-name MyTapeGateway --gateway-region us-east-
+1 --gateway-type VTL --activation-key your-activation-key`
+
+
+
+# AWS INTERGRATION AND MESSAGING
+
+The goal is to Decouple your application so that they dont depend on each other directly 
+messaging 
+
++ SNS: Simple Notification service 
++ SQS : Simple Queue Service 
+
+`Two types of Service Communication`
+
++ Synchronous Communication : A service will have to wait on each other in (real time) e.g Api calls , request-response
++ Asynchronous communication --A service will have go through another service to get a response ( service dont wait , they use queues ) e.g Background task or Job processing 
+
+`AWS HAS CORE MESSAGING SERVICES SUCH AS`
+
++ SNS: Simple Notification service 
++ SQS : Simple Queue Service 
++ Kinesis 
++ Amazon MQ 
+
+######################
+# SQS 
+######################
+
+`What is SQS `
+
+Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. SQS allows you to send, store, and receive messages between software components without losing messages or requiring other services to be available. It provides a reliable, highly scalable, and secure way to manage the communication between different parts of your application, ensuring that messages are delivered in a timely manner even if some components are temporarily unavailable.
+
+
+When we deploy multiple applications into the cloud environment , it can be come inevitable (unavoidable)
+for them to communicate with each other  and this is true with architectures like Micro-services . 
+
+SQS is a regional service 
+
+
+# USE CASE for SQS:
+
++ *Application Decoupling* : For applications that need to run tasks asynchronously, you can use SQS to queue tasks that are processed by workers independently.
+
++ *Microservices Communications* : When multiple microservices need to interact but shouldn’t directly depend on each other, SQS provides the necessary abstraction.
+
++ *Load leveling*: Helps in distributing workloads to avoid overloading a particular component by storing tasks until a worker is ready to process them.
+
++ *its good for Batching processing* :  If you need to process large volumes of data in smaller batches, SQS can distribute these tasks efficiently.
+
+
+**SQS**  : (Simple Queue Service) and its a `fully managed messaging` queuing service provided by AWS which helps in the enabling of application decoupling .It allows you to send, store, and receive messages between distributed systems, without losing messages or requiring each component to be always available.
+
+
+**key features** 
+
++ Decoupling : Allows components to communicate asynchronously without being tightly integrated, enabling each part to operate independently.
++ Scalability: Automatically scales to handle the number of messages being processed, no matter the volume
++ Its secured : Integrated with AWS IAM, allowing you to control access to the queue and encrypt messages in transit or at rest with KMS.
++ messages can be retained : Messages can be retained in the queue for up to 14 days (default is 4 days ) 
+
+
+
+SQS will receive messages from producers and  those messages will be processed by consumers .
+
+what is a consumer and what is a producer in SQS ?
+
+`Producers` are the services or applications that sends messages to SQS
+`Consumers` are the services or applications that will poll (read) the messages from SQS 
+
+
+| Producer Type                     | Description                                                       | Example AWS Services / Scenarios                              |
+|----------------------------------|-------------------------------------------------------------------|----------------------------------------------------------------|
+| Application Servers              | Backend apps send tasks to be processed asynchronously.           | EC2 Web Server → SQS                                           |
+| Microservices                    | One service sends work to another without tight coupling.         | Order Service → Billing Service via SQS                        |
+| Event-Driven Systems             | Events trigger messages to queues automatically.                  | EventBridge → SQS when file lands in S3                        |
+| Data Pipelines                   | Pipelines generate jobs that need background processing.          | Glue / EMR job dispatch tasks to SQS                           |
+| CI/CD / Automation Tools         | Pipelines queue build/test/deploy commands.                       | Jenkins / GitHub Actions → SQS workers                         |
+| IoT Devices / Edge Systems       | Devices send telemetry or processing triggers to cloud queues.    | IoT Core → SQS                                                 |
+| Mobile / Web Frontend via API    | Frontend apps push tasks using API → backend → SQS.               | Mobile App → API Gateway → Lambda → SQS                        |
+
+
+
+
+`Different Types of Consumers` 
+
+| Consumer Type                    | Description                                                       | Processing Example / Pattern                                   |
+|----------------------------------|-------------------------------------------------------------------|----------------------------------------------------------------|
+| Worker Servers                   | Continuously poll queue to process tasks.                         | EC2 Auto Scaling workers draining SQS                          |
+| Lambda Functions                 | Automatically triggered to process messages from SQS.             | Lambda runs image/transaction processing                       |
+| Microservices                    | Services read messages and perform business logic.                | Billing Service consuming "Process Payment" messages           |
+| Container Workers (ECS/EKS)      | Long-running container workers poll queue for workloads.          | ECS task processing video conversion jobs                      |
+| AWS Batch / Scheduled Workers    | Batch jobs periodically drain or process queue items.             | Nightly ETL job pulls SQS data                                 |
+| ETL / Data Processing Systems    | Consume messages to trigger data movement / transformations.      | Glue job starts workflow from SQS messages                     |
+| Notification / Gateway Services  | Convert SQS messages into external notifications.                 | SQS → SNS → Email/SMS                                          |
+
+
+
+
+**TYPES OF SQS Queues**
+
+**Standard Queue** :Offers unlimited throughput, allows at-least-once delivery, and provides best-effort ordering. It's the default queue type. 
++ Messaging order is not guaranteed 
++ It has default message retention (4 days and max of 14 days )
++ Limitation of message size 256 KB of message sent 
++ It can have duplicate messages
+
+**FIFO Queue** : (First-in-First-Out) : Guarantees that messages are processed exactly once, in the exact order they were sent, with limited throughput
++ This means it treats the messages in the order they are delivered 
++ It has limited throughput 300 msg /s without batching 
++ It has the capability of removing duplicate messages (exactly once send capability)
++ Messages are processed in order by the consumer 
+
+
+
+**HOW DOES THE SQS QUEUEING SERVICE WORKS** 
+
++ Message Lifecyle -----> A producer (sender) sends a message to the queue .Consumers (receivers) poll the queue to retreive and process the message , once a message is succesfully processed it is deleted from the qeueue 
+
++ It has what is called Visibility Timeout : ---> This is the amount of time the message or messages is hidden from other consumers while its being processed by one , if the message was not processed within the visibility timeout , it becomes available again 
+
++ Dead-Letter Queue (DLQ) : ---> Messages that fail to be processed after a configurable number of attempts can be moved to a DLQ for further inspection and troubleshooting.
+
+
+**SQS -SECURITY**
+
++ It supports encryption in flight (https) 
++ It supports encrption at rest (SSE-KMS or SSE-SQS) key  
++ it supports client-side encryption
++ It supports users to control access using IAM policies to regulate access to the SQS api 
++ it has SQS access policies (which is similar to s3 bucket policies)
+
+
+
++ **Delivery delay* : This is how long a message will be held in the queue before its  delivered to the consumers 
++ **Receive message wait time* : also known as long polling, is a feature in Amazon SQS (Simple Queue Service) that controls how long a request will take for a queue to wait for messages to become available before returning a response
+
+
+# SQS - Poll for Messages 
+
+- This is when a consumer request messages from the queue 
+- This is called long polling 
+- It decrease number of api calls made to sqs while increase efficiency and latency of our application 
+- Long polling is preferable to short polling
+
+
+
+FIFO (First in first out)
+
++ Limited throughPUT for 300 msg/s without batching 3000 msg/s with batching 
++ It has a one send capability 
++ Messages from the producer are consumes in the same order by the consumer they way they were sent 
++ When creating SQS fifo the queue name must end with a .fifo e.g `class10.fifo` 
+
+
+
+Monday ( contest)
+assignment 
