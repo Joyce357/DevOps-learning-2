@@ -5651,6 +5651,11 @@ messaging
 + Kinesis 
 + Amazon MQ 
 
+
+
+
+
+
 ######################
 # SQS 
 ######################
@@ -5782,5 +5787,278 @@ FIFO (First in first out)
 
 
 
-Monday ( contest)
-assignment 
+
+# SNS 
+
+`What is SNS `  : Amazon Simple Notification Service (SNS) is a fully managed messaging service that enables you to decouple and scale microservices, distributed systems, and serverless applications. SNS allows you to send messages to multiple subscribers through various protocols such as HTTP/S, email, SMS, and AWS Lambda. It provides a reliable and scalable way to manage the communication between different parts of your application, ensuring that messages are delivered in a timely manner to the intended recipients.
+
+`Note` : This is a regional service 
+
+**Key Concepts of SNS** 
+
+1.  `Topic` : A topic is a logical access point that acts as a communication channel for sending messages to multiple subscribers. Producers publish messages to a topic, and subscribers receive those messages based on their subscription preferences. in simple words a topic will be hopw we want to configure how messages will be send (Those who will receive the messages from sns)
+
++ A topic is a communication channel that acts as a hub for sending messages. Publishers (senders) send messages to the topic, and subscribers (recipients) receive those messages.
++ You can have multiple subscribers (This is where the message will be send ) (email, SMS, SQS, Lambda, HTTP endpoints) to the same topic, and each will receive messages as they are published.
+
+2. `Publisher` : A publisher is an application or service that sends messages to an SNS topic. Publishers are responsible for creating and sending messages to the topic, which then distributes those messages to all subscribed recipients.
++ Publishers are the sources of messages in the SNS ecosystem. They create and send messages to a topic, which then distributes those messages to all subscribed recipients.
++ Publishers can be any application or service that needs to send notifications or messages to multiple recipients,
+such as a web application, a backend service, or an IoT device or any aws service 
+
+3. `Subscriber` : A subscriber is an application or service that receives messages from an SNS topic. Subscribers can choose to receive messages through various protocols such as HTTP/S, email, SMS, or AWS Lambda, depending on their preferences and requirements.
++ Subscribers are the recipients of messages in the SNS ecosystem. They receive messages from a topic based on their subscription preferences.
++ Subscribers can choose to receive messages through various protocols such as HTTP/S, email, SMS,
+or AWS Lambda, depending on their preferences and requirements. This flexibility allows subscribers to receive notifications in the way that best suits their needs.
+
+4.`Message Delivery:` : 
+
++ Push Notifications: You can send push notifications to mobile devices (iOS, Android, etc.).
++ SMS Messages: Send SMS messages to phone numbers.
++ Email: Send email notifications to email addresses.
++ HTTP/HTTPS Endpoints: Push messages to web servers for further processing.
++ SQS: Route messages from SNS to an SQS queue for asynchronous processing.
++ AWS Lambda: Trigger Lambda functions when messages are published to the topic
+
+5.  `Message Fanout:`
++ SNS supports message fanout, which means that when a message is published to a topic, it can be delivered to multiple subscribers simultaneously. This allows you to easily send notifications to a large number of recipients without having to manage individual subscriptions for each recipient.
++ This enables powerful event-driven architectures where multiple systems can react to the same event.
+
+`USE CASES FOR SNS`
+
++ `use for event notifications`;Application and System Alerts: Use SNS to send notifications about application events, system health, or security alerts to administrators or monitoring systems.
++ `User Notifications`: Send notifications to users about account activity, order updates, or promotional offers via email, SMS, or push notifications.
++ `Workflow Automation`: Trigger workflows or processes in response to specific events, such as a new
+user registration or a completed transaction, by sending messages to AWS Lambda or other services.
++ `Fanout Messaging`: Distribute messages to multiple subscribers simultaneously, such as sending updates to  
+multiple microservices or notifying different teams about a critical event.
++ `Mobile Push Notifications` Send push notifications to mobile devices. SNS supports sending platform-specific push notifications to iOS, Android, and other mobile platforms.
++ . `Broadcast Notifications`: SNS is useful for broadcasting messages to a wide range of recipients. For instance, in the event of an emergency, you can use SNS to send SMS or email notifications to a large number of people.
++ . `Decoupling your systems` : SNS is frequently used to decouple services in a distributed system. For example, when an application needs to communicate with multiple microservices, SNS can send notifications to these services without them needing to be aware of each other
++  `Application or infrastructure Monitoring`: SNS can be integrated with AWS services like CloudWatch to send real-time alerts via email, slack or SMS when certain thresholds or conditions are met (e.g., CPU utilization is too high on an EC2 instance)
+
+
+**Features of SNS**
+
++ `Scalability` : SNS can handle a large number of messages and subscribers, making it suitable for applications of all sizes.
++ `Reliability` : SNS ensures that messages are delivered to subscribers in a reliable manner, with retries and error handling mechanisms in place.
++ `Security` : SNS integrates with AWS Identity and Access Management (IAM) to control access.it also has an access policy to help control access to the SNS api 
++ `Message Filtering` : SNS allows subscribers to filter the types of messages they receive based on specific attributes. This means that not every subscriber has to receive all messages, allowing more efficient and targeted communication.
++ `Message Fanout` : SNS supports message fanout, which means that when a message is published to a topic, it can be delivered to multiple subscribers simultaneously. This allows you to easily send notifications to a large number of recipients without having to manage individual subscriptions for each recipient.
++ `Multiple Protocols` : SNS supports multiple protocols for message delivery, including HTTP/S,
+email, SMS, and AWS Lambda. This flexibility allows subscribers to receive notifications in the way that best suits their needs.
++ `Integration with AWS Services` : SNS can be easily integrated with other AWS services such as
+AWS Lambda, Amazon SQS, and Amazon CloudWatch, enabling powerful event-driven architectures and seamless communication between different components of your application.
+
+`Steps to Create an SNS Topic and Subscribe to It`
+
+There are two types of SNS topics we can create 
+
+1. `Standard SNS topic` ; Standard SNS topics can support up to 12.5 million subscriptions per topic.
+2. `FIFO SNS topic` : FIFO (First-In, First-Out) topics have a lower limit, supporting up to 100 subscriptions per topic.
+
+
+1. Sign in to the AWS Management Console and open the Amazon SNS console.
+2. Click on "Create topic" and choose the type of topic you want to create (Standard or FIFO).
+3. Provide a name and display name for your topic, and configure any additional settings as needed
+4. Click "Create topic" to create the topic.
+5. After the topic is created, click on the topic name to open its details page.
+6. Click on the "Create subscription" button to add a subscriber to the topic.
+7. Choose the protocol for the subscription (e.g., Email, SMS, HTTP/S,  
+AWS Lambda, SQS) and provide the endpoint (e.g., email address, phone number, URL, Lambda function ARN, or SQS queue ARN).
+8. Click "Create subscription" to finalize the subscription.
+
+Next for cloudwatch monitoring using SNS and lambda as subcription to send messages to slack or teams 
+
++ Create a Slack App 
++ Add the app into your slack workspace 
++ Create a Webhook of the app 
++ Add the app into a channel where you want to receive notifications 
+
+Create a Cloudwatch alarm 
+
++  Create a cloudwatch Alarm to monitor the specific metric you want in our demo we monitored CPU 
++  While creating the alarm select the sns you created before 
+
+
++ Create a Lambda function and subscribe it to the SNS
++ Update the lambda function code using the code below 
+
+
++ Update the lambda permission using the following permisison below ensure you change the arns to match your own sns arn 
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:ca-central-1:891377304437:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:ca-central-1:891377304437:log-group:/aws/lambda/class10-slack-notification:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "lambda:InvokeFunction",
+            "Resource": "arn:aws:lambda:ca-central-1:891377304437:function:class10-slack-notification",
+            "Condition": {
+                "StringEquals": {
+                    "AWS:SourceArn": "arn:aws:sns:ca-central-1:891377304437:class10-topic"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "sns:Subscribe",
+            "Resource": "arn:aws:sns:ca-central-1:891377304437:class10-topic"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "sns:Publish",
+            "Resource": "arn:aws:sns:ca-central-1:891377304437:class10-topic"
+        }
+    ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://hooks.slack.com/services/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
+
+
+https://api.slack.com
+
+9.14 PM -----> 9:25 PM EST 
+
+
+
+**AMAZON KINESIS SERVICES** 
+**AMAZON MQ**
+
+MONITORING ( Cloud Watch , Cloud Trail , AWS config )
+NETWORKING ( VPC )
+serverless Technologies ( Lambda )
+Databases (dynmodb )
+Amazon cognito , step functions 
+opensearch , guard duty , trusted advisor 
+
+9 : 25 pm est 
+
+
+
+**AMAZON KINESIS SERVICES** 
+
+Amazon Kinesis is a fully managed service for real-time data streaming and analytics. It allows you to collect, process, and analyze streaming data at scale, enabling you to gain insights and react to new information in real time. Kinesis provides several components, including Kinesis Data Streams, Kinesis Data Firehose, and Managed Apache Flink  old name was (Kinesis Data Analytics) , each designed to handle different aspects of the streaming data lifecycle.
+
+1. `Kinesis Data Streams`
+
+Kinesis Data Streams is a scalable and durable real-time data streaming service that allows you to build custom applications that process or analyze streaming data for specialized needs. It provides low-latency data processing and is ideal for use cases such as real-time analytics, log and event data collection, and streaming data pipelines. its good with social media platforms, financial transactions 
+
+
++ it has a Consumer and a producer ( Producers sends data to your kinesis data stream e.g Amazon Kinesis Agent ,AWS SDK , Amazon Kinesis Producer Library (KPL))
++ Consumer can be ( Application , client (computer ,cell phone etc ), SDK , Kinesis agents ) 
++ It has a Shard where you can save data into specific shards 
++ Partition Key ( specify if you want a particular data to be process in a particular shard )
++ It supports two capacity modes ( On-demand and Provisioned) 
+
+
+**Main Features of Kinesis Data Streams**
+
++ Real time data processing : You can continuously ingest and process streaming data at scale.
++ Shard Management : Data streams are divided into shards, enabling parallel processing.
++ Data retention : Data can be retained for up to 365 days 
++ Integration : you can intergrate it with other aws services e.g Lambda , firehose ,s3 
+
+**Kinesis Data Stream security**
+
+- IAM is going to control access using iam policies
+- You can enrypt data in flight using https endpoints
+- server side encryption ( Encryption at rest )
+- VPC endpoint available for kinesis within the vpc 
+- You can monitor API calls ( data request ) using cloudtrail 
+
+
+3. `Amazon Data Firehose`: 
+
+Amazon Kinesis Data Firehose is a fully managed service that provides an easy way to reliably load streaming data into data lakes, data stores, and analytics services. It allows you to capture, transform, and deliver streaming data to destinations such as Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk. Kinesis Data Firehose automatically scales to match the throughput of your data and provides near real-time delivery of streaming data to your chosen destinations.
+
++ it has producers and consumers (producers , Application , client ,sdk, kinesis agent , kinesis data stream , Amazon cloudwatch.)
++ Consumers can be ( Amazon s3 , Amazon Redshifrt , Opensearch, Splunk , Datadog ) near realtime 
++ It supports different data formats , conversions , transform , compress 
++ It supports custom data transformation using lambda .
++ It can send failed data or back up data in s3 bucket 
+
+ETL ---> extract Transform Load 
+
+
+**KEY FEATURES AMAZON DATA FIREHOSE** 
+
++ Fully AWS Managed service 
++ Data format conversion 
++ Intergration : Supports loading data into services like Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk.
++ it supports Buffering and Compression : Supports buffering data for a specified time and compressing data to save storage.
+
+
+3. **Managed Apache Flink (kinesis data analytic ):** 
+
+This service enables you to analyze streaming data in real-time using standard SQL.AWS has made it in such away that its very easy query or request or look streaming data (information) to gain insight or understand in real time without being an expert in any programming language .
+
+
+**Key Use Cases**
+
++ **Real-Time Analytics*: Analyze and respond to data streams in real-time, such as 
+monitoring website clicks or social media interactions*.
++ **Data Ingestion*: Ingest large volumes of data from IoT devices, applications, and web logs.
++ **Machine Learning*: Stream data for real-time predictions and model training.
++ **Log and Event Data Processing*: Collect and analyze log data for operational insights.
+
+
+**Amazon MQ**
+
+Amazon MQ is a Managed Message Broker service provided by AWS.
+its a managed broker service for `Apache ActiveMQ` and `RabbitMQ` that makes it easy to setup and operate message brokers in the cloud . It enables applications to communicate and exchange messages using various messaging protocols such as `JMS, AMQP, MQTT, OpenWire, STOMP, and WebSocket`.
+
+Amazon MQ this service helps to replace on premise or existing architectures in the cloud which are already using technologies like this. It uses the Traditional Message broker replacement 
+
+New message brokers in aws --->SQS  SNS , 
+
++ ActiveMQ
++ RabitMQ
+
+
+On prem Message brokers 
++ IBM MQ
++ Onpremise ZeroMQ 
+
+**Key Features** 
+
++ Its a Managed service in AWS : Amazon MQ manages the setup, operation, and scaling of ActiveMQ or RabbitMQ message brokers, including software updates, failure detection, and recovery.
++ Its Highly Available : It can be configured in Multi AZ 
++ its Scalable : Amazon MQ supports a range of message broker architectures, allowing scaling based on the needs of your application but not as much as SNS or SQS 
++ Its secured you can control access via IAM , encryption in transit and serverside encryption 
++ You can monitor using cloudwatch , monitoring metrics like throughput 
+
+Re-engineering the application to use SNS , SQS  if you are already using different protocols for message brokers like MQTT etc then you can simply use a service in aws like AMAZON MQ . 
+
+
+`USE CASE` : 
+
++ Decoupling our application : Amazon MQ is suitable for microservices architectures where different components communicate asynchronously.
++ Migrating from Existing Message brokers : If you are using on-premise ActiveMQ or RabbitMQ, Amazon MQ simplifies the migration process by providing a managed solution with the same open-source standards.
