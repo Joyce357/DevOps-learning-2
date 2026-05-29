@@ -1,0 +1,164 @@
+
+#!/bin/bash
+set -e
+
+# Update packages
+apt-get update -y
+
+# Install Apache2
+apt-get install -y apache2
+
+# Enable and start Apache2
+systemctl enable apache2
+systemctl start apache2
+
+# Create website
+cat > /var/www/html/index.html <<'EOF'
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Class 10 - Europe</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .flag {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+
+        .welcome-box {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 30px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        @media(max-width:768px){
+            h1{
+                font-size:2rem;
+            }
+
+            p{
+                font-size:1rem;
+            }
+
+            .card{
+                padding:30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="flag">🇪🇺</div>
+
+        <h1>Welcome to Class 10</h1>
+
+        <p>
+            We are excited to have our students from across Europe join us.
+            This learning environment is designed to help you grow your skills,
+            collaborate with classmates, and achieve your educational goals.
+        </p>
+
+        <div class="welcome-box">
+            <h2>Class 10 - Europe Region</h2>
+            <p>
+                Access your lessons, assignments, resources, and class updates
+                from one central location.
+            </p>
+        </div>
+
+        <a href="#" class="btn">Enter Classroom</a>
+
+        <footer>
+            © 2026 Class 10 Europe | Learning Without Borders
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+EOF
+
+# Set permissions
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+
+# Restart Apache
+systemctl restart apache2

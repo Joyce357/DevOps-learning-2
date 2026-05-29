@@ -1,0 +1,1 @@
+remove snow family from curriculum 

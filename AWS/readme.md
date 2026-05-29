@@ -6062,3 +6062,221 @@ Re-engineering the application to use SNS , SQS  if you are already using differ
 
 + Decoupling our application : Amazon MQ is suitable for microservices architectures where different components communicate asynchronously.
 + Migrating from Existing Message brokers : If you are using on-premise ActiveMQ or RabbitMQ, Amazon MQ simplifies the migration process by providing a managed solution with the same open-source standards.
+
+
+
+
+# MONITORING ( Monitoring vs Observability )
+
+**Monitoring** is the process of collecting, analyzing, and using data to track the performance and health of an application or system. It involves setting up tools and systems to gather metrics, logs, and other relevant information to ensure that the application OR systems is running smoothly and to identify any issues that may arise.
+
+It focuses on tracking pre-defined metrics and logs that represent the health of the system, such as:
+
++ CPU usage
++ Memory usage
++ Disk I/O
++ Network traffic
++ Application-specific metrics (e.g., request latency, error rates)
++ Log data (e.g., application logs, system logs)
++ Response time 
+
+When these values exceed the thresholds you configure, the monitoring system will trigger alerts so that teams can respond quickly and fix issues before they impact users.`
+
+Monitoring in AWS involves tracking and observing the performance, security, and overall health of your AWS infrastructure and services. It ensures that your cloud resources, such as EC2 instances, databases, VPCs, and other services, are running smoothly and securely. AWS provides various tools and services to help you monitor your environment effectively
+
+`Interview Question` : 
+
+`What is the difference between Monitoring and Observability ? `:
+
+**Monitoring** is the process of `collecting and analyzing predefined metrics and logs to track the health and performance of a system to ensure the system is operating correctly. It focuses on specific indicators that represent the state of the system, such as CPU usage, memory usage, and response times. Monitoring helps identify issues based on these predefined metrics and can trigger alerts when thresholds are exceeded.
+
+**Observability**, Observability is a broader concept that focuses on understanding the internal state of a system based on its outputs, such as logs, metrics, and traces. It is about how well you can understand what's happening inside a system without necessarily knowing all possible failure modes in advance.
+
+
+with Monitoring The primary purpose of monitoring is to identify and alert on known issues. It answers the question, "Is my system behaving as expected?"
+
+while in Observability : The goal of observability is to help you explore and investigate the system's behavior and understand unknown unknowns. It answers the question, "Why is my system behaving this way?"
+
+Approach: Monitoring typically involves setting up alerts and dashboards to observe known metrics and logs. It relies on predetermined thresholds to notify you when something goes wrong (e.g., CPU utilization exceeds 80%).
+
+On the otherhand , Approach: Observability focuses on collecting logs, metrics, and traces in a more holistic manner and using correlation to analyze them together. It allows for deep troubleshooting and root-cause analysis through exploratory analysis, even when a specific problem has not been anticipated.
+
+
+
+| **Aspect**          | **Monitoring**                                          | **Observability**                                              |
+|---------------------|---------------------------------------------------------|---------------------------------------------------------------|
+| **Focus**           | Tracking known metrics and logs                         | Understanding the internal state from external outputs (logs metrics)       |
+| **Purpose**         | Detecting known issues and alerting                     | Investigating unknown issues and understanding the system's state |
+| **Nature**          | Reactive (alerts on predefined conditions)              | Proactive (explores behavior and correlations)                |
+| **Tools**           | Dashboards, alerting systems (e.g., CloudWatch)         | Tracing tools, log aggregation, and analysis platforms        |
+| **Approach**        | Based on thresholds and rules                           | Involves correlation (bringing together), context, and deeper analysis            |
+| **Questions**       | "Is the system working as expected?"                     | "Why is the system behaving this way?"                        |
+
+
+
+# CLOUD WATCH ( Monitoring and Observability)
+
+Amazon CloudWatch is a monitoring and observability service provided by AWS that offers a comprehensive set of tools and features to help you monitor, analyze, and gain insights into your AWS resources and applications. It allows you to collect and track metrics, collect and monitor log files, set alarms, and automatically react to changes in your AWS environment.
+
+It collects monitoring Data or operational data in the form of `logs , metrics , events` which provides a unified views in aws 
+
++ A primary monitoring tool in AWS, CloudWatch collects and tracks metrics, logs, and events. You can set up custom metrics, create alarms, and visualize data on dashboards.
++ It helps in monitoring resource usage (like CPU, memory, and disk space), application performance, and even custom metrics from your applications.
++ you can set CloudWatch Alarms which can trigger notifications via SNS or automate actions when thresholds are breached.
++ Cloudwatch is a regional service , if you want to monitor resources in different regions then you will need to create cloudwatch alarms in those regions.
+
+**What is a Metrics** (`Cloudwatch Metrics`)
+
+Metrics are numerical measurements that provide information about the performance, behavior, or state of a system or application.
+Cloudwatch is going to collect and track metrics .These variables you can use to measure the perfomance of your aws resources or applications. These metrics can be CPU utilization ,disk read/write , and also custom metrics 
+
+**There different types of Metrics**
+
+1. `System Metrics`:These are metrics that provides information about the health of your systems /infrastructure e.g EC2 , Databases, network devices some of examples of these metrics can be ( CPU utilization , Memory usage ,Disk I/O , Network traffic)
+
+2. `Application` : 
+
+These are metrics that monitors the perfomance of our applications / software e.g
+
+Response time : Time taken for your application to response to the request 
+Request rate : number of request process per second by your application 
+Error rates : frequency of errors occuring in your application . 
+
+3. `Business Metrics`: 
+These will provide insights about your business processes and its outcome 
+e.g number of transactions etc
+
+
+**What are Logs** ( `Cloudwatch Logs`)
+
+Logs are records of events that occur within a system, application, or service. They provide detailed information about the behavior and activities of the system, which can be crucial for troubleshooting, debugging, and understanding the system's performance. CloudWatch Logs allows you to collect, monitor, and analyze log data from your AWS resources and applications.
+
+
+**Different Types of Logs** 
+
++ System Logs
++ Application logs (access logs , transaction logs )
++ Security logs 
++ Audit logs 
+
+ **Events**
+
+This is a specific occurence or change in the state of a system , application , infrastructure or services .Events can represent a wide range of actions, from user interactions and configuration changes to system alerts and failures. Events are typically time-stamped and serve as a record of something significant happening within the system, often triggering automated responses or further actions. It has time stamped on the events that happens which we then term them as logs .  
+
+
+ ## CLOUD WATCH METRICS 
+
+- These is what you want to monitor 
+- Cloudwatch provides metrics you can monitor for any aws services 
+- Metrics belongs to what is called "Namespaces" 
+- Dimensions is an attribute of a metric (instance id ,environment ,)
+- You can have up to 30 dimensions per metric 
+- Metrics have time stamps 
+- You can create a dashboard for your metric 
+- you can creat your own custom metrics
+
+
+
++ Am concerned about my CPU 
++ Am concern about my Storage 
++ When setting an alarm you will have the following attributes 
+- Namespace (dynamic)
+- Metric name: Dynamic 
+- InstanceId
+
+
+
+
+
+DIFFERENT FEATURES IN CLOUDWATCH 
+
+1. **Dashboard**
+
++ You can setup Dashboard in Cloudwatch ( Logs , Alarms ,Metrics) and  you can use different widget configurations to visualized the logs.There are  different widget types ( e.g lines, pie charts ,data tables ,bars etc  )
+These dashboards helps you to monitor your resources metrics easily enabling the data in a human readable format . 
+
++ Alarms (In Alarm , All Alarms) :
+in Alarm shows you all the alarms that are in alarm state 
+All alarms : it shows you all the alarms you have setup in cloudwatch 
+
+`Interview Question` : What are some of the things , you have done to reduce cost or what are some of the strategist you have implemented in cost optimization : 
+
++ Auto-scaling 
++ Cloudwatch alarms for billing ( billing threhold)
++ EC2 purchasing options (spot instances , reserved instances)
++ Different storage classes 
+
+
+
+2. **Alarms** :
+
+This is a feature in cloudwatch that monitors metrics and take actions by sending notifications based on specific thresholds or conditions that had been bridged e.g it can send an alarm if CPU utilization is more than 90% . The metrics here is `CPU utilization` and the `threshold 90%` 
+
++ Metrics:  : Metrics are the data points that CloudWatch collects from various AWS services. These can include metrics like CPU utilization, disk I/O, network traffic, or custom application metrics you publish to CloudWatch.
+
++ **Period* : How often cloudwatch will check the threshold to see if it has been bridge 
+
++ **Threshold type* :  A threshold is the condition that triggers the alarm. For example, you might set an alarm to trigger when CPU utilization exceeds 80% for a specified period.
+
++ *actions* : When an alarm state changes (from OK to ALARM, or from ALARM to OK), you can define actions to take. This can include sending notifications, auto-scaling actions, or executing AWS Lambda functions.
+
++ *threshold value* : This is the condition when bridge cloudwatch will send an alarm 
+
++ *Alarm States*: ( `Ok` : The metric is within the defined threshold , `Insufficient data`, there is no data to determined the state of the alarm , `Alarm state` the metrics is outside or have crossed the defined threshold)
+
+
+**Setting up Actions** 
+
+These are actions that you will want to be triggered when the alarm changes any state . some of these actions can be 
+
++ **Notification (You can get 3 different types of alerts --ok , alarm or insufficient data)
++ **Lambda action
++ **Auto Scaling action
++ EC2 action
++ Systems Manager action  
+
+
+**Composite Alarms** :
+
+Composite Alarms in AWS CloudWatch allow you to combine multiple CloudWatch Alarms into a single alarm. This is useful for monitoring complex conditions that involve multiple metrics or thresholds, enabling you to simplify your monitoring strategy and take action based on aggregated conditions.
+
+
+
+
+**Log groups**
+
+A Log Group is a collection of Log Streams that share the same retention, monitoring, and access control settings
+
+- A log group helps you organised your log data . You can create a log for specific application or services or environments .
+- You can setup retention policies . This is how long you want to keep the logs in your log group or aws account . 
+- from your logs you can create a custom metrics which you can then monitor 
+- Logs groups can be created by `users or by aws` . Log groups that are created by aws the log group name starts with `/aws` e.g `/aws/lambda/class6-sns-slack-lambda` you can create your own log group but the name must not start with `aws/`  
+- within a log group we have what is called a log stream 
+
+`Log Streams`: Each Log Group can contain multiple Log Streams (stream means where the logs is coming from). A Log Stream is a sequence of log events from the same source (e.g., an EC2 instance or a Lambda function).
+
+
+`logs insight` :
+
+This will allows you to perform interactive queries(get data ) on your log data in real-time. This service is useful for troubleshooting, monitoring application behavior, and analyzing logs for insights.
+
+`Live Tailing` : 
+
+Live Tail in AWS CloudWatch Logs allows you to view log events in real-time as they are being written to your log streams. This feature is particularly useful for monitoring applications, debugging issues, and getting immediate feedback from log data. Here’s an overview of how Live Tail works and how you can use it effectively: Real-Time Monitoring, Filter Logs, Continuous Updates, 
+
+USE CASE : Real time debugging 
+         : Incident response 
+         
+`logs Anomalies`: This is a feature in cloudwatch-logs that uses machine learning to automatically detech unsual pattern in your logs data. . It helps you to idenitify issues without you doing any manual scanning 
+
++ its good for Security Monitoring
++ Performance Issues its good for perfomance monitoring 
++ Compliance
++ Early Detection 
+
+The log anamalies looks at the following 
+
++ Unauthorized Access:
++ Error Spikes:
++ High Volume of Requests:
++ Performance Metrics:

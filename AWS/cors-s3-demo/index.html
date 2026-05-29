@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3 CORS Demo</title>
+  <style>
+    :root {
+      --ink: #16324f;
+      --sea: #0b7285;
+      --foam: #effbff;
+      --sand: #fff6df;
+      --sun: #f59f00;
+      --brick: #c05621;
+      --leaf: #2f855a;
+      --panel: rgba(255, 255, 255, 0.92);
+      --line: rgba(22, 50, 79, 0.14);
+      --shadow: 0 18px 44px rgba(22, 50, 79, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(245, 159, 0, 0.22), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(11, 114, 133, 0.18), transparent 30%),
+        linear-gradient(135deg, #f8fcff 0%, #eef9ff 52%, #fffaf0 100%);
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .hero,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(11, 114, 133, 0.1);
+      color: var(--sea);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.88rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 3.8vw, 3.8rem);
+      line-height: 0.98;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      line-height: 1.7;
+      font-size: 1.08rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input[type="url"] {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(22, 50, 79, 0.22);
+      font: inherit;
+      font-size: 0.98rem;
+      background: white;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    button,
+    a.action-link {
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font: inherit;
+      font-size: 0.98rem;
+      text-decoration: none;
+      cursor: pointer;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover,
+    a.action-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .danger {
+      background: linear-gradient(135deg, #dd6b20, #9c4221);
+    }
+
+    .success {
+      background: linear-gradient(135deg, #2f855a, #276749);
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, #0b7285, #164e63);
+    }
+
+    .tip {
+      padding: 16px;
+      border-left: 4px solid var(--sun);
+      background: var(--sand);
+      border-radius: 14px;
+      line-height: 1.6;
+    }
+
+    .log {
+      min-height: 420px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #0f172a;
+      color: #d9f7ff;
+      white-space: pre-wrap;
+      overflow: auto;
+      line-height: 1.55;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    .proof {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--foam);
+      border: 1px solid rgba(11, 114, 133, 0.16);
+      line-height: 1.6;
+    }
+
+    ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.7;
+    }
+
+    code {
+      background: rgba(22, 50, 79, 0.08);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        width: min(100% - 18px, 1180px);
+        padding-top: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">S3 Classroom Demo</span>
+      <h1>Show CORS on S3 without a custom server.</h1>
+      <p class="lead">
+        Host this page in one S3 website bucket, store one JSON file in a second bucket with no CORS,
+        and store another JSON file in a third bucket with CORS allowed. Students will see one
+        JavaScript fetch fail and one succeed, even though both objects are publicly reachable.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <article class="panel">
+          <h2>Step 1: Paste your object URLs</h2>
+          <div class="card-grid">
+            <div class="mini-card">
+              <label for="blocked-url">Blocked object URL</label>
+              <input id="blocked-url" type="url" placeholder="http://blocked-bucket.s3-website-region.amazonaws.com/blocked.json">
+              <div class="button-row">
+                <button class="danger" id="fetch-blocked">Fetch blocked object</button>
+                <a class="action-link secondary" id="open-blocked" href="#" target="_blank" rel="noopener noreferrer">Open directly</a>
+              </div>
+            </div>
+            <div class="mini-card">
+              <label for="allowed-url">Allowed object URL</label>
+              <input id="allowed-url" type="url" placeholder="http://allowed-bucket.s3-website-region.amazonaws.com/allowed.json">
+              <div class="button-row">
+                <button class="success" id="fetch-allowed">Fetch allowed object</button>
+                <a class="action-link secondary" id="open-allowed" href="#" target="_blank" rel="noopener noreferrer">Open directly</a>
+              </div>
+            </div>
+          </div>
+          <div class="proof">
+            <strong>What proves the block?</strong><br>
+            If <code>Open directly</code> works in a new tab but <code>Fetch blocked object</code> fails in this page,
+            the object exists and S3 served it, but the browser refused to expose it to JavaScript because the bucket did not allow this origin.
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Step 2: Teaching script</h2>
+          <ol>
+            <li>Open this page from the frontend S3 website bucket.</li>
+            <li>Paste the blocked object URL and the allowed object URL.</li>
+            <li>Click <code>Open directly</code> for the blocked object and show that the JSON loads in a new tab.</li>
+            <li>Come back and click <code>Fetch blocked object</code>. The browser should block JavaScript access.</li>
+            <li>Open DevTools and show the console error and the missing <code>Access-Control-Allow-Origin</code> header.</li>
+            <li>Then click <code>Fetch allowed object</code> and compare the successful result.</li>
+          </ol>
+          <div class="tip">
+            S3 is perfect for teaching <strong>GET/download CORS</strong>. If you also want to teach
+            <strong>JSON POST preflight</strong>, keep using the local Python API demo or switch the API side to API Gateway + Lambda.
+          </div>
+        </article>
+      </div>
+
+      <aside class="panel">
+        <h2>Result log</h2>
+        <p>The blocked case is expected to fail inside JavaScript even though the object itself is reachable.</p>
+        <div class="log" id="log">Paste your S3 object URLs, then run the demo.</div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const blockedInput = document.getElementById("blocked-url");
+    const allowedInput = document.getElementById("allowed-url");
+    const blockedLink = document.getElementById("open-blocked");
+    const allowedLink = document.getElementById("open-allowed");
+    const logEl = document.getElementById("log");
+
+    function updateLinks() {
+      blockedLink.href = blockedInput.value || "#";
+      allowedLink.href = allowedInput.value || "#";
+    }
+
+    function saveState() {
+      localStorage.setItem("s3-cors-demo-blocked-url", blockedInput.value);
+      localStorage.setItem("s3-cors-demo-allowed-url", allowedInput.value);
+      updateLinks();
+    }
+
+    function setLog(message, tone = "note") {
+      const prefix =
+        tone === "error" ? "[blocked] " :
+        tone === "success" ? "[success] " :
+        "[note] ";
+
+      logEl.textContent = `${prefix}${message}`;
+    }
+
+    async function fetchJson(label, url) {
+      if (!url) {
+        setLog(`${label}\n\nPaste the S3 object URL first.`, "note");
+        return;
+      }
+
+      setLog(`${label}\n\nRunning fetch from this S3 page...`);
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setLog(
+          `${label}\n\nBrowser allowed JavaScript to read the response.\n\nStatus: ${response.status}\n\n${JSON.stringify(data, null, 2)}`,
+          "success"
+        );
+      } catch (error) {
+        setLog(
+          `${label}\n\nThe object may still exist, but browser JavaScript was blocked by CORS.\n\n` +
+          `Proof step: click "Open directly" for the same URL in a new tab.\n\n` +
+          `Browser error:\n${error}`,
+          "error"
+        );
+      }
+    }
+
+    blockedInput.value = localStorage.getItem("s3-cors-demo-blocked-url") || "";
+    allowedInput.value = localStorage.getItem("s3-cors-demo-allowed-url") || "";
+    updateLinks();
+
+    blockedInput.addEventListener("input", saveState);
+    allowedInput.addEventListener("input", saveState);
+
+    document.getElementById("fetch-blocked").addEventListener("click", () => {
+      fetchJson("Blocked S3 object", blockedInput.value);
+    });
+
+    document.getElementById("fetch-allowed").addEventListener("click", () => {
+      fetchJson("Allowed S3 object", allowedInput.value);
+    });
+  </script>
+</body>
+</html>
