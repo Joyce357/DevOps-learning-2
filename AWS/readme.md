@@ -6243,7 +6243,19 @@ Composite Alarms in AWS CloudWatch allow you to combine multiple CloudWatch Alar
 
 
 
-**Log groups**
+3, **Logs**
+
+**Cloudwatch Logs  Under Cloudwatch logs we have the following** 
+
+
+Log Management ( Log groups )
+Log Analytics 
+Log Anomalies 
+Live Tail 
+Logs Insights 
+Contributor Insights 
+
+1. `Log groups`
 
 A Log Group is a collection of Log Streams that share the same retention, monitoring, and access control settings
 
@@ -6270,7 +6282,7 @@ USE CASE : Real time debugging
 `logs Anomalies`: This is a feature in cloudwatch-logs that uses machine learning to automatically detech unsual pattern in your logs data. . It helps you to idenitify issues without you doing any manual scanning 
 
 + its good for Security Monitoring
-+ Performance Issues its good for perfomance monitoring 
++  its good for perfomance monitoring 
 + Compliance
 + Early Detection 
 
@@ -6280,3 +6292,285 @@ The log anamalies looks at the following
 + Error Spikes:
 + High Volume of Requests:
 + Performance Metrics:
+
+`Log Analytics` :
+
+This is a feature in cloudwatch logs that allows you to perform advanced analysis on your log data using queries. It helps you to gain insights from your logs and troubleshoot issues more effectively. With log analytics, you can filter, aggregate, and visualize log data to identify trends, patterns, and anomalies.
+
+
+`Contributor Insights` : 
+
+Contributor Insights is a feature in AWS CloudWatch Logs that helps you identify and analyze the top contributors to specific log events. It provides insights into which resources, users, or applications are generating the most log activity, allowing you to focus on the most significant contributors to your logs for troubleshooting and optimization purposes.
+
+
+4. **Network Monitoring** . Under cloudwatch we have the network monitoring features which has the following
+Flow Monitors 
+Internet Monitors
+Synthetic Monitors 
+
++ `Flow Monitors`:
+
+This is a feature in AWS CloudWatch that allows you to monitor and analyze network traffic flow within your AWS environment. It provides insights into the traffic patterns, source and destination of network traffic, and helps you identify potential security threats or performance issues related to network connectivity.
+
++ `Internet Monitors` :
+This is a feature in AWS CloudWatch that allows you to monitor the availability and performance of your applications and services from the perspective of end-users across the internet. It helps you understand how your applications are performing for users around the world and identify any issues that may be affecting their experience.
+
++ `synthetic monitors`:
+This is a feature in AWS CloudWatch that allows you to create and run synthetic tests to monitor the availability and performance of your applications and services. Synthetic monitors simulate user interactions with your applications, such as making HTTP requests or performing transactions, to ensure that they are functioning correctly and meeting performance expectations.
+
+
+**Amazon Eventbridge** :
+
+Amazon EventBridge is a serverless event bus service that allows you to connect applications using events. It enables you to ingest , filter, and route events from various sources, including AWS services, your own applications, and third-party SaaS applications.
+
+Serverless means you do not need to provision /create or manage servers to run the service. 
+
++ No server management (no underlying infrastructure )
++ Automatically scale
++ Cost efficient 
++ Its an event driven architecture 
++ It has integrated security (inbuild security features lika IAM )
++ Its easy to integrate with different services especially within the aws ecosystem 
+
+Note ; This is a regional service 
+
+**Key Concepts of Amazon EventBridge**
+
+1. **Events** :  
+
+An event is a JSON object that describes a change in the state of a resource or an occurrence in your application. It contains details like the source, time, and type of the event.
+
+2. **Event Buses** : These is were all your events will be captured .An event bus is a container for events
+
++ **Default Event Bus* :
+They are Automatically created by aws when you create an aws account which stores all your events from that account 
+
++ *Custom Event Buses:* 
+You can create your own event buses to handle application-specific events.
+
++ *Partner Event Buses*
+ These are used to receive events from SaaS providers and other third-party sources.
+
+3. **Rules :** 
+Rules determine how events are processed. You can create rules to filter events based on specific criteria (e.g., event patterns) and route them to one or more targets.
+
+4. **Targets** :
+
+Targets are aws services or resources that responds to events 
+some of these targets can be 
+
++ AWS lambda functions 
++ SNS topic 
++ SQS
++ Kinesis 
++ Api gateway 
+
+5. **Event Patterns** 
+
+Event patterns allow you to filter events based on specific attributes. You can define which events should trigger the rule by specifying conditions on attributes in the event.
+
+
+BREAK BE BACK  9:25 PM EST 
+
+
+
+**Eventbridge service has the following feaures**
+
++ Dashboards 
++ Developer resouruces: This is just information, tutorials etc to help developers
++ Buses : EventBridge uses event buses to receive and route events from various
++ Pipes:EventBridge Pipes simplify the process of connecting event sources with targets.
++ Scheduler: This feature allows you to create and manage scheduled tasks
++ Intergration: This feature helps you to integrat event bridge with different services 
++ Schema registry : This feature allows you to define and manage event schemas in one central location.
+
+
+`EVENT BRIDGE HANDS ON or DEMO`
+
++ Open the event bridge service by searching `event bridge `
++ give name and description 
++ Rule type will either be ( Event pattern or Scheduled )
+
+step 2 
+
++ select event source (that is where the events are coming from) e.g AWS events or event-bridge partner events, others ,all events 
++ Sample events : This is just a sample event on how you will want to filter events 
+
+step 3 
+
+Creation method : This is simply the method on how you want to create the event pattern for your eventbridge . There are different creation methods e.g
+
++ Schema type
++ pattern form 
++ custom pattern 
+
+
+`sample code for lambda function for cloudwatch alarm creation` 
+
+import boto3
+
+def lambda_handler(event, context):
+    # Create CloudWatch client
+    cloudwatch = boto3.client('cloudwatch')
+
+    # Correctly extract instance ID from EventBridge event for EC2 Instance State-change Notification
+    instance_id = event['detail']['instance-id']
+    
+    # Define the alarm name and description
+    alarm_name = f"CPUUtilization_Alarm_{instance_id}"
+    alarm_description = f"Alarm when CPU exceeds 70% for instance {instance_id}"
+
+    # Specify actions for different states
+    action_sns_topic_arn = 'arn:aws:sns:ca-central-1:891377304437:myclass9-topic'  # Ensure this ARN is correct
+    ok_actions = [action_sns_topic_arn]
+    alarm_actions = [action_sns_topic_arn]
+    insufficient_data_actions = [action_sns_topic_arn]
+
+    # Create or update a CloudWatch alarm for the CPU utilization
+    cloudwatch.put_metric_alarm(
+        AlarmName=alarm_name,
+        AlarmDescription=alarm_description,
+        ActionsEnabled=True,
+        OKActions=ok_actions,
+        AlarmActions=alarm_actions,
+        InsufficientDataActions=insufficient_data_actions,
+        MetricName='CPUUtilization',
+        Namespace='AWS/EC2',
+        Statistic='Average',
+        Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
+        Period=300,  # 5 minutes
+        EvaluationPeriods=1,
+        Threshold=70.0,
+        ComparisonOperator='GreaterThanThreshold'
+    )
+
+    return {
+        'message': f'Successfully created or updated CloudWatch alarm {alarm_name}'
+    }
+
+
+Other Features of Event Bridge
+
++ **Event Replay**: This feature allows you to replay past events that were captured by EventBridge. It is useful for testing and debugging purposes, as well as for recovering from failures.
+
++ **Event Archiving**: This feature allows you to store events in an archive for later retrieval and analysis. You can specify how long to retain archived events and access them when needed.
+
++ **Pipes**: (pipes)
+EventBridge Pipes simplify the process of connecting event sources with targets. Pipes provide a more streamlined and efficient way to route events from sources to targets, reducing the complexity of managing individual rules and improving performance.
+
+
++ **Integration** under integration we have (Partner event sources , api destinations , connections ):
+- Partner event sources allow you to receive events from SaaS providers and other third-party sources.
+- API destinations enable you to route events to HTTP endpoints, allowing for integration with external systems and
+services that are not natively supported as targets in EventBridge.
+- Connections provide a secure way to manage credentials and authentication for API destinations, ensuring that your events
+are sent securely to the intended endpoints.
+
+
++ **Schema Registry** ( under schame registry we have schemas )
+Schemas allow you to define and manage the structure of your events in one central location. This helps ensure consistency in event formats and makes it easier to develop applications that consume events from EventBridge. You can create schemas for your events, which can then be used to generate code bindings for various programming languages, simplifying the process of working with events in your applications.
+
+
+
+# AWS CLOUD TRIAL 
+`What is Cloud Trial ?`: 
+
+AWS CloudTrail is a service that enables you to monitor and log (capture) all API calls made within your AWS account. It provides a history of AWS API calls for your account, including the identity of the caller, the time of the call, the source IP address, and other relevant details. CloudTrail helps you track changes to your AWS resources, troubleshoot operational issues, and maintain compliance with security and governance requirements. 
+
+
+Its an AWS service that records and logs every actions or event that occurs within your AWS environment . It provides a detailed audit trail for your aws resources activities , such API calls , user actions , changes to services .
+
+
++ CloudTrail is a service that enables governance, compliance, and operational and risk auditing of your AWS account.
++ When you create your aws account by default cloud trial is enabled. 
++ Cloud trail get or store history of events made from within your aws account ( console , SDK, CLI , AWS services)
++ Cloud trail logs and data from cloudtrail -  can be send into cloudwatch logs or s3 buckets . 
++ Cloud trail by default is applied to all regions by default but again you can set it to be in a single region 
++ Cloud trail should be the first service to start investigation to find out who did what in your aws account 
++ Cloud trail is a regional service 
+
+**Importance of Cloud Trial for security & Compliance** 
+
++ It provides an audit trail of all API calls and actions taken within your AWS account, which is crucial for security and compliance purposes.
++ It helps you identify and investigate security incidents by providing detailed information about who did what and when
++ It allows you to monitor and enforce compliance with internal policies and external regulations by tracking changes to
+resources and user activities.
++ It enables you to detect unauthorized access or suspicious activities by analyzing the logs and identifying patterns of
+behavior that may indicate a security breach.
++ It helps you maintain accountability and transparency in your AWS environment by providing a comprehensive record of all
+actions taken within your account, which can be crucial for audits and investigations.
+
+
+## Cloud Trial Events
+
+CloudTrail captures a wide range of events that occur within your AWS account. These events can be categorized into several types, including:
+
+1. `Management Events`: These are events (activities) related to management of AWS resources such as creating , deleting , or modifying these resources for example like creating an ec2 instance , or modifying an s3 bucket , deleting an ec2 security groups ( These are actions performned on your aws resources)
+
++ By default your aws account will capture and logged (save) trails for all management events.
+
++ You have `read and write events` (read events will show who had access to the resources but did not edit or modify the resource) while the write event simply is creation or deleting , modifying of resources .You can seperate read events from write events 
+
+2. `Data Events`: These are events that capture the activity on or within a resource. For example, in an S3 bucket, data events would include actions like GetObject, PutObject, and DeleteObject. In Lambda, data events would include Invoke actions.
+
++ By default data events are not captured or logged (saved) .These are high volume operatons for example an s3 bucket object level activities like put , delete , get objects are some of the events data events can captured or logged 
+
++ You can as well seperate read & write events just like the management events 
++ You can track events or data for specific resources for e.g S3 bucket
+
+
+
+
+
+**Features of Cloudtrail**
+
++ `Dashboards`:
+CloudTrail provides a dashboard that gives you an overview of your account activity, including recent API calls, user activity, and resource changes. It allows you to quickly identify trends and potential security issues.
+
++ `Event history`:
+CloudTrail maintains a history of API calls and events that have occurred in your AWS account. You can view and search this event history to investigate specific actions, identify patterns, and troubleshoot issues. 
+
+
++ `insights`:
+
+CloudTrail Insights is a feature that uses machine learning to automatically detect unusual activity in your AWS account. It analyzes the normal patterns of API calls and identifies anomalies that may indicate potential security threats or operational issues. When an anomaly is detected, CloudTrail Insights generates an event that you can investigate further.
+
++ `Lake ( Dashboard , Query,Event datastores & intergrations )`:
+CloudTrail Lake is a feature that allows you to centralize and analyze your CloudTrail logs in a data lake. It provides a dashboard for visualizing and querying your CloudTrail data, making it easier to gain insights and identify trends in your account activity. You can create event datastores to store and manage your CloudTrail logs, and it integrates with other AWS services for further analysis and processing of your log data.
+
+
++ `Trails`:
+
+A trail is a configuration that enables CloudTrail to capture and log events for your AWS account. You can create a trail to specify which events you want to capture, where to store the logs (e.g., S3 bucket), and how long to retain the logs. Trails can be applied to all regions or specific regions, and they can be configured to capture management events, data events, or both.
+
+
+**Network Activity events**
+
++ Network activity events provide information about resource operations performed 
+on a resource within a virtual private cloud endpoint.
+
+
+
+**DIFFERENCE BETWEEN CLOUDWATCH AND CLOUD TRAIL** 
+
+| Feature                     | AWS CloudTrail                                   | Amazon CloudWatch                                 |
+|-----------------------------|--------------------------------------------------|--------------------------------------------------|
+| Purpose                     | Tracks API calls and activity in AWS accounts    | Monitors AWS resources and applications            |
+| Data Type                   | Logs API activity (event history)                | Metrics, logs, and alarms                         |
+| Monitoring                   | Provides insight into user activity and resource changes | Provides real-time monitoring and alerting       |
+| Use Cases                   | Compliance auditing, security analysis, and troubleshooting | Performance monitoring, resource optimization, and alerting |
+| Data Storage                | Stores logs in S3 buckets                        | Stores metrics in CloudWatch and logs in CloudWatch Logs |
+| Event Types                 | Management events, Data events, and Insight events ,network events | Custom metrics, CloudWatch Logs, and system metrics |
+| Integration                 | Integrates with AWS services for event tracking   | Integrates with AWS services for monitoring       |
+| Cost Structure              | Pay for S3 storage and API calls                  | Pay for metrics, logs, and alarms                 |
+| Log Retention               | Retained based on S3 bucket policy                | Configurable retention for logs                   |
+
+
+
+
+thursday
+
+CLOUDTRAIL DEMO 
+
+AWS CONFIG 
+
