@@ -6568,9 +6568,139 @@ on a resource within a virtual private cloud endpoint.
 
 
 
-thursday
+# AWS CONFIG 
 
-CLOUDTRAIL DEMO 
+`What is AWS Config `:
 
-AWS CONFIG 
+AWS Config is a service that enables you to `assess, audit, and evaluate the configurations of your AWS resources`. It provides a detailed inventory of your AWS resources, tracks changes to those resources over time, and allows you to automate the evaluation of resource configurations against desired settings or compliance rules. AWS Config helps you maintain security and compliance by providing visibility into resource configurations and enabling you to identify and remediate non-compliant resources.it plays a very important in role monitoring , auditing , compliance and governance .
 
++ AWS Config is a security and compliance monitoring service that continuously tracks what resources you have in AWS and how they are configured.
++ Its a regional service 
++ You can aggregrate or accumulate the data across all regions and account 
++ There is posibility of storing the configuration data in an s3 bucket 
+
+**Main Functionality**
+
+1. `Resource Inventory`: AWS Config provides a detailed inventory of your AWS resources, including their configurations and relationships. It allows you to see how your resources are configured and how they relate to each other.
+2. `Configuration History`: AWS Config tracks changes to your resources over time, allowing you to view the history of resource configurations and identify when changes were made.
+3. `Compliance Assessment`: AWS Config allows you to define rules that specify desired configurations for your
+resources. It evaluates your resources against these rules and identifies any non-compliant resources, helping you maintain security and compliance.
+4. `Automated Remediation`: AWS Config can automatically remediate non-compliant resources by
+triggering AWS Systems Manager Automation runbooks or AWS Lambda functions to bring resources back into compliance.
+5. `Integration with AWS Services`: AWS Config integrates with other AWS services, such as AWS CloudTrail for tracking API calls, AWS CloudWatch for monitoring resource metrics, and AWS Security Hub for centralized security management.
+
+
+
+**Importance Of AWS config for security and compliance** 
+
++ AWS Config provides visibility into the current and historical configurations of AWS resources, allowing you to understand the resource landscape and how it evolves (change) over time.
++ It helps in Change Tracking . With AWS Config, you can track changes to resource configurations, which helps in troubleshooting and auditing changes that might impact your environment.
++ **Its good for Compliance Management : AWS Config allows you to define rules based on best practices or compliance frameworks (e.g., CIS AWS Foundations). This ensures that your resources remain compliant with internal and external policies.
++ You can integrate with different services like SNS topics , lambda functions , Aws security hub to automate responses to compliance violations and enhance security 
++ It has snapshot & History : AWS Config provides a historical snapshot of resource configurations, enabling you to see how configurations have changed over time and revert to previous states if needed.
+
+
+
+**HOW DOES AWS CONFIG WORKS**
+
+
++ `Resource recording` : continuously records the configuration of supported AWS resources in your account, storing these configurations in an S3 bucket.
+
++ `Configuration items` : Each recorded configuration is known as a configuration item (CI), which contains details about the resource, including its configuration and relationships with other resources.
+
++ `Configuration rules`: You can define rules that check whether your AWS resources comply with specified configurations. For example, you can create a rule to ensure that all S3 buckets have versioning enabled.
+AWS Config evaluates these rules against your resource configurations and notifies you of any compliance violations.
+
++ `Compliance dashboard` : AWS Config provides a dashboard where you can view compliance statuses, evaluate the results of your rules, and track remediation efforts.
+
++ `Notification & Remediation` : AWS Config can send notifications via Amazon SNS when a resource violates a rule.
+You can automate remediation actions using AWS Lambda functions to correct compliance issues automatically.
+
++ `Historic view of all changes` :AWS Config maintains a history of configuration changes, allowing you to view previous configurations and understand the timeline of changes made to your resources.
+
+
+
+**Config Rules**
+
+This is a feature in aws config that allows you to define your own desired configurations or compliance policies for your aws resouces
++ These rules helps you to `monitor , evaluate , maintain compliance in your aws environment (account)` by automatically checking on resource configurations against the predefined rules or standard 
+
+
+**Types of Config Rules** 
+
+1.`AWS Managed Rules` :These are predefines rules that comes with aws config which covers common compliance and governing scenarios 
+
+2. `Custom Rules*` This is when you create your own custom config rules using Lambda , defining specific criteria and logic for compliance check .
+
+`USE CASE` : This is good when you want to tailor your compliance requirements to match your organisational unique policy 
+
+
+#### HOW DOES CONFIG RULES WORK 
+
++ Evaluation (continouly check your resources against the define rule)
++ Compliance reports  ( you can see the report to see compliant and non compliant resources )
++ Triggered action : It can trigger actions via SNS if a resource becomes non-compliant 
+
+**NOTE** : AWS config rule does not prevent the action from happening . it has no deny option . Only evaluates and show us the resources that are non-compliant 
+
+
+### Config Rules Remediations (fix)
+
+( Steps taken to resolve non-compliant resources identified by aws config)
+
++ You can automate remediation of non compliant resources using SSM automation documents 
++ You can use AWS managed Automation Documents or create custom Automation Documents 
++ You can set Remediation Retries if the resources are still non compliant after auto remediation . 
++ you can setup your own custom remediation actions 
+
+
+### use case for config Rules 
+
+- security compliance 
+- Operational compliance 
+- Governance 
+
+**Governance** :  ( how do you manage your organisation )
+
+This is a framework of rules , practises , policies and processes by which organisations (team4tech solutions) is directed and controlled ( SOC Compliance ) . It establishes how decisions are made , who is responsible for making them , How authority is delegated , how organisation ensures there is accountaility .
+
+**Compliance** :
+Laws , regulations , standards and internal policies that governs an organisation operation 
+
+
+
+Features of AWS CONFIG
+
++ Dashboard
++ `Conformance Packs` : A conformance pack is a collection of AWS Config rules and remediation actions that can be deployed and monitored as a single entity in your AWS account.
++ Rules - Aws Managed rules , Custom Lambda rule , Custom Rule using Guard
+
+
+
+
+NETWORKING IN AWS 
+
+**VPC - VIRTUAL PRIVATE CLOUD**
+
+A VPC (Virtual Private Cloud) is a virtual network dedicated to your AWS account. It allows you to launch AWS resources into a virtual network that you've defined. A VPC provides you with complete control over your virtual networking environment, including selection of IP address range, creation of subnets, and configuration of route tables and network gateways.
+
+This is a service that helps users , companies , organisation logically isolate network environments in the cloud 
+
+1. `Isolation` : This is when you seperate your resources for security reasons using things like Subnets e.g private and public subnets 
+
+2. `Subnets` : we have public and private subnets . a single VPC can have up to 200 subnets . There are two classifications of subnets 
+
++ Public Subnets : Public subnets have direct access to the internet through the `internet gateway `
++ Private subnets : Do not have direct access to the public internet , they get internet through `Nat gateway` 
+
+3. `Routables` : Routables control how traffic goes into each subnet and each subnet must be associated to a routables . Any subnet that receives traffic through the public routable is a public subnet . The public routables gets its internet or traffic  through the internet gateway and any subnet that gets its internet through the private route table is a private subnet because all the traffic comes through the Natgateway 
+
+4. `Internet Gateway (IGW)` : It allows internet into your VPC that is your resources can communicate to the internet once an internet gateway is attached
+
+
+5. `Nat Gateway (Network Address Translation gateway`) : It allows resources in the private subnet to be able to send outbound traffic to the internet while preventing any inbound traffic that is not accepted. 
+
+
+6. `Network Access Control List (ACL)` : This is a layer of security at the subnet level that acts as firewall that controls inbound and outbound traffic into your subnets 
+
+7. `Security Groups` : This is a layer of security at the instance level that acts as a firewall that controls inbound and outbound traffic to your instances . Security groups are stateful while network ACLs are stateless
