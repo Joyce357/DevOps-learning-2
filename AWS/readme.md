@@ -6704,3 +6704,310 @@ This is a service that helps users , companies , organisation logically isolate 
 6. `Network Access Control List (ACL)` : This is a layer of security at the subnet level that acts as firewall that controls inbound and outbound traffic into your subnets 
 
 7. `Security Groups` : This is a layer of security at the instance level that acts as a firewall that controls inbound and outbound traffic to your instances . Security groups are stateful while network ACLs are stateless
+
+
+**UNDERSTANDING CIDR ( Classes inter-domain routing)**
+
+`What is an IP address ?` : An IP address (Internet Protocol address) is a unique number assigned to a device connected to a network, such as the internet. It acts like a home address for your device, allowing data to be sent to and received from the correct destination.
+
+`Different Types of IP Addresses `
+
+IPV4 & IPV6 
+
+Example
+
+IPv4 address: 192.168.1.1
+IPv6 address: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+
+`IPV4 `
++ Most common format 
++ This was the first version of ip addresses 
++ Four numbers seperated by dots 
+
+`IPV6 `
+
++ Newer version with a much larger address space.
++ Uses numbers and letters separated by colons.
+
+Example: 2001:db8::1
+
+In your house you have internet , this internet was gotten from an Internet Provider (MTN ,Orange , Bell , Rogers , Telus etc )
+Modem () ----> Ip address space ---> connect devices to the internet , these devices use IP Address e.g of these devices can be ( TV , Smart Fridge , Smart Dish washer , Lap tops , Moble phones )
+
+
+
+**What are some of the things you should keep in mine when creating a VPC**
+
++ Identify requirements: determine the number of subnets needed , host (resources that will use the network) , anticipate for future growth
++ Ensure when creating multiple vpc's each vpc CIDR should be Unique to avoid cidr overlapping 
++ Use VPC cidr block between /16 or 26 bits 
++ Subnet Design Matters (Per AZ, Per Function)
+
+Design subnets based on:
+AZ separation (HA)
+Function: Public, Private-App, Private-DB
+Future expansion
+Example:
+Public: 10.0.1.0/24
+App private: 10.0.2.0/24
+DB private: 10.0.3.0/24
++ High Availability 
++ Logging & Monitoring (Turn On Flow Logs)
+
+**Definition of Key Terms**
+
+
+1. we need to determined the host range (this is simply the number of ip addresses the host need to share  resources within the network)
+
+`with IPV4 We have Bits` e.g 10.0.0.0
+
+
+`what is a bits` (binary digit) : These are fundamental units of data or basic data in computing or networking . This is a contraction of "binary digits" they are the smallest pieace of information a computer can handle .Its simply  building blocks of data, represented as 0s and 1s.
+
++ Bits are used in binary code, which is the language that computers use to process data. Multiple bits are combined to represent more complex information.
+
+
+
+`what is an IPV4?` : IPv4 (Internet Protocol version 4) is the fourth version of the Internet Protocol, which is used to identify devices on a network using an address.
+
++ An IPv4 address consists of 32 bits, divided into four groups (called octets) separated by dots. For example: 192.168.111.029 or 10.0.0.0
+
++ Each octet can have a value from 0 to 255, meaning an IPv4 address can represent approximately 4.3 billion unique addresses.  
+
+
+
+`What is IPv6?` : 
+
+ IPv6 (Internet Protocol version 6) it is the successor to IPv4, designed to address the limitation of IPv4 addresses.
+
+ + An IPv6 address consists of 128 bits, written in eight groups of four hexadecimal digits, separated by colons. For example: `2001:0db8:85a3:0000:0000:8a2e:0370:7334`.
+ + This means IPv6 can support almost limitless number of unique addresses (over 340 undecillion addresses).
+
+
+
+ `What is a CIDR` :  CIDR (Classless Inter-Domain Routing) is a method for allocating IP addresses and IP routing. It uses a CIDR notation to specify IP address ranges.
++ A CIDR block is written as an IP address followed by a slash and a number (e.g., `192.168.1.0/24`). The number indicates how many bits are used for the network portion of the address
+
+
+
+**How Can we calculate cidr range for our VPC and subnets**
+
+VPC -- needs a cidr range and each subnet in the VPC will also need a Cidr range 
+
+
+1. `Understanding the network structure `
+
+An ip address is split into two parts : `network part & host part` 
+`network part` identifies specific network while the host part identifies individual devices within the network e.g your home devices like ipads , laptops , tv,mobile
+
+`Network Part`
+
+This portion identifies the specific network you belong to.
+
+`Example` : Your house has one Wi-Fi network, and every device connected to it belongs to that network.
+The network part is what your router uses to identify:
+
+“This device belongs to my home network.”
+
+Examples of network identifiers:
+Your home network: 192.168.0.0
+Your company network: 10.0.0.0
+Your AWS VPC: 10.0.0.0/16
+
+`Host Part` 
+This identifies individual devices on the network.
+Examples of host devices in a home network:
+
++ Laptops
++ Phones
++ Smart TVs
++ iPads
++ Gaming consoles
++ Cameras
+
+2. Subnet Mask : A subnet mask will tell us how many bits we want to use for the network  e.g 
+if you have a  /24 this means the first 24 bits are the network part (255.255.255.0 in decimal)
+               /16 means the first 16 bits are the network part (255.255.0.0 in decimal)
+
+
+
+10.0.0.0/32
+31
+30
+29
+28
+
+10.0.0.0/32.  higher the bits the less ip addresses you would have 
+
+10.0.0.0/24
+
+32 - 24 = 8
+
+2^8 
+
+
+
+Usable ip : = 2 32-cidr 
+
+CIDR : 148.456.485/24         our ipv4 comes with 32 bits 
+       32 bits - 24 bits = 8 
+
+       2^8  will give us the number of ip address for this network  (256 ip address)
+
+       2 X 2 = 4
+       4 X 2 = 8 
+       8 X 2 = 16
+      16 x 2 = 32
+      32 x 2 = 64
+      64 x 2 = 128
+      128 x 2 = 256 
+
+
+
+10.0.0.0/16 
+32 -16 = 16 
+2^16 = total number of ip address for that network 
+
+
+
+      10.0.0.0/16  
+
+      10.0.0.0/16     1256 ip vpc a 
+      10.1.0.0/24     1256 ip 
+      10.2.0.0/16    1256 ip 
+      10.3.0.0/16
+
+
+
+      32 bits - 16 bits = 16 
+      2^16 = 
+
+`Public ip` : These are ip addresses that allows your devices to communicate with the public internet 
+
+`Private ip address `: this is for communication within your private network . resources within your private network communicates with each other using the private ip 
+
+
+
+0.       0.     0.      0  
+octate octate octate  octate 
+
+255  255  255 255
+
+32 bits 
+
+
+**Advantages of creating a Custom VPC (Virtual Private Cloud)** 
+
+| Custom Vpc  (why)                                             | Default VPC                                   
+|---------------------------------------------------------------|----------------------------------------------------
+| Network Seperation or segmentaion (Public + Private subnets)   | By default aws places your ec2 instance in a public subnet                            
+| Security control (custom security groups , ACL & Secure routes)| AWS by default configure your routing policies and acl for you                 
+| control over IP ranges ,network size and ip overlaps           | No control over network size or ip ranges or to avoid ip overlapping
+| you can have multiple subnets ( control of more subnets)       | No control over the number of subnets being created 
+| You have full control over routables (customization )          | Default routes 
+| You will be charge for a custom VPC                            | Free 
+
+
+
+
+
+
+
+BREAK : 9;29 PM EST 
+
+
+
+
+
+
+## BUILDING A VPC FROM SCRATCH 
+
++ VPC ( select cidr range network size )
++ Subnets ( cidr range subnets network size )
++ Nat gateway 
++ Internet gateway and attached to VPC so that our vpc can have internet 
++ Create private routable 
+
+
++ Creating a vpc , you can create a vpc only or vpc and more 
+vpc only - This creates just a VPC without any other configurations
+vpc more - it creates a vpc and other resources e.g subnets , nat gateway , NACL , internet gateway etc automatically 
+
+## Steps to create a custom VPC 
+
++ We need to search VPC and click on create vpc and give the CIDR range
+e.g 10.0.0.0/16 or 10.0.0.0/24 
++ Create Subnets and give ip & CIDR ranges 10.0.0.0/24 
++ Create Internet Gateway 
+
+
++ `Note` when you create a VPC it comes with one default routables
+
+VPC CIDR : 10.0.0.0/16 
+
+what will be our subnet cidr
+
+
+
+## Routables 
+
++ This usually refers to your network traffic .
++ This network traffic is managed within your vpc using what we called routable
++ In AWS your public subnets will get their internet from send through the Public Routables while
++ The private subnets will get their  internet (network traffic )  sent from the private routables you need to associate (link or join ) the subnets to these routables  
++ You need to associate the subnets to your routables e.g you will associate the public routable to your public subnets and private subnets to your private routables 
++ By default when you create a VPC it comes with One routable ( rename to pubblic routable)
++ create a private routables separately 
++ you have to edit routes , This helps to tell the routable where it gets its network from and where it sents the network to e.g for the public routables they will receive their network from the internet gateway and the private routables receives their internet from the Nat Gateway 
+
+
+
+## Internet Gateway 
+
++ This gives internet to your VPC ( i.e) it allows your resources (EC2)
+to connect to the internet .
++ Internet Gateways can scale horizontally and they are highly available ,reduntant 
++ If you are creating a custom VPC the internet gateway must be created seperately from the VPC and then attached to the VPC . 
++ Routables must be edited 
+
+
+## Nat Gateway ( Network Address Translation Gateway)
++ This enables instances in the private subnet to receive inbound traffic and and send out ( Outbound traffic ) 
++ you need to allocate static ip address 
+
+### Outbound Traffic : 
+Instances in the private subnets usually dont have public ip address & can not directly communicate with the public internet .
+The Natgateway translates the private ip addresses to a public ip address before forwarding the traffic to the internet .
+
+### Inbound Traffic : 
+
+In contrast to the internet gateway , the Nat gateway does not allow inbound traffic iniated from the internet to reach instances in the private subnet . It has extra layer of security where it hides your private ip address from your ec2 instances from direct exposure to the internet 
+
+## Nat Instance :
+
++ This is simply ec2 instance configured to help in Routing traffic to your private subnets 
++ You are responsible is managing unlike the Nat Gateway 
+
+
+## NACL : Network Access Control List  and Security Groups 
+
++ This enhance security at the subnet level : NACL acts as a firewall controlling traffic in and out of your subnets within your VPC .
++ One NACL per subnet , new subnets are assigned to the default NACL and the default NACL accepts everything inbound and outbound 
++ When you create a VPC it comes with a default NACL and you can create your own NACL .
++ You can define your rules .
++ Newly created NACL will deny everything.
++ Stateless : When there is an inbound traffic rules this applies seperately from outbound traffic rules .Both inbound and outbound rules applies independently 
+
+
+
+****CUSTOM VPC HANDSON**
+
+1 - Created a VPC
+2 - Created subnets (4 subnets , 2 public and 2 private)
+3 - Create an internet gateway and attached to your VPC 
+4 - Create a Natgateway 
+5 - Create a routable and name it private routable. since our vpc when created comes with a default rouatble you can rename or create and call it public routable
+
+
+
+**Methods to Login into our instances in the private subnet**
