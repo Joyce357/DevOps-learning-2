@@ -7010,4 +7010,160 @@ In contrast to the internet gateway , the Nat gateway does not allow inbound tra
 
 
 
+10.0.0.0/16
+
+32 bits  
+
+32 - 16 = 16
+ 2^16
+ 
+ 65
+
+ 10.0.0.0/20
+ 10.0.32.0/20
+
+255.255.255.255
+
+
+10.0.1.0 = Network Address ( It identify the subnets itself )
+10.0.1.1 = Reserved by AWS for the VPC router ( default gateway)
+10.0.1.2 = Reserved by AWS for DNS resolutions 
+10.0.1.3 = Reserved by AWS for future use 
+10.0.1.255 = Network braodcast address (aws reserves if even though VPC doesnt support broadcast traffic )
+
+
+
 **Methods to Login into our instances in the private subnet**
+
+
+
+1. `Bastion Host  (Agent forwarding or ssh key pairs)`
+
+**Agent forwarding :** 
+
++ This approach is great if you actually created the ec2 instances and you have the keypairs saved on your local machine 
++ This will work if the keypair for both instances or all instances are the same . 
+
+**Steps to use ssh agent**
+
++ Start the ssh agent on your local machine by running the following command  `eval "$(ssh-agent -s)"`
++ Add your ssh-keys to the ssh-agent  `ssh-add <keypairname>` (makesure you are at the location where your key is )  or `ssh-add /path/to/bastion-key` 
++ Ssh to the bastion host with agent forwarding command  `ssh -A  <username>@bastion-public-ip` e.g `ssh -A ubuntu@645.678.8968` this will log you into the bastion host 
++ From the bastion host you can run the following cammand to login into your instance in the private subnet `ssh <username@private-instance-ip>` e.g `ssh ubuntu@935.495.649`
+
+**Keypairs**
+
++ Create an authentication between your local and the bastion host e.g generate ssh keys from your local , copy the public key and add inside the bastion authorized_key inside the .ssh directory in the bastion host . 
++ Add an iam role to give you access to login into the ec2 instance in the private subnet 
++ Create a connection from your bastion to the server in the private subnet by generate a public key e.g ssh-keygen on the bastion , copy the public key and paste inside the server in private authorized_keys in the .ssh directory . 
++ Login into the bastion host e.g ssh `<username@bastion-public-ip>` and from the bastion you can now ssh into the server in the private subnet `username@bastion-public-ip`
+
+
+2. `VPN (Client VPN)`
+
+3. `Session Manager` 
+
+
+
+
+
+
+**NACL (Network Access Control List)**
+
+These are virtual firewalls that helps to protect the inbound and outbound traffic at the subnet level 
+A NACL is a stateless firewall that controls inbound and outbound traffic at the subnet level.
+
+
+
+## NACL : Network Access Control List  and Security Groups 
+
++ This enhance security at the subnet level : NACL acts as a firewall controlling traffic in and out of your subnets within your VPC .
++ One NACL per subnet , new subnets are assigned to the default NACL and the default NACL accepts everything inbound and outbound 
++ When you create a VPC it comes with a default NACL and you can create your own NACL .
++ You can define your own rules .
++ Newly created NACL will deny everything.
++ NACL are Stateless in nature: When there is an inbound traffic rules this applies seperately from outbound traffic rules .Both inbound and outbound rules applies independently 
+
+
+
+KEY POINTS TO NOTE 
+
++ Subnet-level firewall
++ Stateless → rules must be added for both inbound and outbound
++ Uses numbered rules (lowest number wins)- highest priority 
++ You can set NACL to Allow or Deny Traffic
++ Default NACL that comes with your vpc at the time of creation → Allow all inbound + outbound
++ Custom NACL → DENY all until you add rules
+
+
+# DIFFERENCE BETWEEN A SECURITY GROUP AND NACL 
+
+| NACL    (why)                                                            | Security Group                                  
+|--------------------------------------------------------------------------|----------------------------------------------------
+|Operates at the Subnet level ( Security firewalls at subnet level)        | The operate at EC2 level ( firewall at ec2 instance level)                           
+|NACL are stateless ( they examine inbound & outbound rules independentl)  | security groups are stateful what gets in automatically gets out                 
+|They support `allow and deny rules `                                       | supports allow rules only 
+|rules are evaluated in order (lowest to highest) deciding to allow traffic| All rules are evaluated before deciding to allow traffic or not 
+
+
+
+
+
+**VPC PEERING**
+
+What is VPC Peering 
+
+VPC (Virtual Private Cloud) Peering is a private networking connection between two VPCs, allowing them to communicate as if they were part of the same network.
+
+
+`KEY POINTS TO NOTE`
+
++ Its a private connection --> Traffic does not go over the internet 
++ No VPN or Direct connect is needed for this setup 
++ Its a one to one relationship connection ( Not transitive )
++ Its supports Same region peering , Cross region peering and Cross Account Peering
++ When peering connection is setup routables must be updated on both VPC for it to work 
++ DNS resolution can be enabled with DNS hostnames + Peering DNS settings
+
+
+**USE CASE**
+
++ Share services across different VPC'S E.g your application server in another vpc and your database in another vpc 
++ Multi Region High Availability 
++ Data Sharing
++ This is good for Hybrid Architecture 
+
+
+**Note** : When creating a VPC make sure the cidr blocks are completely different to avoid instances where you might want to peer the vpcs and you are faced with CIDR overlapping e.g   `VPC A` has cidr : `10.0.0.0/16` and `VPC B` has cidr `10.0.0.0/16 `this will cause a cidr conflict in this case peering will not be able to work .
+
+
+
+**HOW VPC PEERING ACTUALLY WORKS (FLOW )**
+
+Assume we have two VPCS name VPC-A and VPC B
+
+1. VPC A sends a peering request 
+2. VPC B accepts the request 
+3. Then you add routable entries in both VPC - by inter-changing them for example u take the vpc a cidr and as a route to vpc b and vice versa
+4. Your instances or resources can now communicate with each other privately 
+
+
+
+Project vpc cidr : 172.31.0.0/16
+class vpc cidr : 10.0.0.0/16
+
+edit routes for both vpc 
+
+
+Requester : This is the VPC that will send a peer request to the other VPC e.g in our case we will use VPC A to send a request to VPC B . 
+Accepter(peer vpc)  : This is the VPC that accept or rejects the request 
+
+
+1. Same region Peering 
+2. Cross Region Peering 
+3. Cross Account Peering 
+
+
+
+PROJECT VPC CIDR 10.36.0.0/16
+CLASS10 DEMO VPC CIDR : 10.0.0.0/16
