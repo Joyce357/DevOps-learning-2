@@ -7167,3 +7167,252 @@ Accepter(peer vpc)  : This is the VPC that accept or rejects the request
 
 PROJECT VPC CIDR 10.36.0.0/16
 CLASS10 DEMO VPC CIDR : 10.0.0.0/16
+
+
+# VPC ENDPOINTS 
+
+A VPC Endpoint is an AWS networking feature that allows you to privately connect your VPC to supported AWS services such as:
+
++ S3
++ DynamoDB
++ SNS
++ SQS
++ Secrets Manager
++ Systems Manager (SSM)
++ And many others (over 100+ services)
+
+Traffic stays inside AWS and does NOT go through the public internet.
+That means no Internet Gateway (IGW), no NAT Gateway, and no public IPs are required to access these services.
+
+
+**Types of VPC ENDPOINTS** 
+
+In aws there are 2 type of VPC endpoints 
+
+1. **Interface Endpoint ( Powered by AWS private link)**
+
+*USE CASE* : The interface endpoint allows you to connect to AWS services like EC2 , S3 ,DynamoDB , and many other aws services
+
++ These are VPC interfaces that are created in your VPC with private ip addresses 
++ It creates an ENIO(Elastic Network Interface) insde your subnets 
++ The traffic between your VPC and the service stays within the amazon network 
++ This endpoint supports aws managed and customer managed services 
++ AWS charges per hour for endpoint and per GB of data processing 
+
+
+
+2. **Gateway Endpoint**
+
+USE CASE : Its used only to connect `S3 and Dynamodb` 
+
++ This is an entry point for traffic within a VPC that leads to these services 
++ Routables are modified automatically by aws to ensure traffic to theses services are directed to the endpoint 
++ It only supports or available for Amazon S3 and DynamoDB
++ Free to use 
+
+
+**Benefits of using Endpoints (VPC ENDPOINTS)**
+
+1. `To improves security` : 
+
+This prevents your traffic to go through the public internet , thus reducing exposure to external threats or attacks .
+
+2. `Reduce Latency: `
+
+Since resources are already within a private aws network , it will reduce latency unlike the traffic going through the public before coming to our aws network .
+
+3. `Its cost effective` :
+
+Our endpoints have charges , but it can be more cost efficient compared to transfering data especially large data over the internet which will cost data transfer charges .
+
+
+
+
+
+
+
+**VPC Flow Logs**
+
+VPC flow logs capture information about the IP traffic going to and from network interfaces in your Virtual Private Cloud (VPC). Flow logs provide valuable or good insights into network traffic patterns, security analysis, troubleshooting, and compliance monitoring.
+
+This captures inbound traffic (in ) and outbound traffic (out) in your VPC and subnets 
+
++ It captures Logs for your VPC
++ It can capture subnet flow logs 
++ ENI ( Elastic Network Interface) flow logs
+
+
+
+## Key Features of VPC flow logs 
+
+- Captures traffic data (inbound and outbound traffic)
+- You can customize specific filters on what to capture e.g accepted traffic (this is traffic that was allowed into your vpc), rejected (this is request that was rejected to get into your vpc ), or all (both accpeted and rejected )
+- You can intergrate VPC flow logs with other AWS services e.g you send logs to cloudwatch logs or s3 bucket . You can intergrate with Lambda function that can response to specific traffic patterns.
+
++ Log Group : This is how you will store your logs. The logs are stored in Amazon CloudWatch Logs or Amazon S3 (depending on your configuration)
++ Log Stream : Each VPC flow log consists of log streams that contain records for each network interface (ENI) being monitored.
++ Log record : Each log record contains information about a single network flow.
+
+
+
+## Benefits of VPC flow Logs 
+
+1. `Security Monitoring` 
+
++ Helps in detecting suspicious network activity, such as unauthorized access attempts or malicious traffic.
++ Its good for monitoring your network and trouble shoot network connectivity errors
++ Its good for compliance ( SOC Compliance )
++ Identify unauthorized access attempts
++ Investigate incidents
+
+2. `Improved Network Troubleshooting`
+
+- it helps in Diagnosing connectivity issues
+- You can pinpoint which security groups or network ACLs may be blocking traffic by seeing this through a vpc flowlogs
+- Performance monitoring like latency issues etc 
++ VPC flogs can answers questions like : Why cant my ec2 instance connect to my RDS , why is my lambda timing out , why is my loadbalancer showing a 504 error 
+
+
+3. `It can help in Auditing `
+
++ You can maintain a record of who accessed your network and how, which helps in auditing and compliance purposes.
+
+
+**Where can you send VPC flow logs for storage** 
+
+*Destinations is where you can send your flow logs*
+
++ Send to `CloudWatch Logs`
++ Send to an `Amazon S3 bucket`
++ Send to `Amazon Data Firehose` in the same account
++ Send to `Amazon Data Firehose` in a different account
+
+
+
+
+### DEMO SENDING VPC FLOWS LOGS TO Cloudwatch Logs
+
+- You need to create a cloudwatch log group 
+- Create a Iam role to grant permission for your vpc flowlogs to write inside your cloudwatch log group 
+
+
+SENDING FLOWLOGS TO AN S3 BUCKET POLICY 
+
+{
+    "Version": "2012-10-17",
+    "Id": "AWSLogDeliveryWrite20150319",
+    "Statement": [
+        {
+            "Sid": "AWSLogDeliveryWrite",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "delivery.logs.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::vpcflowlogteam4tech/AWSLogs/891377304437/*",
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control",
+                    "aws:SourceAccount": "891377304437"
+                },
+                "ArnLike": {
+                    "aws:SourceArn": [
+                        "arn:aws:logs:ca-central-1:891377304437:*",
+                        "arn:aws:logs:us-east-1:891377304437:*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "AWSLogDeliveryAclCheck",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "delivery.logs.amazonaws.com"
+            },
+            "Action": "s3:GetBucketAcl",
+            "Resource": "arn:aws:s3:::vpcflowlogteam4tech",
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceAccount": "891377304437"
+                },
+                "ArnLike": {
+                    "aws:SourceArn": [
+                        "arn:aws:logs:ca-central-1:891377304437:*",
+                        "arn:aws:logs:us-east-1:891377304437:*"
+                    ]
+                }
+            }
+        }
+    ]
+}
+
+
+### Intergreting the default aws Logs Format inside  Log group 
+
+ 2 891377304437 eni-0b6f05bf71bc89078 162.216.150.90 10.0.1.144 53901 9558 6 1 44 1781229233 1781229248 ACCEPT OK
+
+2 891377304437 | eni-0af016a896bf3a6c6 | 79.110.62.73 |  10.2.33.29 | 43632 | 25690 | 6 |  1 |  40 | 1716047782|  1716047794 | ACCEPT | OK
+
++ 2 = Entry ID 
++ 891377304437 = aws account I.D 
++ eni-0af016a896bf3a6c6 = The network interface ID (ENI) which is associated with the network traffic
++ 79.110.62.73 = Source ip address (where is the traffic coming from)
++ 10.2.33.29 = Destination IP ( where is the traffic going to )
++ 43632 = Source Port number ( the port of the ip address where the traffic is coming from)
++ 25690 = Destination port ( where the traffic is going to port )
++ 6 = The protocol Type (6 indicates TCP)
++ 1 = This is the number of Packets transfered or flagged 
++ 40 = The number of bytes transfered (Packet size or byte count) e.g 40 bytes
++ 1716047782 = The start of the captured window which is Timestamp or session ID ( Unix timesstamp for unix-like system) start time
++ 1716047794 = This is the end of the capture window (Unix timesstamp for unix-like system) end time 
++ ACCEPT = means the network traffic was accepted into our vpc 
++ OK = (results of the action) logging status. other logging status can be No data , Skipdata or Denied 
+
+
+
+
+
+`DEMO sending VPC Flow logs to S3 Bucket`
+*step 1*
+
++ Follow same steps as Cloudwatch logs demo 
++ create an s3 bucket for your logs 
++ copy the s3 bucket arn under properties and pass when creating your vpc flow logs 
+
+*step 2*
+
++ To read or query the logs in s3 you need Amazon Athena service 
++ if its your first time then you need to create a new s3 bucket and setup *Location of query result*
++ follow the documenation *url* https://docs.aws.amazon.com/athena/latest/ug/vpc-flow-logs.html
+
+##############################################################################
+
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowVPCFlowLogsPutObject",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/AWSLogs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "YOUR-AWS-ACCOUNT-ID"
+        },
+        "StringLike": {
+          "s3:prefix": "AWSLogs/YOUR-AWS-ACCOUNT-ID/elasticloadbalancing/"
+        }
+      }
+    }
+  ]
+}
+
+
+
+
+# AWS SITE to SITE VPN 
