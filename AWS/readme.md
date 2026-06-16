@@ -7416,3 +7416,361 @@ SENDING FLOWLOGS TO AN S3 BUCKET POLICY
 
 
 # AWS SITE to SITE VPN 
+
+
+ AWS SITE to SITE VPN 
+
+This is a fully managed service that establishes secure connections between your on-premises networks or branch offices and your AWS resources using IP Security (IPSec) tunnels. This service enables easy or stress free or seamless integration of your existing network infrastructure at your office with AWS, facilitating secure data transfer and communication
+
+
+`KEY Features `?
+
++ `Its Highly Available` : Each VPN connection includes two tunnels across multiple Availability Zones, ensuring redundancy and continuous availability.
+
++ `Security `: Utilizes IPSec protocols to encrypt data in transit, maintaining confidentiality and integrity between your on-premises network and AWS
+
++ `Perfomance Optimization` : For globally distributed applications, the Accelerated Site-to-Site VPN option leverages AWS Global Accelerator to route traffic through the nearest AWS edge location, enhancing performance by reducing latency
+
+
+`USE CASE `: 
+
++ Secure connection between your AWS resources and On premise location 
++ Application Migration 
++ Hybrid Environment ( AWS and on premise communication)
++ Data Migration ( for on premise data transfer to aws and vice versa)
++ Disaster Recovery (Secure connection to replicate data in aws and vice versa)
++ Remote Workforce ( This can grant secure access for employees working from home (remote empoyees)
+
+
+**How to Setup Site to Site VPN** 
+
++ Virtual Private Gateway (VGW) or Transit Gateway
++ Customer Gateway (CGW) 
+
+
+1. Create a Customer Gateway : Define your on-premises device or software application that will connect to AWS.
+2. Create a Target Gateway : Choose between a Virtual Private Gateway or a Transit Gateway on the AWS side.
+3. Configure Routing : Set up routing so that traffic between your on-premises network and AWS resources flows through the VPN connection.
+4. Establish the VPN connection : Create the VPN connection using the AWS Management Console, AWS CLI, or API, and configure your customer gateway device accordingly.
+
+How this works 
+
+
+1. `Customer Gateway (CGW)` --> This is your side (on-prem, office, or Azure/GCP).
+
+`Examples of a CGW:`
+
++ Your hardware firewall (Fortinet, Cisco, Palo Alto, etc.)
++ Your router
++ A virtual appliance
++ Azure VPN Gateway (if connecting AWS ↔ Azure)
+
+CGW holds your:
+
++ Public IP
++ Routing options
++ BGP ASN (if dynamic routing)
+
+
+2. `VGW : Virtual Private Gateway` ---This is AWS side of the VPN.
+
++ This is VPN connector on the aws side of the VPN connection 
++ VGW is created and attached on the vpc from which you want to create the site to site vpn on 
++ It Receives encrypted traffic
++ Decrypts it
++ Sends it inside the VPC
+
+
+
+3. `VPN Connection`
+
+This is the actual encrypted IPSec tunnel.
+AWS automatically creates 2 tunnels for high availability:
+Tunnel 1 is active and the primary tunnel 
+Tunnel 2 is a standby backup or failover 
+
+If tunnel 1 fails, tunnel 2 takes over.
+
+
+**CUSTOMER GATEWAY** 
+
++ This is a physical device or software application this should be on the side of the Customer VPN ( on premise )
++ From the customer gateway device you can use the public ip to route traffic 
+
+
+
+## AWS VPN Cloudhub 
+
++ it provides secure comminication between multiple sites if you have multiple vpn connections
++ it has a low cost hub and spoke model 
++ With this you can connect multiple VPN on a singe VGW (Virtual private gateway)
+
+
+# AWS CLIENT VPN 
+
+AWS Client VPN is a managed service that enables you to securely connect your users or devices to your Amazon Web Services (AWS) infrastructure and on-premises networks using a Virtual Private Network (VPN). It provides an encrypted connection over the internet, ensuring secure communication between clients and AWS resources or private networks.
+
+HOW IT WORKS 
+
+1. VPN endpoint : 
+2. Authentication : You can configure actve directory , SSO , SAML 
+3. Route Traffic 
+4. Authorization Access 
+5. Clent connections 
+
+**USE CASE** 
+
++ This helps for employees working from home to securely connect on an ecrypted network to our resources in aws (private subnet)
++ Hybrid Cloud Connectivity : This can also lead to secure connection between on premise , cloud and remote users 
++ Data protection : This will ensure sensitive data is encrypted while in transit between users and your aws resources . 
++ Your engineers need SSH/RDP access to private subnets.
+
+
+VPN ----Virtual Private Network ---> Encrypted 
+
+
+
+# DIRECT CONNECT DX 
+
+
+AWS Direct Connect (DX) is a `dedicated, private, physical network connection between your on-premises data center and AWS`.
+
++ A dedicated connection must be setup to route traffic using Direction Connect which uses an AWS Direct connection locations . 
++ You need to setup a Virtual Private Gateway (VGW) on your VPC 
++ Direct connects helps you to access public resources s3 and private resources like EC2 instances .
++ Direct connect supports IPV4 and IPV6
+
+**Key Features** 
+
++ Consistent Network Perfomance 
++ Higher Bandwith Options 
++ Enhanced security when compared to site to site vpn 
+
+
+## USE CASE 
+
++ Enhanced Security : It provides a private and dedicated network for you to connect from your on premise to the cloud.
++ Its is good for Hybrid environment ( connect your on premise to aws cloud )
++ Compliance reasons 
++ To increase bandwith throughput when using large data sets to lower cost 
++ Consistent network perfomance ( dedicated connection it reduces latency)
++ It improves reliability with aws (SLA) Service Level Agreement ensuring high availability and uptime 
++ Data transfer and Migration 
+
+## Direct Connect , Connection Types 
+
++ Dedicated Connections 
++ Hosted Connections ( aws direct connect partners , capacity can be added and removed on demand )
+
+## Direct Connect Enryption 
+
++ Data in transit is not encrypted but it is private 
++ You can use Direct Connect + VPN  to provide ipsec enryption  and its good for extra layer of security 
+
+
+
+
+`Interview Questions` . If you want to connect vpc together which service will you use ? 
+
+VPC peering 
+Transit Gateway 
+
+`Interview Question` : You want you connect your AWS network with on premise network which services in aws will you uses 
+
++ Site to Site VPN 
++ Direct Connect 
+
+
+
+
+
+
+
+**TRANSIT GATEWAY**  
+
+
+
+It simplify and centralize connectivity across multiple Amazon VPCs (Virtual Private Clouds) and on-premises networks
+
+This is a service in aws that is a network transit hub you can interconect your vpcs within ur aws account and also with your on premise network . It acts as a central hub which helps to simplify the management of network connections
+
++ Its a regional resource and can work with cross region and also account to account sharing 
++ You can use it across different aws accounts using RAM ( Resource Access Manager)
++ You can control the routes by determine which vpc can speak to which .
++ It can work with other services Direct Connect , VPN connections
++ It supports IP multicast 
+
+Main Features of Transit Gateway 
+
++ Centralized Hub for connectivity
++ Scalable 
++ It simplifies routing 
++ Increase security with isolation 
++ Network seperation 
++ Inter-region 
+
+
+AWS Transit Gateway is a central network hub that connects:
+
++ Multiple VPCs
++ On-prem networks (VPN / Direct Connect)
++ Other AWS accounts
++ Other AWS regions (via TGW Peering)
+
+
+          +--------------------+
+          |  Transit Gateway   |
+          +---------+----------+
+                    |
+   +----------------+----------------+
+   |                |                |
+ VPC1             VPC2             VPC3
+
+
+## DIFFERENCE BETWEEN VPC-PEERING AND TRANSIT GATEWAY 
+
+| VPC PEERING                                                   | TRANSIT GATEWAY                              
+|---------------------------------------------------------------|----------------------------------------------------
+|its a way of connecting 2 or more vpc together                 | allows you to connect 2 or more vpc together & u can connect on premise                         
+|It does not support transitive routing                         | Its supports transitive routing              
+|less scalable because u need individual connections            | This is scalable 
+|it supports simple routing with routables associated with each vpc| supports centralized routing with routables that can be associated with different vpc
+|Good for small simple networking                               | more complex networking 
+
+
+Why use TGW?
+
++ Avoid VPC peering limits
++ Improve scalability
++ Connect 100s of VPCs
++ Connect multi-account environments
++ Connect on-prem via VPN & Direct Connect
++ Centralize routing & security
++ Reduce complexity
+
+
+
+**Hands on for Region to Region Transit Gateway Setup**
+
+vpc - eu-west-2  : 172.31.0.0/16 
+vpc - ca-central-1 : 10.0.0.0/16
+      ca-central-1 transit gateway-id :  tgw-073ee0726c5f6fce7
+
+
+`NOTE : ` Just like vpc peering , with transit gateway we can do the following 
+
++ Same region connectivity 
++ Cross region connecitvity 
++ Cross account connectivity 
++ Site to site vpn and transit gateway for Cloud and on prem connectivity 
+
+
+Documentation of setting a Transit Gateway for Cross Region 
+
+We have two VPC one in Ca-central-1 and Eu-west-2 
+
+VPC-A is ca-central   while VPC-B is eu-west-2 
+
+`Step 1`
+
+1. **In Region A (e.g ca-central-1 )**
+
++ Create a Transit Gateway 
++ Create a transit gateway attachment for VPC-A and the the attachment type select `VPC`
++ Create a another transit gateway attachment this time select Peering connection as the type
++ Edit routables ( take the cidr from vpc-B and add to the private on vpc selecting transit gateway as the target)
++ Edit Transit Gateway routables in this region by clicking on transit gateway routables ,select the routables and click add `static route` add the cidr from VPC B and select peering connection as transit gateway . 
+
+`step 2`
+
+2. **In Region B (e.g eu-west-2)**
+
++ Create a Transit Gateway 
++ Create a transit gateway attachment and the attachment type is VPC 
++ Accept the peering Attachment request that was sent or iniated by VPC-A 
++ Edit routables (private routables or public ) by adding your VPC-A cidr and selecting Transit Gateway as target 
++ Edit transit gateway routables in this region by adding a static route using VPC-A cidr and selecting Peering connection as the target . 
+
+
+Once this is done , test connection pinging ec2 instance in one region to see if it works .
+take note ICMP IPv4 route has to be open on your security group .
+
+
+
+cross region 
+
+Transit Gateway -Attach to our vpc 
+Transit Gateway attachment --peering connection--------> us-east-1
+Transit Gateway RAM 
+
+
+
+***SAME REGION TRANSIT GATEWAY SETUP**
+
+STEP 1 — Create Transit Gateway & Attach VPCs
+
+1. Create a Transit Gateway
+
++ Go to VPC Console → Transit Gateways → Create Transit Gateway
++ Use defaults unless enterprise requirements specify otherwise
++ Leave DNS and auto-propagation enabled
+
+2. Create a VPC Attachment for VPC-A
+
++ Go to Transit Gateway Attachments → Create attachment
++ Attachment type: VPC
++ Select VPC-A
++ Select at least one subnet per AZ
+
+Create attachment
+
+3. Create a VPC Attachment for VPC-B
+
++ Repeat the same steps
++ Attachment type: VPC
++ Select VPC-B
++ Select subnets
+
+Create attachment
+
+4. Attach both VPCs to the Transit Gateway
+
+TGW ←→ VPC-A
+TGW ←→ VPC-B
+
+🟩 STEP 2 — Configure Routing (TGW + VPC Route Tables)
+1. Add Routes in the Transit Gateway Route Table
+
+Go to Transit Gateway → Route Tables and verify:
+
+Destination	Attachment
+
+VPC-A CIDR	Attachment-A
+VPC-B CIDR	Attachment-B
+
+If not present:
+
+Add route for each CIDR manually
+
+2. Update VPC Route Tables for VPC-A
+
++ Go to VPC-A Route Tables (private)
+
+Add route:
+
++ Destination: VPC-B CIDR
++ Target: Transit Gateway
+
+3. Update VPC Route Tables for VPC-B
+
++ Go to VPC-B Route Tables (private)
+
+Add route:
+
++ Destination: VPC-A CIDR
++ Target: Transit Gateway
+
+🟧 Final Result
+
+Test by creating an ec2 instances and ping the other instance 
+
