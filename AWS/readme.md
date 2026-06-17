@@ -7774,3 +7774,563 @@ Add route:
 
 Test by creating an ec2 instances and ping the other instance 
 
+
+
+
+
+### Egress Only internet Gateway 
+
+egress = outbound traffic 
+ingress = inbound trafic 
+
+It allows only outbound communication over IPV6 from your instances within your VPC to the internet .It prevents the internet from initiating an inbound connection to your ec2 instances within your VPC . 
+
+An Egress-Only Internet Gateway (EIGW) is an AWS service designed to enable IPv6-only instances in a Virtual Private Cloud (VPC) to connect to the internet for outbound traffic while ensuring that no inbound traffic is allowed from the internet. It is specifically tailored for IPv6 traffic, as IPv6 does not use NAT (Network Address Translation) like IPv4 does
+
+`USE CASE `: 
+
++ You might have instances in the private subnets that needs access to the internet based on services e.g an instance needs updates , accessing external api , secrets , ) without exposing themselves to inbound internet traffic 
++ Compliance and Security Requirements .Some companies or organisations have strict security or complaince policies which may require outbound-only access for ipv6
+
+ingress : this means inbound traffic 
+egress : this means outbound traffic 
+
+
+### DHCP options sets 
+
+in AWS this means `Dynamic Host Configuration Protocol`.This is used to set up your VPC..It allows you to specify domain name servers , domain names  ,NTP servers and other options for instances when launced in a VPC
+
+
+### TRAFFIC MIRRORING 
+
+AWS Traffic Mirroring allows you to capture and inspect network traffic at the Elastic Network Interface (ENI) level. This is useful for security analysis, network monitoring, and troubleshooting. we have the following 
+
+Mirror sessions
+Mirror targets
+Mirror filters
+
+
+## VPC Lattice 
+
+This is a fully managed application networking solution provided by aws .It allows you to securely connect, manage, and monitor communication between your application services, regardless of whether they run on instances, containers, or serverless functions. VPC Lattice simplifies service-to-service communication across multiple accounts, VPCs, and even regions while ensuring security and observability
+
+some of the features are 
+
++ Application layer networking 
++ It helps to simplify service discovery and communication 
++ it supports multi-account and multi vpc support 
++ it has integrated security 
+
+
+**AWS NETWORK FIREWALL** 
+
++ This is going to protect your entire VPC 
++ It protects your VPC from layer 3 to 7 protection 
++ It protects you from VPC to VPC traffic , Outbound and Inbound traffic to the internet (Internet Gateway), Site to Site , Direct Connect , Transit Gateway 
++ Internal AWS network firewalls 
+
+
+
+
+
+## Summary of AWS Network Protection Services or features
+
+1. NACL (Network Acces Control List ) - firewall at the subnet level ( stateless)
+2. Security Groups - firewall at the instance level (stateful)
+3. Web application Firewall 
+4. VPC : They are isolate your environment .VPC endpoint , subnets , nat  
+5. AWS Shield (shield advanced)
+6. Identity and Access Management 
+7. VPN (Client VPN ,Direct Connect )
+8. VPC Flowlogs 
+9. VPC Endpoints : private connectivity from your vpc to resources to ur aws account . 
+10. VPC Traffic mirroring 
+11. AWS Network Firewall 
+
+
+
+
+
+
+
+NEW TOPIC 
+
+
+
+##############################
+# SERVERLESS TECHNOLOGY 
+##############################
+
+serverless technology or computing .This is service in aws that allows users (developers , devops ,cloud) to build and run applications without having to manage the `underlying infrastructure` . AWS will handle the task of provisioning , scaling and maintenance ,while enabling users to focus on solely writing the code for their application or service . This approach offers automatic scaling, high availability, and a pay-for-use billing model, enhancing agility and optimizing costs.
+
+
+Serveless simply means --> You dont manage servers , all you need to is write the code and the cloud is going to run it for you 
+You dont worry aboout 
++ servers 
++ Operating systems
++ scaling 
++ Patching 
++ Capacity planning 
+
+
+`Interview Questions` : What is your experience with serverless Technologies 
+
+
+**Key Services in AWS that uses serverless Architecture (technology or computing)**
+
+1. AWS Lambda (Functions)
+2. Amazon API gateway (Serverless API)
+3. AWS Fargate 
+4. Amazon DynamoDB (serverless NoSql Database)
+5. AWS step functions 
+6. Amazon Eventbridge 
+7. AWS Appsync 
+8. SNS & SQS 
+10. Kinesis (Amazon data firehose , Kinesis Data stream , Kinesis analytics )
+11. Elastic Cache
+13. AWS cognito 
+
+***Benefit of using Serverless instead of Server services like EC2 instance**
+
+1. No server management : No operational overhead , No need to setup (patching servers , scale) allowing you to focus on the code 
+2. Scalabiility there is automatic scaling : Serverless applications scale automatically in response to demand, ensuring optimal performance during traffic spikes or lulls.
+3. Its cost efficient. It has the pay per use model.You only pay for what you use. Costs are incurred based on actual execution time and resource consumption, reducing expenses on idle infrastructure.
+4. It is highly available.Serverless platforms are designed with high availability and fault tolerance, ensuring uptime and reliability.
+5. Its event driven.Serverless platforms are ideal for event-driven workloads, responding instantly to triggers such as HTTP requests, database changes, or file uploads.
+
+
+
+# AWS LAMBDA 
+
+AWS Lambda is a serverless compute service that allows you to run code in response to events without provisioning or managing servers. It automatically scales applications by running code in response to each trigger or event and manages the compute resources required to run the code.
+
+
+**Common Use Cases for Lambda functions** 
+
+CI/CD pipeline application
+Serverless  application 
+
+
+1. *Task Automation* : Automate operational tasks like starting/stopping EC2 instances or cleaning up resources ami images .
+2. *File processing* : Automatically process files uploaded to S3, such as resizing images or transcoding videos.
+3. *Real time notification:* :  Trigger notifications or alerts using Amazon SNS or other communication services to slack 
+4. *API Backend:* Build serverless APIs using Amazon API Gateway and AWS Lambda.
+5. *Data Transformation : Perform real-time data transformation, such as streaming data processing from Amazon Kinesis, cloudwatch log groups etc 
+6. Queue processing
+
+
+
+
+***AWS Lambda supports the following Languages**
+we call these runtime 
+
++ Python 
++ Nodejs 
++ Java 
++ C# (.Netcore)
++ Golang 
++ Ruby 
++ C# / Powershell 
+
+## What are some of the services that you can intergrate your Lambda functions with 
+
++ API gateways
++ Kinesis
++ Dynamodb 
++ S3 
++ Cloudfront 
++ Cloudwatch + Eventbridge
++ Cloudwatch Logs
++ SNS + SQS
++ Cognito 
+
+
+
+
+| EC2 INSTANCE                                                          | WHY LAMBDA                             
+|-----------------------------------------------------------------------|----------------------------------------------------
+|EC2 instances  ( Virtual Machines or servers in the cloud)             | Virtual functions- no servers to manage                         
+|Limited RAM and CPU ( Provisioned )                                    | Limited by time - short executions            
+|EC2 instance will continously running                                  | It runs on demand - Event driven 
+|Means Intervention to add or remove servers ( manually or auto scaling)| Scaling is automatic 
+
+
+
+
+**Limitations of Lambda Functions**  
+
+1. **Execution Limits**
+
+ + The maximum timeout for a Lambda function is 15 minutes. For tasks requiring longer processing, you'll need alternative solutions like `Step Functions` or `EC2`.
+ + Memory can range between 128 MB and 10,240 MB. CPU power is proportional to the memory allocated, so heavy computational tasks may require alternative setups
+ + When it comes to disk usage Lambda provides 512 MB to 10GB of ephemeral storage
+ + You can setup Enironmental Variables up to (4 KB)
+
+2. **Deployment Limitations**
+
++  Lambda has a deployment size ( compressed zip): 50 MB of code uploaded directly using aws management console , terraform , cloudformation 
++ Size of uncompressed deployment ( code + dependencies ): 250 MB when uploading through an S3 Bucket . 
++ layer size . Each Lambda layer has a limit of 50 MB, and a function can use up to 5 layers.
+
+3. **Service Limits**
+
++ Executions can take place at the same time up to 1000 lambdas  (but this can be increased ) per region.
++ Burst concurrency meaning it has a initial burst limit of up to 500 invocations per minute in most aws regions , note in some regions like North Virginia there high burst limits which 3,000 invocations per minute 
+
+4. **Debugging**
+
++ It can be difficult to debug a lambda function due to limited access to the underlying architecture 
+
+
+
+
+
+
+`Interview Question ?`
+
+if you have a Lambda function that exceeds the deployment package size limits (50 MB for a zipped package and 250 MB for an unzipped package)
+how will you still go ahead to deploy the lambda ?
+
+
+
++ Note if you have a zip package and its more than 50 MB you can still deploy the lambda using an s3 bucket
+
+1. **We can use Lambda Layers**
+
+What are layers ? :  Lambda layers allow you to include additional libraries, dependencies, or configuration files separately from your main function code.
+
+How does this help ?
+
++ This helps in the sense that , you can remove large dependencies  ,files or libraries , which will reduce the size of the main deployment package ,allowing you to deploy the code in layers (parts)
+
++ Each layer has a 50 MB zipped size limit, and a function can use up to 5 layers, giving you an additional 250 MB for dependencies.
+
+
+2. **We can Use Amazon S3 for large files** 
+
+Instead of packaging large assets or binaries within the Lambda deployment package, store them in an S3 bucket and retrieve them during function execution.
+It Keeps the deployment package lightweight by offloading static files, binaries, or configurations to S3.
+
+3. **Use AWS Elastic File System (EFS)**
+
++ Amazon EFS is a scalable, elastic, and managed network file system that can be mounted to Lambda functions.Attach EFS to your Lambda function to provide virtually unlimited storage for large libraries, files, or datasets.
+
+4. **Use Container Images** 
+
++ AWS Lambda supports deploying functions as container images instead of traditional zipped packages.The container image can be up to 10 GB, allowing significantly larger deployment packages.
+
+5. **Split Functionality**
+
++ Break down the Lambda function (Put code into modules, split the code into small and manageable pieces and each pieace is a seperate lambda function and you can use a step function execute multiple lambda functions)
+
+
+
+
+
+*Core concepts of AWS LAMBDA**
+
+1. *FAAS : Function as a service*
+
+`What is FAAS` : Function as a Service (FaaS) is a cloud computing model that allows developers to execute code in response to events without provisioning or managing servers. AWS Lambda is a leading example of FaaS.
+
+
+AWS Lambda functions are built with specific components:
+
+2. *Anatomy of a Lambda Function* 
+
+a) . Handler Function (Entry Point).
+
+`What is a Handler` ? : 
+
++ The handler is the entry point of the Lambda function where execution begins.
++ It is a specific function within your code that AWS Lambda automatically calls when triggered.
+
+Lambda has different handlers depending on the language OR runtime 
+
+e.g 
+
++ Python: lambda_function.lambda_handler(event, context)
++ Node.js: exports.handler = async (event) => { ... }
++ Java: public String handleRequest(Map<String, String> event, Context context)
+
+b) . Event Object
+
+`what is an event object`: The event parameter provides the input data for the function. The structure of the event depends on the service or trigger (e.g., S3, API Gateway, DynamoDB).
+
+c) .  Context Object
+
+`what is a context object` : 
+
+The context parameter contains runtime information about the Lambda function.
+
+
+3. **Supported Runtimes** 
+Lambda supports different programming languages and versions of those languages which we call them runtime 
+
++ Python  (e.g python 3.8 ,3.9)
++ Nodejs  (e.g Node.js 14.x 16.x)
++ Java   (e.g java 8 , java 11)
++ C# (.Netcore)  
++ Golang  (e.g Go 1.x )
++ Ruby 
++ C# / Powershell 
+
+Note : AWS lambda allows custom runtimes using the AWS runtime API, enabling languages like PHP, Ruby, or others.
+
+
+invocation --triggered a lambda function 
+
+
+**How can you improve the perfomance of your Lambda function up to 10x Java** 
+
+
+When you invoke (request it to run by an event ) a lambda function using Java Init ----> Invoke--->shutdown
+when enable `snapstart` there is no initialized step : its already pre-initiazed : ------> Invoke ----> shutdown 
+
+
+**Lambda additional resources** 
+
+*code-signing-configurations*: 
+
+code signing ensures the integrity and authenticity of your Lambda function code by verifying that the code has not been tampered with and that it comes from a trusted source. Code signing is important in security-conscious environments where it’s critical to ensure that only authorized code is deployed.
+
+**Event source mappings*
+
+event source mappings are used to link an AWS service or resource to a Lambda function, enabling the Lambda function to be triggered by events from that source. Event source mappings automatically handle the invocation of your Lambda function when events are generated, such as when new records are added to an Amazon SQS queue or new objects are uploaded to an S3 bucket
+
+
+*Layers*
+
+Lambda Layers are a distribution mechanism for libraries, custom runtime components, and other dependencies that you can include in your Lambda function. They allow you to package and share common code, libraries, and dependencies across multiple Lambda functions. Using Lambda layers can simplify the management of shared resources, `reduce function deployment size`, and improve code reusability.
+
+`note` : When you create a lambda layer you must ensure the runtime is the same as your current lambda function runtime to avoid any compactability issues.
+
+
+
+
+HANDS ON 
+
++ You can create a lambda function using AWS console , Commandline , Infrastructure as code ( terraform and Cloudformation )
++ You can upload your run time or code using Command line or aws console 
+
+
+
+`Code to Start Instance` 
+Pythin run time 
+
+
+import boto3
+import os
+
+def lambda_handler(event, context):
+    """
+    AWS Lambda function to start all EC2 instances in a specified VPC.
+    
+    Args:
+        event: Dictionary containing the VPC ID.
+        context: Runtime information for the Lambda function.
+    """
+    # Initialize EC2 client
+    ec2_client = boto3.client('ec2')
+    
+    # Get the VPC ID from the event or environment variable
+    vpc_id = event.get("VpcId") or os.getenv("VPC_ID")
+    
+    if not vpc_id:
+        return {
+            "statusCode": 400,
+            "body": "No VPC ID provided. Pass the VPC ID via the event or environment variables."
+        }
+    
+    try:
+        # Describe instances in the specified VPC
+        response = ec2_client.describe_instances(
+            Filters=[
+                {"Name": "vpc-id", "Values": [vpc_id]},
+                {"Name": "instance-state-name", "Values": ["stopped"]}
+            ]
+        )
+        
+        # Collect instance IDs
+        instance_ids = [
+            instance["InstanceId"]
+            for reservation in response.get("Reservations", [])
+            for instance in reservation.get("Instances", [])
+        ]
+        
+        if not instance_ids:
+            return {
+                "statusCode": 200,
+                "body": f"No stopped instances found in VPC {vpc_id}."
+            }
+        
+        # Start the instances
+        start_response = ec2_client.start_instances(InstanceIds=instance_ids)
+        
+        # Collect the current state of each instance
+        starting_instances = start_response.get('StartingInstances', [])
+        result = [
+            {
+                "InstanceId": instance['InstanceId'],
+                "CurrentState": instance['CurrentState']['Name'],
+                "PreviousState": instance['PreviousState']['Name']
+            }
+            for instance in starting_instances
+        ]
+        
+        return {
+            "statusCode": 200,
+            "body": {
+                "message": f"Successfully started instances in VPC {vpc_id}.",
+                "details": result
+            }
+        }
+    except Exception as e:
+        # Handle any exceptions that occur
+        return {
+            "statusCode": 500,
+            "body": {
+                "message": f"An error occurred while starting instances in VPC {vpc_id}.",
+                "error": str(e)
+            }
+        }
+
+
+Since 7:00 AM EST = 12:00 PM (noon) UTC, use:
+
+cron(0 12 ? * MON-FRI *)
+
+Breakdown:
+
+Minutes → 0
+Hours → 12
+Day of month → ?
+Month → *
+Day of the week → MON-FRI
+Year → *
+
+
+9:25 PM EST ----> 9:35 PM EST 
+
+
+`send slack notification for cloudwatch monitoring`
+
+import json
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+from datetime import datetime
+import boto3
+
+session = boto3.session.Session()
+
+
+class CloudWatchAlarmParser:
+    def __init__(self, msg):
+        self.msg = msg
+        self.timestamp_format = "%Y-%m-%dT%H:%M:%S.%f%z"
+        self.trigger = msg["Trigger"]
+
+        if self.msg['NewStateValue'] == "ALARM":
+            self.color = "danger"
+        elif self.msg['NewStateValue'] == "OK":
+            self.color = "good"
+
+    def __url(self):
+        return ("https://console.aws.amazon.com/cloudwatch/home?"
+                + urlencode({'region': session.region_name})
+                + "#alarmsV2:alarm/"
+                + self.msg["AlarmName"]
+                )
+
+    def slack_data(self):
+        _message = {
+            'text': '<!here|here>',  # add @here to message
+            'attachments': [
+                {
+                    'title': ":aws: AWS CloudWatch Notification :alarm:",
+                    'ts': datetime.strptime(
+                            self.msg['StateChangeTime'],
+                            self.timestamp_format
+                          ).timestamp(),
+                    'color': self.color,
+                    'fields': [
+                        {
+                            "title": "Alarm Name",
+                            "value": self.msg["AlarmName"],
+                            "short": True
+                        },
+                        {
+                            "title": "Alarm Description",
+                            "value": self.msg["AlarmDescription"],
+                            "short": False
+                        },
+                        {
+                            "title": "Trigger",
+                            "value": " ".join([
+                                self.trigger["Statistic"],
+                                self.trigger["MetricName"],
+                                self.trigger["ComparisonOperator"],
+                                str(self.trigger["Threshold"]),
+                                "for",
+                                str(self.trigger["EvaluationPeriods"]),
+                                "period(s) of",
+                                str(self.trigger["Period"]),
+                                "seconds."
+                            ]),
+                            "short": False
+                        },
+                        {
+                            'title': 'Old State',
+                            'value': self.msg["OldStateValue"],
+                            "short": True
+                        },
+                        {
+                            'title': 'Current State',
+                            'value': self.msg["NewStateValue"],
+                            'short': True
+                        },
+                        {
+                            'title': 'Link to Alarm',
+                            'value': self.__url(),
+                            'short': False
+                        }
+                    ]
+                }
+            ]
+        }
+        return _message
+
+
+
+def lambda_handler(event, context):
+    sns_message = json.loads(event['Records'][0]['Sns']['Message'])
+    print(sns_message)
+
+    webhook_url = 'https://hooks.slack.com/services/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' # Set destination URL (slack webhook)
+
+    slack_data = CloudWatchAlarmParser(sns_message).slack_data()
+    slack_data["channel"] = 'devops-cloud-master-class9' # change to your own channel 
+
+
+    request = Request(
+        webhook_url, 
+        data=json.dumps(slack_data).encode(),
+        headers={'Content-Type': 'application/json'}
+        )
+    response = urlopen(request)
+    return {
+        'statusCode': response.getcode(),
+        'body': response.read().decode()
+    }
+
+
+if __name__ == "__main__":
+    print(lambda_handler(None, None))
+
+
+by default lambda comes 3 seconds execution time 
+
+
+
+
+**Edge Function** 
