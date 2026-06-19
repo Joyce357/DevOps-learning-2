@@ -8333,4 +8333,303 @@ by default lambda comes 3 seconds execution time
 
 
 
+**Lambda Configurations** 
+
++ General Configuration 
++ Triggers 
++ Permissions
++ Destinations 
+
++ `Function URLs`
+
+A function URL is a dedicated HTTP(S) endpoint for your function. When your function URL is configured, you can use it to invoke your function through a browser, curl, Postman, or any HTTP client. When you configure a function URL from the main function page, Lambda assigns the function URL to the $LATEST unpublished version of your function. You cannot assign a function URL to any other function version, but you can assign a function URL to any function alias.
+
+To secure your function URL, you can choose between IAM authorization (AWS_IAM) or no authorization (NONE). If you decide not to use IAM authorization, you should implement your own authorization logic in your function. Function URLs can support JWT/OIDC/OAuth2 authentication methods.
+
+To control access to your function URL from other origins, you can also configure Cross-Origin Resource Sharing (CORS).
+
++ Environment Varibales 
++ Tags 
++ VPC 
++ RDS databases
++ Mpnitoring and Operation tools 
+Concurrency and recursion detection
++ Asynchronous Invocation 
++ Code Signing 
++ File Systems
++ State Machime 
+
+
+
+
+`Alaias in Lambda function `: 
+
+In AWS Lambda, Aliases are named pointers to a specific Lambda function version.
+They allow you to reference a function using a friendly name such as dev, qa, staging, or prod instead of referencing a version number directly.
+
+
+Why Use Aliases?
+
+1. `Environment Separation`
+
+Instead of creating multiple Lambda functions:
+
+process-orders-dev
+process-orders-qa
+process-orders-prod
+
+You can use:
+
+process-orders:dev
+process-orders:qa
+process-orders:prod
+
+2. `Safe Deployments`
+
+You can deploy a new version and simply move the alias:
+
+Before:
+
+prod -> Version 10
+
+After testing:
+
+prod -> Version 11
+
+No application changes required
+
+
+
+
+
+
+
+
 **Edge Function** 
+
+
+An edge function in the context of aws refers to lambda function that runs at the AWS edge locations . These are part of AWS Lambda@Edge, a feature of AWS Lambda that allows you to run your code closer to the users (at edge locations), reducing latency and improving performance for globally distributed applications.
+
++ This is a code which you write and attached to your cloudfront distribution 
++ This code is executed closer to your users at minimal latency 
++ Cloudfront provides two options : `Cloudfront Function and Lambda@Edge`
++ You dont need to manage servers if you want to deploy globally .
++ Fully serverless 
++ You only pay for what you use
+
+
+Use case for `Cloudfront function and Lambda@Edge` which are the two types of edge function 
+
++ Dynamic web application at edge 
++ Website security and privacy (block request for users or country)
++ URL rewriting and redirections ( redirect users based on url pattern e,g redirect http to https )
++ Header Manipulation ( add ,remove or modify HTTP headers in a request and response e.g like adding security headers content security policy)
++ A/B testing : route traffic to different versions of your application for testing purposes e.g 10% of traffic to a new feature 
++ security and authentication 
++ User tracking and analytics 
+
+
+**Cloudfront Functions**
+
++ Lightweight functions written in Java
++ High scalability ,latency sensitive CDN customizations
++ Cloudfront functions can Used to change viewer request and responses 
+(viewer request : after cloudfront receives a request from a viewer)
+viewer response: before cloudfront forward the response to the viewer
++ You can manage the code within your cloudfront 
+
+**Lambda@Edge** 
+
++ Written Node js or Python 
++ It can scale 1000s of request per second 
++ it can be Used to change viewer request and responses 
+(viewer request : after cloudfront receives a request from a viewer)
+(origin request : before cloudfront forwards the request to the origin)
+(origin response: After cloudfront receives the request from the origin)
+(viewer response: before cloudfront forward the response to the viewer)
+
+**DIFFERENCE BETWEEN LAMBDA@EDGE  AND CLOUDFRONT FUNCTION**
+
+| Feature                      | CloudFront Function                | Lambda@Edge                            |
+|------------------------------|-------------------------------------|----------------------------------------|
+| Runtime Support              | JavaScript                          | Node.js and Python                     |
+| Number of Requests           | Millions of requests per second     | Thousands of requests per second       |
+| CloudFront Triggers          | Viewer's request/response           | Viewer's request/response, origin request/origin response |
+| Max Execution Time           | < 1 ms                              | 5 - 10 minutes                         |
+| Max Memory                   | 2 MB                                | 128 MB up to 10 GB                     |
+| Total Package Size           | 10 KB                               | 1 MB - 50 MB                           |
+| Network & File System Access | No                                  | Yes                                    |
+| Access to Request Body       | No                                  | Yes                                    |
+| Pricing                      | Free Tier available/1/6 of edge price | No free tier, charged per request & duration |
+
+
+Lambda@Edge vs Regular Lambda 
+
++ Regular lambdas runs in an aws data center (regions) to process events 
++ lambda@edge runs in the aws Edge locations, which are geographically distributed points of presence (PoPs) around world 
+
+**Note*: By default Lambda functions are deployed outside your VPC unless you setup the lambda to be deployed in your VPC. 
+
+
+
+
+
+CONTEST 
+
+
+
+
+#######################
+# DYNAMODB | Database 
+#######################
+
+
+What is a Database ? 
+
+A database its simply a storage that helps to organize, collect ,store information electronically. 
+Databases are designed to store, retrieve, manage, and manipulate large amounts of information efficiently. They are used in a wide range of applications, from websites and mobile apps to enterprise systems and cloud-based services.
+
+`What is a Dynamodb` 
+
+Amazon DynamoDB is a fully managed `NoSQL database service` provided by AWS. It is designed to deliver fast and predictable performance with seamless scalability. DynamoDB is ideal for applications that require high availability, low latency, and scalability, such as web and mobile applications, IoT, and gaming applications.
+
+
+`What is a NoSQL database service ?`
+
+NoSQL (short for Not Only SQL) refers to a category of databases that are designed to store and manage `unstructured`, `semi-structured`, or `structured data without using traditional relational database models`. Unlike relational databases, which use tables with rows and columns to store data, NoSQL databases can use various models such as key-value stores, document stores, column-family stores, and graph databases
+
+
+
+*SQL (Structured Query Language)*
+
+This is a programming language that is used to manage and manipulate relational databases 
+This language allows users to be able to carryout task in the database like querying data (requesting), updating, insert and deleting data(information)
+you can use this programming language with databases like ( PostgreSQL , MySQL , Oracle , SQL server etc )  . 
+
+*What is relational database* : structure It uses tables(relations) to store data .each table has rows (records) and columns (attributes )
+
+*non-relational database* : The structure of a non relational database different models such key - value pairs , documents , graphs , wide column stores . 
+
+
+## Amazon Dynomdb   ( Database ) NoSQL 
+
++ serverless 
++ Fully managed service , Highly Available with replications across different availability zones
++ Its NoSQL database which means its not a relational database with no (transaction support - guarantees reliable ,consistent data operations)
++ Its scalable (millions of request per second)
++ Fast and consistent in performance 
++ it can be integrated with IAM for security , authorization and administration 
++ Its cheaper (low cost ) & has auto scaling capabilities 
++ No maintenance or patching (updating the software) aws takes care of this 
++ It has standard and infrequent access table class 
+
+*Take note*
+
++ Dynamodb is made of up tables
++ each table has a primary key 
++ each table can have an infinite number of items 
++ each item has attributes 
++ it has a maximum size of 400kb 
+
+
+USE CASE 
+
++ Big Data and Real-Time Analytics
++ Content Management Systems
++ Gaming Applications
++ E-commerce sites
++ You can use dynamodb tables for terraform state-lock 
+
+
+reading from the database
+writing into the database 
+
+## Dynamo DB has Capacity Modes  - Read / Write Capacity Modes 
+
+**Provisoned Mode**
+
++ This is when you create your dynmodb and specify number of read/write per second to do this you need to plan the capacity ahead time .
++ with the provisioned its possible to add auto-scaling mode 
++ Predictactable workload 
+
+
+**On demand Mode** 
+
++ AWS manages your workload for you .the read / write automatically scale up and down . 
++ No capacity planning needed
++ You pay for what you use
++ Its good for unpredictable work load 
+
+
+
+**Dynamodb Accelerator ( DAX)** : 
+
+Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available in-memory caching service designed to enhance the performance of Amazon DynamoDB. By integrating DAX, applications can achieve response times in microseconds, significantly reducing latency for read-heavy workloads
+
++ This is fully managed , high available , memory cache for Dynamodb 
++ This helps read congestion by caching data (temporary store data)
++ Micro-seconds latency for cached data 
++ It doesnt require application logic modification 
+
+
+### On demand Mode 
+
++ AWS manages your workload for you .the read / write automatically scale up and down . 
++ No capacity planning needed
++ You pay for what you use (more expensive)
++ Its good for unpredictable work load 
+
+
+## Dynamodb Accelerator ( DAX)
+
++ This is fully managed , high available , memory cache for Dynamodb 
++ This helps read congestion by caching data (temporary store data)
++ Microseconds latency for cached data 
++ It doesnt require application logic modification 
+
+
+
+**DynamoDb TTL(time to live)** 
+
+is a feature that automatically deletes expired items from a DynamoDB table based on a timestamp attribute. TTL helps manage the lifecycle of data in a DynamoDB table, making it easier to handle time-sensitive data without needing to write custom code for data expiration and cleanup.
+
++ Automatically delete items after an expiry time stamps 
++ it reduces stored data and keeps only current data in ur dynamodb database
+
+
+**Dynamodb Backup for Disaster Recovery** 
+
+**It has continous Backup using Point In Time Recovery**
+
++ It has continous backup using PoinT in time recovery (optionally you can enable it for the last 35 days , When you want to recover a data it creates a new table)
+
+**On demand Backups** 
+
++ You can backup data for long term needs until you delete them 
++ Backups don't affect perfomance or latency 
++ Recovery process creates a new table 
+
+**Dynamodb Intergration** 
+ S3 Bucket (import data and export data to your s3 bucket)
+
+ `Note` : To export Tables from your DynamoDb to an S3 bucket you need to turn point in time recovery . (PITR). 
+
+
+
+**dynamodb handson**
+
+step1 
+
++ Login to your aws account and on the console search dynamodb 
++ click create table 
++ give your table a name 
++ give a primary key e.g `partition key` or `Sort key - optional`
+Partition keys are mandatory and this are unique identifiers for each item e.g UserID
+sort keys which are optional .this helps to enable more complex queries based on specific attributes e.g "timestamp"
+
+step 2
+
+You can choose to select default settings or custom settings 
+with customer settings you can select the `Table class` and dynamodb has 2 tables classes (dynamodb standard and dynamodbIA )
+
+Secondary Indexes are used to efficiently query data based on attribites other than the primary key (partition key and optional sort key)
