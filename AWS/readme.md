@@ -8474,9 +8474,6 @@ Lambda@Edge vs Regular Lambda
 
 
 
-CONTEST 
-
-
 
 
 #######################
@@ -8499,16 +8496,17 @@ Amazon DynamoDB is a fully managed `NoSQL database service` provided by AWS. It 
 NoSQL (short for Not Only SQL) refers to a category of databases that are designed to store and manage `unstructured`, `semi-structured`, or `structured data without using traditional relational database models`. Unlike relational databases, which use tables with rows and columns to store data, NoSQL databases can use various models such as key-value stores, document stores, column-family stores, and graph databases
 
 
-
 *SQL (Structured Query Language)*
 
 This is a programming language that is used to manage and manipulate relational databases 
 This language allows users to be able to carryout task in the database like querying data (requesting), updating, insert and deleting data(information)
 you can use this programming language with databases like ( PostgreSQL , MySQL , Oracle , SQL server etc )  . 
 
-*What is relational database* : structure It uses tables(relations) to store data .each table has rows (records) and columns (attributes )
+*What is relational database* : The structure of a relational databases uses tables(relations) to store data .each table has rows (records) and columns (attributes )
 
-*non-relational database* : The structure of a non relational database different models such key - value pairs , documents , graphs , wide column stores . 
+*non-relational database* : The structure of a non relational database uses different models such key - value pairs , documents , graphs , wide column stores . 
+
+username.     calson 
 
 
 ## Amazon Dynomdb   ( Database ) NoSQL 
@@ -8532,6 +8530,7 @@ you can use this programming language with databases like ( PostgreSQL , MySQL ,
 + it has a maximum size of 400kb 
 
 
+
 USE CASE 
 
 + Big Data and Real-Time Analytics
@@ -8550,7 +8549,7 @@ writing into the database
 
 + This is when you create your dynmodb and specify number of read/write per second to do this you need to plan the capacity ahead time .
 + with the provisioned its possible to add auto-scaling mode 
-+ Predictactable workload 
++ you need to be able to Predict your workload 
 
 
 **On demand Mode** 
@@ -8564,9 +8563,9 @@ writing into the database
 
 **Dynamodb Accelerator ( DAX)** : 
 
-Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available in-memory caching service designed to enhance the performance of Amazon DynamoDB. By integrating DAX, applications can achieve response times in microseconds, significantly reducing latency for read-heavy workloads
+Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available `in-memory caching service` designed to enhance the performance of Amazon DynamoDB. By integrating DAX, applications can achieve response times in microseconds, significantly reducing latency for read-heavy workloads
 
-+ This is fully managed , high available , memory cache for Dynamodb 
++ This is fully managed , highly available , memory cache for Dynamodb 
 + This helps read congestion by caching data (temporary store data)
 + Micro-seconds latency for cached data 
 + It doesnt require application logic modification 
@@ -8633,3 +8632,754 @@ You can choose to select default settings or custom settings
 with customer settings you can select the `Table class` and dynamodb has 2 tables classes (dynamodb standard and dynamodbIA )
 
 Secondary Indexes are used to efficiently query data based on attribites other than the primary key (partition key and optional sort key)
+
+
+
+
+
+
+
+**API GATEWAY** 
+
+Its fully managed service by AWS that enables developers to `create, publish, maintain, monitor, and secure APIs at any scale`. It acts as a "front door" for applications to access data, business logic, or functionality from backend services such as AWS Lambda, Amazon EC2, or other web applications
+
+API its simply a request that you send to get information or data . 
+
+`What is an API?`
+
+An `API (Application Programming Interface)` is a mechanism that allows applications to communicate with each other by sending requests and receiving responses.
+
+
++ Its a server that acts as a middleman or intermediary for request from clients seeking to access services .
++ The api sits between clients(customer) and the backend services it provides a centralized entry pont for managing ,securing and routing api traffic 
++ Api gateways are commonly used in micro-services architecture 
+
+
+**Key Features of an API Gateway**
+
++ Request routing ( direct client request to backend services)
++ Authentication & Authorization( it can be setup to ensure incoming request are authorized or authenticated)
++ Load Balancing : it can distribute traffic to multible services 
++ Caching (it stores frequently accessed data temporary)
++ Logging & Monitoring Features(track and monitor logs api usage )
++ its good for security because it protects backend services 
++ you can create api keys to handle request throttling 
+
+
+**Benefits or why use an API gateway**
+
+1. **Centralized Management**
+
++ It acts as a single entry point for clients applications to access backend services 
++ It simplifies api management by consolidating (bringing together ) all api calls , routing and versioning in one place 
+
+2.**It improves security** 
+
++ You can use it to authenticate and authorixzed access into your application or services by intergrating the api with services in aws like IAM , Amazon Cognito , Custom authorizers to enforce secure access. 
+
++ Api gateway supports data encryption using SSL/TLS to ensure data tranfer is secured in flight . 
+
++ Protection against threats you can use services aws sheilds to secure backend services from DDOS attacks and you can also use WAF to secure your service or web application 
+
+3. **Its scalable** 
++ Api gateway since its serverless it can dynamically handle increasing or decreasing api request loads ensuring that our services or application are highly available and responsive
++ You can integrate with AWS lambda and other serverless architectures for scaling automatically without any manual intervention 
+
+4. enhance perfomance ( caching ) and cost 
+
+
+**Use Case** 
+
++ Its good for Micro-services architecture 
++ Mobile Backend as a service 
++ Routing traffic to backend services 
+
+
+**API GATEWAYS INTERGRATIONS**
+
+*you can intergrate it with*
+
++ Lambda functions 
++ http endpoints
++ aws services 
++ Mock
++ VPC link 
+
+**API GATEWAY ENDPOINT TYPES** 
+
++ Edge optimized (default) - use by global clients( request are routed through cloudfront edge locations and the api gateway stays in only one region )
+
++ Regional 
+this is for clients within same aws region 
+you can manually conbine this regional endpoint with cloudfront
+
++ Private 
+This can only be accessed within your AWS VPC using an interface vpc endpoint 
+
+
+
+## AWS API TYPES
+
++ HTTP API
++ Websocket API
++ REST API (demo )
++ REST API private
+
+
+
+api gateway (service )
+create and manage different types of api 
+
+HTTP API
+Websocket API
+REST API
+REST API private
+
+API sends specific request based on what the user wants 
+for example Get request , Post , Put , Patch , Delete 
+
+
+Post - Create something new 
+Get - Read or retrieve data
+Put - Update or replace existing data
+Patch - Update part of existing data
+Delete - Remove data
+
+
+
+
+HANDS ON FOR API GATEWAY 
+
+add demo code base 
+
+
+
+
+# AWS STEP FUNCTIONS 
+
+
+
+AWS Step Functions is a serverless orchestration service that enables you to coordinate multiple AWS services into scalable workflows.This works flows helps to automate task and this workflows can automate task for micro-services , serverless applications and batch task . 
+
++ These work flows ( steps ) are compose of steps it can include `tasks , choices , waits , parrelle operations /executions , error handling etc `. it can enable you to build complex applications with ease 
+
++ It uses json or Yaml language 
+
+Concepts of Step Functions 
+
+1. `State Machine` : A definition of the workflow, consisting of states that can perform tasks, make decisions, and run in sequence or parallel.
+
+2. `State Types`
+
++ `Task State`: Performs a single unit of work (e.g., invoking Lambda or making API calls).
++ `Choice State` : Adds branching logic based on conditions e.g if object in s3 infected with after scan from guard duty remove to guarantine 
++ `Parallel State` : Executes multiple branches simultaneously.
++ `Wait State` : Introduces delays 
++ `Pass State` : Passes data without performing any work.
++ `Fail/Success State` : Represents end states for failure or success.
+
+
+**Benefits and features**
+
++ Serverless : No need to manage servers or underlying architecture 
++ scalable 
++ Integration with other services 
++ It has visual workflow ( graphical visual interface)
++ Execution history .Tracks and log each execution for debugging and monitoring.
+
+
+**USE CASES**
+
++ Microservices Orchestration: Coordinate Lambda functions and APIs.
++ Data Processing Pipelines: Build pipelines for ETL jobs or batch processing.
++ Workflow Automation: Automate business processes like approvals and order fulfillment.
++ Error Recovery: Retry and manage failed processes automatically.
++ Machine Learning work flows
+
+
+
+HANDS ON 
+
+ORDER 
+
+
+
+
+# AMAZON COGNITO 
+
+Its a service thats offers user authentication, authorization, and user management for web and mobile applications
+
+## Overview of Amazon Cognito and its Purpose
+- key features & benefits 
+- use cases 
+
+## What is Amazon Cognito 
+
++ its a service that makes it easy to add user sign-up , sign in , and access control of your web application and mobile applications quickly and easily (user management for mobile or web application)
+
+## Key Features : 
+
++ `User pools` 
+
+These are user directories that provide sign-up and sign-in options for your app users. User pools support authentication through various `identity providers`, including social platforms like Facebook, Google, and Apple, as well as enterprise providers via SAML and OpenID Connect (OIDC) 
+
++ `identity pools`
+
+Also known as federated identities, identity pools enable you to grant users temporary AWS credentials to access AWS services. This allows authenticated and unauthenticated users to access AWS resources securely.
+
++ Build in authentication flow
++ Multi-factor authentication 
++ you can intergrate with different aws services 
++ it has secured handling of user credentials using the federated approach 
+
+**Use Cases** 
++ commonly used to include user authentication for web and mobile applications, federated identities for single sign on (SSO)
++ Access controls for APIs & user management 
+
+
+**COGINITO USER POOLS** : (Authentication and user management)
+
+A user pool is a user directory in Amazon Cognito.you can create a user pool where you can manage attributes ( e.g email , phone , ) . It has standard attributes and you can also customized some attributes e.g favourite colour etc
+
+
++ Creating and configuring users 
++ User attributes and custom attributes (name ,date birth , address)
++ users can signup and sign process
++ MFA 
++ Password policies and account recovery 
++ user pools triggers & lambda functions to work together 
+
+
+
+### Cognito Identity Pools 
+
+This provides temporary AWS credentials to access AWS services.You can use them to grant access to your aws services / resources to users authenitcated through the user pools or federated identities 
+
++ Federated Identities and authentication : 
++ Role based Access Control (RBAC)
++ Intergration with other identity providers ( Okta, SAML)
++ Anonymous users identity
+
+
+
+
+
+# DATABASES
+
+What is a Database ? 
+
+A database its simply a storage that helps to organize, collect ,store information electronically. 
+Databases are designed to store, retrieve, manage, and manipulate large amounts of information efficiently. They are used in a wide range of applications, from websites and mobile apps to enterprise systems and cloud-based services.
+
+**CHOOSING THE RIGHT DATABASE**
+
++ Do you want to a Databased managed by you or by Fully managed service by aws ?
++ What is the read capacity & write capacity or balanced workload ? Througput needs  (provisioned or on demand) ?
++ Do the database needs to scale or fluctuate and if yes what time (day or night)
++ How much data do we need to store and what is the retention period (how long) ,will data grow ? if yes average object size ?
++ How will the database be accessed or data be accessed (directly , our application , third applications)
++ Latency requirements ( concurrent users using the database at the same time)
++ Data model ? how will you query the data ? do you need a semi structured or structured data 
++ Strong Schema , more flexible , reporting , search 
++ Relational or non relational (sql or nosql )
+
+
+
+**RDS (RELATIONAL DATABASE SERVICE )***
+
++ This is a service in aws that provides scalable and managed relational database solutions .
++ it provides support for several database engines such as 
+**MySQl , PostgresSQL , MariaDB , Oracle and Microsoft SQL Server , Aurora MySQL and Aurora Postgress SQL ,IBM DB2**
++ It handles database tasks such as provisioning , patchng , backup , recovery and scaling 
++ It also offers both automated and manual backups , replication , and failover to enhance high availability and durability 
++ It can auto scale 
++ It supports read Replicas and Multi AZ 
++ It supports IAM Authenticate , you can intergrate with secret manager 
++ This is a regional service 
+
+Relational Database Management Systems ( `MySQl , PostgresSQL , MariaDB , Oracle and Microsoft SQL Server , Aurora MySQL and Aurora Postgress SQL ,IBM DB2`) 
+
+
+**TYPES OF RELATIONAL DATABASE MANAGEMENT SYSTEMS IN RDS**
+
+1. **Amazon Aurora** 
+
+Its `fully managed relational` database and its designed for cost effective and high performance
+Its compactable (can work together) with MYSQL and PostgressSQL .This makes it a good choice for your applications
+that are already running on the MSQL and PostgressSQL .
++ Aurora serverless 
+
+**Key Features of Aurora**
+
++ Perfomance : Aurora provides up to five times the throughput of standard `MySQL and three times the throughput of standard PostgreSQL`
+it has achieve this through optimization such as hardware an distributed fault tolerant , self healing storage system that scales upto 128 terabytes
++ Compactability : compactable with MYSQL and PostgressSQL
++ Availability and Durability : SLA 99.99% Availability . It replicates 6 copies of your data across 3 availability zones and backup your data continouly in amazon s3 
++ Scalability : its scales automatically and adjusts its compute and memory performance by adding up to 15 low latency read replicas across three availaibility zones
++ Security : It offers multiple layers of security for your database , VPC (Network isolation) ,it has encryption at rest using KMS (Key management service) and  Encryption in transit using SSL (Certificate manager ) , It allows to use IAM to manage database access .
++ Maintenance and Management : As a managed service, Aurora handles time-consuming tasks such as provisioning, patching, backup, recovery, failure detection, and repair.
++
+
+USE CASE 
+
++ Enterprize Applications : Aurora supports high-performance, scalable, and highly available databases for enterprise applications
++ SaaS Applications 
++ Deploying Globally Distributed Application
++ Going Serverless
+
+
+2. **MySQl**
+
+MySQL is one of the most popular `open-source relational database management systems (RDBMS)` widely used across the world.
+It uses Structured Query Language (SQL) to manage the data stored in databases. 
+MySQL is a central component of the LAMP stack, which includes Linux, Apache, MySQL, and PHP/Python/Perl.
+
+## Non Managed By AWS 
+
+## Key Features of MYSQL :
+
++ Compatibility: MySQL works on many system platforms, including AIX, BSDi, FreeBSD, HP-UX, i5/OS, IRIX, Linux, macOS, NetBSD, OpenBSD, OS/2 Warp, QNX, Oracle Solaris, Symbian, SunOS, SCO OpenServer, SCO UnixWare, Sanos and Windows.
+
++ Storage Engine Architecture: Flexible architecture through its storage-engine framework which allows database professionals to configure the MySQL database server for a particular application, with one or more storage engines.
+
++ High Performance: Provides fast load utilities, distinct memory caches, full text indexes, and other performance-enhancing mechanisms.
+
++ High Availability: Offers a variety of replication configurations, from classic master-slave replication to the more advanced master-master replication, allowing for failover and redundancy.
+Security: Features include SSL support, connection encryption, and role-based access controls, ensuring secure data handling and user management.
+
+
+**IN CONTEXT OF AWS**
+
+
++ This is a managed relational database service that facilitates MySQL deployment, operation, and scaling in the cloud. It handles routine database tasks such as provisioning, backups, software patching, monitoring, and hardware scaling.
+
++ Self-managed on Amazon EC2: For those who prefer managing their own database service, MySQL can be installed directly on EC2 instances, giving complete control over the database server.
+
+COMMON USE CASES 
+
++ Web Applications
++ E-commerce Platforms
++ Enterprise Applications
+
+
+2. **PostgresSQL**
+
+
+Its a powerful open source object-relational database system known for its reliability , performance .It has been in Active development for over 30 development and it has earned a good reputation for its architecture , features and data intergrity.
+
+## Key Features of Postgres:
+
++ SQL Compliance and Features: PostgreSQL supports most of the major SQL standards and many modern features such as complex queries, foreign keys, triggers, views, transactional integrity, and multiversion concurrency control. It also allows for the creation of user-defined types and functions.
+
++ Extenbility Feature : Users can define their own data types, index types, functional languages, and even write custom plugins.
+
++ It supports JSON : PostgreSQL supports JSON and other NoSQL features like native XML support and key-value pairs, allowing it to serve applications that require NoSQL features.
+
++ Concurrency: Thanks to its advanced multiversion concurrency control (MVCC), PostgreSQL provides concurrent access to the database without locking the entire database, which improves read/write speeds and ensures data integrity.
+
++ Reliability and Data Integrity: It offers ACID (Atomicity, Consistency, Isolation, Durability) properties, ensuring that the database remains accurate and reliable even in the event of a system failure or power failure.
+
++ Replication and High Availability: PostgreSQL supports master-slave replication and can be set up for high availability and load balancing. This can be further enhanced with tools like pgpool, PostgreSQL Automatic Failover (PAF), and others.
+
++ Security: Provides strong security features, including robust access controls, column and table-level permissions, and native support for SSL for secure connections.
+
+
+### IN CONTEXT OF AWS POSTGRESS 
+
+On aws Postgress can be utilized through `several managed and self-managed solutions` 
+
++ Amazon RDS for PostgreSQL: This is a managed service that makes it easy to set up, operate, and scale PostgreSQL deployments in the cloud. It manages tedious tasks such as hardware provisioning, database setup, patching, and backups.
+
++ Amazon Aurora (PostgreSQL-Compatible Edition): Aurora is a PostgreSQL-compatible relational database that combines the speed and availability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases.
+
++ Self-managed on Amazon EC2: For users who need full control over their PostgreSQL database and its environment, running PostgreSQL on Amazon EC2 is an option. This setup requires manual management of the database, including installations, configurations, scaling, and backups.
+
++ It has pre-configured AMIs (Amazon Machine Image) available on AWS market place 
+
+
+3. **MariaDB**
+
+
+Its an open-source relational database management system (RDBMS) that evolved as community-developed fork from MySQL.
+It was created by the original developers of MYSQL after oracle corporation acquired MySQL.
+Mariadb aims to remain free under general public license and provides a drop in replacement for MySql with enhanced 
+features and perfomance 
+
+## Key Features of MariaDB
+
++ Open source and community driven 
++ Perfomance enhancements( improvements with perfomance when compared MYSQL e.g efficient query execution & better perfomance)
+if also offers better caching mechanism 
++ Compactable with MYSQL
++ it has a good storage engine (s3 storage engine :allows tables to be stored in s3 )
++ Secured , encryption of data at rest , in transit using SSL/TLS for transfer, allows user roles for grouping of privileges which simplies the management
+user permissions, it has a database firewall that can restrict or block potentially harmful queries.
++ it is scalable 
+
+
+### IN CONTEXT OF AWS MARIADB 
+
++ *Managed Service* : AWS takes care of routine database tasks such as provisioning , patching,backupsmrecover and scaling for you
++ *Automatic Backup* : Automatic backups and maintain snapshots for easy point in time recovery .
++ *High Availabiliy* : Multi AZ (different availabikity zones) which has an automatic failover standby instance in case of infrastructure failure ,ensuring high availability 
+
+
++ *Self Managed* : You can deploy and manage your MariaDB on an EC2 ,this is going to be managed by you and it provides
++ full control over the database environment , including the operating system , database engine , and other components in the database 
++ *Flexibility in self Managed* : it allows fine grained tunning of resources and the ability to use custom configurations that might not be available in managed services.
++ *S3 Intergration* : You can intergrate with an S3 bucket for **Backup & Restore** The MariaDB'S S3 storage engine allows you to store and manage data in your s3 bucket.
++ It has pre-configured AMIs (Amazon Machine Image) available on AWS market place 
+
+      
+USE CASE 
++ Web app + Mobile 
++ Data Warehousing 
++ Enterprize applications 
++ Microservice Applications 
+
+
+
+4.**MICROSOFT SQL SERVER**
+
+Microsoft SQL Server is a powerful and versatile relational database management system (RDBMS) developed by Microsoft. It provides comprehensive data management, business intelligence, and analytics solutions for a wide range of applications. When deploying Microsoft SQL Server on AWS, organizations can leverage AWS's robust infrastructure and managed services to achieve high performance, scalability, and reliability for their SQL Server workloads.
+
+## Key Features of MICROSOFT SQL SERVER 
+
++ *Managed Service* : AWS takes care of routine database tasks such as provisioning , patching,backupsmrecover and scaling for you
++ *High Availabiliy* : Multi AZ (different availabikity zones) deployments with this there is a failover support by automatically replicatng data across multiple availablility zones 
++ *Scalable* : Easily scale compute and storage resources to meet the demands of your application 
++ *License Option*:Offers both License Included (pay-as-you-go licensing) and Bring Your Own License (BYOL) models, providing flexibility in managing SQL Server licenses.
+
++ *Self Managed* : You can deploy and manage your MariaDB instances on an EC2 ,this is going to be managed by you and it provides
++ *Flexible instance types* : You can choose different instance types for different workloads etc e.g compute ,memory ,storage 
++ *Storage Options* : it supports multiple storage options such as EBS , and instance storage to optimized perfomance and cost 
+
+
+############################################################
+
+#  DIFFERENT TYPES OF DATABASES ( NON RELATIONAL DATABASES )
+
+# NOSQL DATABASES
+
+################################################################
+ **Dynamodb** 
+
+
+1. **Amazon Elasti Cached**
+
+Its a fully managed in `memory data store and cache` service provided by aws.Its supports two popular opensource
+in memory key-value stores: Redis and Memcached. 
+ElastiCache is primarily used to improve the perfomrance of web applications by allowing you to retrieve information faster .
+
+## Key Features of ELASTI Cached
+
++ *Perfomances* : High perfomance by supporting in-memory caching which is faster than disk-based storage ,This helps to improve the read of your application and reduces latency .'
++ *Scalable* : u can start small and scale up (Supports horinzontal by adding more nodes to the clusters)
++ *High Available* ; You can implement replication and automatic failover to maintain availability and fault tolerance
++ *Security* ; you can manage permissions using IAM , It support enryption in transit (TLS/SSL) and enryption at rest
++ *Compatability*: With redis and memcached environments which means u can leverage ElastiCache without changes to most of the exising applications.
+
++ *Backup & Snapshots* ; you can backup data for point in time recovery 
++ It has managed and scheduled maintenance .
+
+
+## USE CASES OF AMAZON ELASTICACHE 
+
++ *Caching* ; (primary use is to store requently accessed data that doesnt change often that allow ur appliction to access the data faster)
+
++ *Session Store* ;can manage user session data , which can help significantly to speedup web applications by reducing database load during high traffic periods . 
+
++ *Real-Time Analytics* ; It has high throughput and low latency , which means Elasticache is suitable for realtime analytics applications , can quickly process large volumes of data.
+
++ *Message Queuing : Especially redis can be used as a broker for messaging and quequeing system .It can help during peak loads by buffering requests in the cache 
+
+
+
+2. **DocumentDb** 
+
+Amazon DocumentDB is a fully managed, scalable, NoSQL database service designed to store, retrieve, and manage JSON-like documents. It is built for compatibility with `MongoDB` (`Mongo atlas`), a popular document-oriented database system, which allows developers to use familiar MongoDB application code, drivers, and tools with Amazon DocumentDB.
+DocumentDB was implemented from MongoDb 
+
+## Key Features of DocumentDb 
+
++ *MongoDB Compatibility* : DocumentDB is designed to be compatible with MongoDB, which means it supports MongoDB workloads and most of its APIs. This compatibility allows for an easy migration of applications from MongoDB to DocumentDB.
+
++ *Scalability*: Amazon DocumentDB automatically scales its compute and storage resources. It can scale up to 64 TiB of storage and supports up to 15 read replicas, providing ample scalability and flexibility for growing application needs.
+
++ *Durability and Availability*  : DocumentDB is designed for 99.99% availability. It replicates six copies of your data across (3) three AWS Availability Zones. It also continuously backs up your data to Amazon S3, and provides point-in-time recovery.
+
++ *Performance* : DocumentDB is optimized for fast performance, especially for reading operations. It separates compute and storage, which allows it to scale more efficiently and maintain performance as data grows.
+
++ *Security*: Security features include encryption at rest using AWS Key Management Service (KMS) and encryption in transit using TLS. Additionally, Amazon DocumentDB integrates with AWS Identity and Access Management (IAM) for authentication and access control.
+
++ *Managed Service* : As a fully managed service, AWS handles the provisioning, patching, backup, recovery, failure detection, and repair of your DocumentDB instances.
+
+
+
+3. **Amazon Neptune** 
+
+Amazon Neptune is a fully managed `graph database` service provided by AWS, designed to store and navigate relationships between `interconnected datasets`. It is optimized for storing billions of relationships and querying the graph with milliseconds latency. Neptune supports both the property graph model and the RDF graph model, using their respective query languages: Apache TinkerPop Gremlin for property graphs, and SPARQL for RDF graphs.
+
++ Popular graph dataset would be Social Networks  (users have friends , post comments , comments have likes from users , users share and like posts )
+
+
+## Key Features of Neptune 
+
++ *Graph Database Models* : Neptune supports two popular graph models:
+
+Property Graph (Gremlin): Suitable for general-purpose graph applications.
+RDF Graph (SPARQL): Ideal for applications that require standard-based models.
+
++ *Highly Scalable and Fast* : Neptune is designed to handle large datasets and query loads while maintaining high throughput and low latency. It supports read replicas, point-in-time recovery, continuous backup to Amazon S3, and replication across multiple Availability Zones.
+
++ *Fully Managed*: As with other AWS services, Neptune is fully managed, which means AWS handles maintenance tasks such as hardware provisioning, software patching, setup, configuration, and back
+
++ *Security*:  Neptune offers multiple layers of security, including network isolation using Amazon VPC, encryption at rest using AWS Key Management Service (KMS), and encryption in transit with TLS. Additionally, it supports IAM for fine-grained access control.
+
++ *High Availability and Durability* : Neptune is built to offer greater than 99.99% availability. It automatically replicates data across three Availability Zones and backs up data continuously to Amazon S3.
+
++ *Integration with AWS Services* : Neptune can integrate with other AWS services such as Elastic Load Balancing, Amazon CloudWatch for monitoring, and AWS CloudTrail for auditing.
+
+
+**AMAZON NEPTUNE - STREAMS** 
+
++ Real-time ordered sequenece of every change to your graph data 
++ Changes are available immediately after writing 
++ No duplicates , they are strict order 
++ Streams data are accessible in a HTTP REST API 
+
+*use case of streams*
+
++ Send notifications when certain changes are made  
++ Replicate data across regions in Neptune 
++ it can maintain your graph data sybnchronized in other data stores (s3 , opensearch , elasticache)
+
+
+
+# USE CASE :
+
++ *Social Networking* : Neptune can manage and traverse complex social graphs to offer features like friend recommendations, social feed generation, and community discovery.
+
++ *Knowledge Graphs*: Used to create and run large-scale knowledge graphs, which aggregate and link information across diverse data sources.
+
++ *Fraud Detection* : Effective in uncovering patterns that indicate fraudulent behavior within vast data sets by examining the relationships between data points.
+
+
+
+4. Amazon Key Spaces (for Apache Cassandra )
++ Apache Cassandra is an open-source NoSQL distributed database 
+
+Amazon Keyspaces is a scalable, highly available, and managed Apache Cassandra-compatible database service. It is designed for workloads that require single-digit millisecond performance at any scale. By providing seamless scalability and reliability without the operational overhead of managing a Cassandra cluster, Amazon Keyspaces allows developers to run their Cassandra workloads in the AWS cloud using the same Cassandra application code.
+
+## Key Features of Amazon Key Spaces (for Apache Cassandra )
+
++ *Cassandra Compatibility*: Amazon Keyspaces is built to be compatible with Apache Cassandra, which means it supports the same Cassandra Query Language (CQL), allowing existing Cassandra applications to work with Keyspaces without changes.
+
++ *Serverless*: The service is serverless, meaning you don't need to provision, configure, or manage servers. Amazon Keyspaces automatically scales capacity based on the workload's needs, ensuring performance and reducing operational overhead.
+
++ *Highly Available and Durable*: Data is automatically replicated across multiple AWS Availability Zones to ensure high availability and durability. Amazon Keyspaces offers a 99.99% availability SLA .
+
++ *Managed*: As a fully managed service, Amazon Keyspaces handles tasks such as provisioning, patching, configuration, backups, and recovery. This frees up developers to focus on building applications.
+
++ *Security*: The service integrates with AWS Identity and Access Management (IAM) for access control, and supports encryption at rest and in transit.
+
++ *Performance at Scale*: Keyspaces is designed to offer consistent, single-digit millisecond response times at any scale.
+
++ *Query Language* : It uses the cassandra Query Language (CQL)
+
++ *Capacity* ; On demand mode and provisioned mode with auto scaling 
+
++ it has backup and point in time recovery for up to 35 days .
+
+**USE CASE**
+
++ Web applications
++ IoT Applications
++ Time series data 
++ Gaming applications 
+
+
+
+
+5. **AMAZON QLDB ( stands for Quantum Ledger Database)**
++ A *ledger* is a book for recording financial transactions 
+
+Amazon Quantum Ledger Database (QLDB) is a fully managed ledger database provided by AWS that provides a transparent, immutable, and cryptographically verifiable transaction log, owned by a central trusted authority. Amazon QLDB is designed to provide a high-performance, immutable history of all the changes made to your data over time. It combines the benefits of blockchain technologies with the ease and familiarity of a traditional database.
+
+
+
+# Amazon Key QLDB (Quantum Ledger Database)
+
++ *Immutability* : Once data is written to QLDB, it cannot be altered or deleted, providing an immutable record of transactions.
+
++ *Verifiability* : Each record in QLDB is cryptographically chained. It allows users to verify the integrity of the transactions using cryptographic proofs.
+
++ *Serverless*: QLDB is serverless, meaning AWS manages all the underlying infrastructure, scaling, provisioning, and patching.
+
++ *Transparent* : Unlike traditional blockchains, QLDB provides a centralized, trusted database without distributed consensus, making it more efficient for use cases that do not require decentralization
+
++ *SQL-like Queries* : QLDB supports PartiQL, a SQL-compatible query language that allows you to use familiar SQL syntax to manipulate and query data.
+
++ *Performance* : It is optimized for high performance, allowing users to execute transactions with lower latency and higher throughput than blockchain-based systems.
+
++ *Managed* : As a managed service, QLDB eliminates the need to worry about hardware or software management, allowing developers to focus on building applications.
+
+**USE CASES**
+
++ *System of Record* : QLDB serves well as a system of record where maintaining an accurate and complete history of all changes is critical, such as financial transactions, supply chain events, and inventory management.
+
++ *Audit Trail*: It is ideal for applications requiring detailed and verifiable audit trails. Companies can use QLDB to track changes across different data records and systems transparently and immutably.
+
++ *Regulatory Compliance* : For industries like finance and healthcare where regulations require immutable records of transactions for compliance and reporting, QLDB is an excellent fit.
+
++ *Supply Chain Traceability*: Companies can use QLDB to record events across the supply chain, providing a tamper-evident history of the movement and state of goods from origin to consumption.
+
++ *Highly Available *: Data is automatically replicated across multiple 3 AWS Availability Zones to ensure high availability and durability. 
+
+
+
+
+6. **AMAZON TIMESTREAM DATABASE** 
+
+
+Amazon Timestream is a fast, scalable, and serverless time series database service for IoT and operational applications provided by AWS. It's specifically designed to efficiently collect, store, and process time series data—data that measures how things change over time. This includes a wide range of use cases such as application monitoring, industrial telemetry, IoT sensor data, and real-time analytics.
+
+iot : Internet of things , which refers to network of physical object "things" that are embedded (put inside) with sensors ,software and other technologies for the purpose connecting and exchanging data with other devices or systems 
+
+
+# Amazon Key features TIMESTREAM DATABASE 
+
+*Time Series Optimization* : Amazon Timestream is optimized for data that changes over time. This includes built-in time series functions to help process and analyze data directly within the database.
+
+*Serverless*: As a serverless database, Timestream manages the underlying infrastructure, scaling up or down automatically to adjust to the application’s demands without requiring manual intervention.
+
+*Scalability*: It can handle trillions of events each day and can query billions of rows in seconds, scaling automatically to adapt to the workload demands.
+
+*Cost-Effectiveness*: Timestream automatically manages the data lifecycle, moving data to less expensive storage based on its age, which can significantly reduce the cost of storing time series data.
+
+*Built-in Time Series Functions*: It provides built-in functions to smooth, approximate, and interpolate time series data, which can be used directly in SQL queries.
+
+
+*Multi-tiered Storage*: Data in Timestream is stored across two primary storage tiers—memory store for recent data and magnetic store for older data—optimized for cost and performance.
+
+*High Performance*: Amazon Timestream offers fast response times for queries, making it suitable for real-time application
+
+*Security* : It has enryption in transit and at rest 
+
+**USE CASES**
+- Iot Applications (large volume of data and time stamps )
+- Real time anaylitics 
+- Application monitoring 
+
+
+
+**HANDS ON (POSTGRESS SELF MANAGED AND AWS MANAGED )**
+
+`case study postgresql`
+
+There are two options which you can use to connect to your RDS database .
+CLI and Graphical user interface 
+
+GUI : You will need a third party tool like Dbeaker or pgadmin
+CLI : PostgreSQL client (mac ,windows and linux the commands are different ) e.g mac `brew install libpq`
+
+To connecttothe database run the following command 
+
+`psql -h database-1.cdq6ga82mq0v.ca-central-1.rds.amazonaws.com -U postgres -d database-1 -p 5432`
+
+This will prompt you to enter database password 
+
+
+
+
+After login into your ec2 instance or rds database 
+
+Login into PostgreSQL 
+
+`sudo -i -u postgres`
+
+To access the postgress interactive shell  (psql)
+
+`psql`
+
+You can create a Database 
+
+CREATE DATABASE <database-name>  e.g `CREATE DATABASE mydatabase`
+
+Connect to the new Database using the following command
+
+\c <database-name>   e.g `\c mydatabase` you should see this if it worked 
+You are now connected to database "mydb" as user "postgres".
+
+
++ Create tables to collect data e.g student 
+`note` you can create as many tables depending on the data you want to collect 
+
+e.g 
+
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender CHAR(1) CHECK (gender IN ('M', 'F')),
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(15),
+    address TEXT
+);
+
+
+
++ To insert Data Manually you can run the following command to meet the table attributes created above 
+
+`Insert Sample Data`
+
+INSERT INTO students (first_name, last_name, date_of_birth, gender, email, phone_number, address) VALUES
+('John', 'Doe', '2002-03-15', 'M', 'john.doe@example.com', '123-456-7890', '123 Elm Street'),
+('Jane', 'Smith', '2001-07-22', 'F', 'jane.smith@example.com', '987-654-3210', '456 Oak Avenue');
+
+
+`Query the Data` 
+
+You can use different query syntax
+
+To query all students data you can run ` SELECT * FROM students;` the wild (*) means all students 
+other queries you can do can be query only specific students , their birthdates .you can query student by name , id , date birth , address etc 
+
+
+press `q` to exit from the current data screen 
+
+
+SELECT *
+FROM students
+WHERE student_id = 1;
+
+
+
+
+# Database ports 
+
+| **Database**             | **Default Port** | **Use Case**                                                                                 |
+|--------------------------|------------------|----------------------------------------------------------------------------------------------|
+| **MySQL / MariaDB**      | 3306             | Web applications, content management systems, LAMP stacks.                                   |
+| **PostgreSQL**           | 5432             | Complex queries, data integrity, geospatial applications, analytics, enterprise apps.        |
+| **Microsoft SQL Server** | 1433 (TCP), 1434 (UDP) | Enterprise applications, ERP, CRM, business intelligence, Microsoft ecosystem integration.    |
+| **Oracle Database**      | 1521             | Large-scale, high-performance applications, ERP systems, financial services, data warehousing.|
+| **MongoDB**              | 27017            | NoSQL, high availability, scalability, real-time analytics, unstructured data handling.       |
+| **Cassandra**            | 9042             | NoSQL, scalability, high availability, distributed systems, IoT, big data analytics.         |
+| **Redis**                | 6379             | In-memory store, session management, real-time analytics, gaming leaderboards, caching.      |
+| **Elasticsearch**        | 9200             | Search and analytics engine, log/event data analysis, real-time data exploration, ELK stack. |
+| **MariaDB with S3 Storage Engine** | 3306 (MariaDB), 80/443 (S3) | Combines relational database performance with cost-effective object storage.                  |
+| **SQLite**               | Not applicable   | Lightweight, file-based, mobile applications, embedded systems, small-scale desktop apps.    |
+| **IBM Db2**              | 50000            | Transactional and analytical workloads, banking, financial services, data warehousing.       |
+| **MariaDB ColumnStore**  | 8600             | Analytical and data warehousing workloads, complex queries, large-scale data sets.           |
+| **Amazon Aurora**        | 3306 (MySQL-compatible), 5432 (PostgreSQL-compatible) | Cloud-native, high performance, MySQL/PostgreSQL compatible, enterprise apps, SaaS.            |
+| **Apache Hive**          | 10000            | Data warehouse on Hadoop, big data analytics, data mining, large datasets.                   |
+| **Apache HBase**         | 16010 (Master web UI), 16020 (RegionServer) | Distributed, scalable NoSQL on Hadoop, real-time read/write for large datasets.               |
+| **Memcached**            | 11211            | Distributed memory caching, speeds up dynamic web applications, session storage, API load.   |
+
+
+
+
+**DATA AND ANALYTIC SERVICES** 
+
