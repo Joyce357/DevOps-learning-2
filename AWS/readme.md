@@ -8798,12 +8798,6 @@ Concepts of Step Functions
 
 
 
-HANDS ON 
-
-ORDER 
-
-
-
 
 # AMAZON COGNITO 
 
@@ -8837,17 +8831,22 @@ Also known as federated identities, identity pools enable you to grant users tem
 + Access controls for APIs & user management 
 
 
+
+
+
+
 **COGINITO USER POOLS** : (Authentication and user management)
 
 A user pool is a user directory in Amazon Cognito.you can create a user pool where you can manage attributes ( e.g email , phone , ) . It has standard attributes and you can also customized some attributes e.g favourite colour etc
 
+`Amazon user pools gives you the ability to : - `
 
-+ Creating and configuring users 
-+ User attributes and custom attributes (name ,date birth , address)
-+ users can signup and sign process
-+ MFA 
-+ Password policies and account recovery 
-+ user pools triggers & lambda functions to work together 
++ Create and configuring users 
++ Create and customize user attributes e.g (name ,date birth , address)
++ users can signup and sign in process
++ Set Up MFA 
++ Set Password policies and account recovery 
++ user pools triggers & lambda functions works together 
 
 
 
@@ -8864,6 +8863,7 @@ This provides temporary AWS credentials to access AWS services.You can use them 
 
 
 
+
 # DATABASES
 
 What is a Database ? 
@@ -8873,7 +8873,7 @@ Databases are designed to store, retrieve, manage, and manipulate large amounts 
 
 **CHOOSING THE RIGHT DATABASE**
 
-+ Do you want to a Databased managed by you or by Fully managed service by aws ?
++ Do you want the Databased managed by you or Fully managed service by aws ?
 + What is the read capacity & write capacity or balanced workload ? Througput needs  (provisioned or on demand) ?
 + Do the database needs to scale or fluctuate and if yes what time (day or night)
 + How much data do we need to store and what is the retention period (how long) ,will data grow ? if yes average object size ?
@@ -8897,17 +8897,20 @@ Databases are designed to store, retrieve, manage, and manipulate large amounts 
 + It supports IAM Authenticate , you can intergrate with secret manager 
 + This is a regional service 
 
+
+
 Relational Database Management Systems ( `MySQl , PostgresSQL , MariaDB , Oracle and Microsoft SQL Server , Aurora MySQL and Aurora Postgress SQL ,IBM DB2`) 
 
 
-**TYPES OF RELATIONAL DATABASE MANAGEMENT SYSTEMS IN RDS**
+**TYPES OF RELATIONAL DATABASE MANAGEMENT SYSTEMS IN RDS ( Database Engines)**
 
 1. **Amazon Aurora** 
 
 Its `fully managed relational` database and its designed for cost effective and high performance
 Its compactable (can work together) with MYSQL and PostgressSQL .This makes it a good choice for your applications
 that are already running on the MSQL and PostgressSQL .
-+ Aurora serverless 
+
++ Aurora serverless ( You do not managed any underlying architecture)
 
 **Key Features of Aurora**
 
@@ -8918,14 +8921,14 @@ it has achieve this through optimization such as hardware an distributed fault t
 + Scalability : its scales automatically and adjusts its compute and memory performance by adding up to 15 low latency read replicas across three availaibility zones
 + Security : It offers multiple layers of security for your database , VPC (Network isolation) ,it has encryption at rest using KMS (Key management service) and  Encryption in transit using SSL (Certificate manager ) , It allows to use IAM to manage database access .
 + Maintenance and Management : As a managed service, Aurora handles time-consuming tasks such as provisioning, patching, backup, recovery, failure detection, and repair.
-+
+
 
 USE CASE 
 
 + Enterprize Applications : Aurora supports high-performance, scalable, and highly available databases for enterprise applications
 + SaaS Applications 
 + Deploying Globally Distributed Application
-+ Going Serverless
++ Going Serverless apps
 
 
 2. **MySQl**
@@ -8962,6 +8965,8 @@ COMMON USE CASES
 + Enterprise Applications
 
 
+
+
 2. **PostgresSQL**
 
 
@@ -8986,7 +8991,7 @@ Its a powerful open source object-relational database system known for its relia
 
 ### IN CONTEXT OF AWS POSTGRESS 
 
-On aws Postgress can be utilized through `several managed and self-managed solutions` 
+On aws Postgress can be utilized through `aws managed and self-managed solutions` 
 
 + Amazon RDS for PostgreSQL: This is a managed service that makes it easy to set up, operate, and scale PostgreSQL deployments in the cloud. It manages tedious tasks such as hardware provisioning, database setup, patching, and backups.
 
@@ -9039,6 +9044,7 @@ USE CASE
 
 
 
+
 4.**MICROSOFT SQL SERVER**
 
 Microsoft SQL Server is a powerful and versatile relational database management system (RDBMS) developed by Microsoft. It provides comprehensive data management, business intelligence, and analytics solutions for a wide range of applications. When deploying Microsoft SQL Server on AWS, organizations can leverage AWS's robust infrastructure and managed services to achieve high performance, scalability, and reliability for their SQL Server workloads.
@@ -9050,18 +9056,19 @@ Microsoft SQL Server is a powerful and versatile relational database management 
 + *Scalable* : Easily scale compute and storage resources to meet the demands of your application 
 + *License Option*:Offers both License Included (pay-as-you-go licensing) and Bring Your Own License (BYOL) models, providing flexibility in managing SQL Server licenses.
 
-+ *Self Managed* : You can deploy and manage your MariaDB instances on an EC2 ,this is going to be managed by you and it provides
-+ *Flexible instance types* : You can choose different instance types for different workloads etc e.g compute ,memory ,storage 
++ *Self Managed* : You can deploy and manage your SQL databases on an EC2 ,this is going to be managed by you.
++ *Flexible instance types* : You can choose different instance types for different workloads etc e.g compute optimized ,memory optimized or storage optimized instances for your deployment 
 + *Storage Options* : it supports multiple storage options such as EBS , and instance storage to optimized perfomance and cost 
 
 
 ############################################################
-
 #  DIFFERENT TYPES OF DATABASES ( NON RELATIONAL DATABASES )
 
 # NOSQL DATABASES
 
 ################################################################
+
+
  **Dynamodb** 
 
 
@@ -9085,7 +9092,7 @@ ElastiCache is primarily used to improve the perfomrance of web applications by 
 
 ## USE CASES OF AMAZON ELASTICACHE 
 
-+ *Caching* ; (primary use is to store requently accessed data that doesnt change often that allow ur appliction to access the data faster)
++ *Caching* ; (primary use is to store frequently accessed data that doesnt change often that allow ur appliction to access the data faster)
 
 + *Session Store* ;can manage user session data , which can help significantly to speedup web applications by reducing database load during high traffic periods . 
 
@@ -9097,7 +9104,7 @@ ElastiCache is primarily used to improve the perfomrance of web applications by 
 
 2. **DocumentDb** 
 
-Amazon DocumentDB is a fully managed, scalable, NoSQL database service designed to store, retrieve, and manage JSON-like documents. It is built for compatibility with `MongoDB` (`Mongo atlas`), a popular document-oriented database system, which allows developers to use familiar MongoDB application code, drivers, and tools with Amazon DocumentDB.
+Amazon DocumentDB is a fully managed, scalable, NoSQL database service designed to store, retrieve, and manage `JSON-like documents.` It is built for compatibility with `MongoDB` (`Mongo atlas`), a popular document-oriented database system, which allows developers to use familiar MongoDB application code, drivers, and tools with Amazon DocumentDB.
 DocumentDB was implemented from MongoDb 
 
 ## Key Features of DocumentDb 
@@ -9132,9 +9139,9 @@ RDF Graph (SPARQL): Ideal for applications that require standard-based models.
 
 + *Highly Scalable and Fast* : Neptune is designed to handle large datasets and query loads while maintaining high throughput and low latency. It supports read replicas, point-in-time recovery, continuous backup to Amazon S3, and replication across multiple Availability Zones.
 
-+ *Fully Managed*: As with other AWS services, Neptune is fully managed, which means AWS handles maintenance tasks such as hardware provisioning, software patching, setup, configuration, and back
++ *Fully Managed*: As with other AWS services, Neptune is fully managed, which means AWS handles maintenance tasks such as hardware provisioning, software patching, setup, configuration, and backup 
 
-+ *Security*:  Neptune offers multiple layers of security, including network isolation using Amazon VPC, encryption at rest using AWS Key Management Service (KMS), and encryption in transit with TLS. Additionally, it supports IAM for fine-grained access control.
++ *Security*:  Neptune offers multiple layers of security, including network isolation using Amazon VPC, encryption at rest using AWS Key Management Service (KMS), and encryption in transit with TLS/ssl (certificate manager). Additionally, it supports IAM for fine-grained access control.
 
 + *High Availability and Durability* : Neptune is built to offer greater than 99.99% availability. It automatically replicates data across three Availability Zones and backs up data continuously to Amazon S3.
 
@@ -9166,7 +9173,8 @@ RDF Graph (SPARQL): Ideal for applications that require standard-based models.
 
 
 
-4. Amazon Key Spaces (for Apache Cassandra )
+4. **Amazon Key Spaces (for Apache Cassandra )**
+
 + Apache Cassandra is an open-source NoSQL distributed database 
 
 Amazon Keyspaces is a scalable, highly available, and managed Apache Cassandra-compatible database service. It is designed for workloads that require single-digit millisecond performance at any scale. By providing seamless scalability and reliability without the operational overhead of managing a Cassandra cluster, Amazon Keyspaces allows developers to run their Cassandra workloads in the AWS cloud using the same Cassandra application code.
@@ -9201,14 +9209,26 @@ Amazon Keyspaces is a scalable, highly available, and managed Apache Cassandra-c
 
 
 
+
+
+
+END 
+
+HANDS ON 
+
+
+
+
+
 5. **AMAZON QLDB ( stands for Quantum Ledger Database)**
+
 + A *ledger* is a book for recording financial transactions 
 
 Amazon Quantum Ledger Database (QLDB) is a fully managed ledger database provided by AWS that provides a transparent, immutable, and cryptographically verifiable transaction log, owned by a central trusted authority. Amazon QLDB is designed to provide a high-performance, immutable history of all the changes made to your data over time. It combines the benefits of blockchain technologies with the ease and familiarity of a traditional database.
 
 
 
-# Amazon Key QLDB (Quantum Ledger Database)
+# Amazon Key features of  QLDB (Quantum Ledger Database)
 
 + *Immutability* : Once data is written to QLDB, it cannot be altered or deleted, providing an immutable record of transactions.
 
@@ -9242,9 +9262,9 @@ Amazon Quantum Ledger Database (QLDB) is a fully managed ledger database provide
 6. **AMAZON TIMESTREAM DATABASE** 
 
 
-Amazon Timestream is a fast, scalable, and serverless time series database service for IoT and operational applications provided by AWS. It's specifically designed to efficiently collect, store, and process time series data—data that measures how things change over time. This includes a wide range of use cases such as application monitoring, industrial telemetry, IoT sensor data, and real-time analytics.
+`Amazon Timestream` is a fast, scalable, and serverless time series database service for IoT and operational applications provided by AWS. It's specifically designed to efficiently collect, store, and process `time series data—data` that measures how things change over time. This includes a wide range of use cases such as application monitoring, industrial telemetry, IoT sensor data, and real-time analytics.
 
-iot : Internet of things , which refers to network of physical object "things" that are embedded (put inside) with sensors ,software and other technologies for the purpose connecting and exchanging data with other devices or systems 
+`iot` : Internet of things , which refers to network of physical object "things" that are embedded (put inside) with sensors ,software and other technologies for the purpose connecting and exchanging data with other devices or systems 
 
 
 # Amazon Key features TIMESTREAM DATABASE 
@@ -9381,5 +9401,178 @@ WHERE student_id = 1;
 
 
 
-**DATA AND ANALYTIC SERVICES** 
+
+
+
+
+
+
+
+
+
+**Opensearch** 
+
+AWS OpenSearch is a fully managed service that allows users to `search, analyze, and visualize large amounts of data in real time`. It is based on OpenSearch, an open-source search and analytics suite derived from Elasticsearch and Apache Lucene. OpenSearch enables fast and scalable full-text search, logging, and data analysis use cases.OpenSearch includes OpenSearch (a search engine) and OpenSearch Dashboards (formerly Kibana). 
+
+
+# Amazon Key Features for Opensearch 
+
++ *Fully Managed*: AWS handles the setup, provisioning, patching, and maintenance of the OpenSearch clusters, allowing users to focus on analyzing their data rather than managing the underlying infrastructure.
+
++ *Scalability*: OpenSearch Service allows you to scale your clusters up or down automatically or manually, depending on your needs, without downtime.
+
++ *Security*: The service includes built-in security features such as encryption at rest and in transit, IAM for access control, and the option to use VPCs for network isolation.
+
++ *Integration with AWS Services*: OpenSearch Service integrates with other AWS services like Kinesis, CloudWatch, and Firehose for data ingestion, monitoring, and more.
+
++ *High Availability*: AWS OpenSearch Service is designed to be highly available and automatically replaces failed nodes and redistributes data to maintain cluster health and performance.
+
++ *Compatibility*: AWS OpenSearch Service supports OpenSearch and its predecessor Elasticsearch APIs, allowing easy migration of existing Elasticsearch workloads.
+
+
+
+**Key Concepts of Opensearch**
+
+1. **Cluster** :  
+
+An OpenSearch cluster is a collection of one or more nodes (servers) that hold your data and manage search and indexing operations
+
+2. **Node**:
+
+A node is a single instance in the cluster. There are different types of nodes (master nodes, data nodes,Dedicated coordinator nodes and client nodes ) that handle various tasks in the OpenSearch cluster.
+
+3. **Index** 
+
+An index is a collection of documents with similar characteristics. It’s where your data is stored and structured. Each index has one or more shards (partitions), which help distribute the data across the cluster.
+
+4. **Documents**
+
+ A document is a basic unit of information that you can index in OpenSearch. It is represented as a JSON object containing data fields.
+
+5. **Shard**
+
+Shards are smaller parts of an index that allow OpenSearch to distribute data across nodes in a cluster. Each shard is a self-contained index.
+
+6. **Query DSL**
+
+OpenSearch supports a powerful query language called Query DSL (Domain-Specific Language), which allows users to perform full-text search, filtering, aggregations, and more.
+
+7. **Snapshots**
+
+Opensearch supports Snapshots for backups of indices, clusters, or entire OpenSearch domains, which can be used for disaster recovery.
+
+
+**USE CASE OPENSEARCH**
+
++ *Real-time Analytics*: 
+
++ OpenSearch Dashboards provide visualization capabilities for real-time analytics. This is useful for dynamic data analysis and visual reporting.
++ OpenSearch is integrated with streaming data sources such as AWS Kinesis or Kafka to provide real-time analysis of incoming data.
+
++ *Full-text Search*: 
+
+Provides powerful full-text search capabilities that can be integrated into applications for various use cases like product search in e-commerce sites or document search across large datasets.
+
++ *Log and Event Data Analysis*: 
+
++ Commonly used with log and event data for monitoring, security, and operational analysis. It can analyze large volumes of log data in real time for applications and infrastructure.
+
+
++ *Security and Fraud Detection*:
+
++ OpenSearch can analyze security event logs, detect anomalous behavior, and help in identifying potential fraud or breaches.
++ E.G  Analyzing network traffic logs to detect suspicious activity or unauthorized access attempts.
+
+
+
+
+**RED SHIFT**
+
+
+It's designed for large-scale data storage and analysis and also for performing large-scale database migrations.
+It allows you to run complex queries and perform analytics on large datasets quickly and cost-effectively. Redshift is designed for handling large-scale data warehousing workloads and is based on PostgreSQL, with optimizations for parallel processing and columnar storage.
+
+
+# Amazon Key Feature for redshift 
+
++ *Columnar Storage*: Redshift stores data by column rather than by row, which is ideal for data analytics and read-heavy database workloads because it significantly reduces the amount of data that needs to be read from disk.
+
++ *Massively Parallel Processing (MPP)*: Redshift automatically distributes data and query load across all nodes in the data warehouse cluster, enabling fast data analytics at scale.
+
++ *Scalability*: You can start with just a few hundred gigabytes of data and scale to a petabyte or more. The first step typically involves loading data into Redshift and then performing analytics queries.
+
++ *Cost-Effectiveness*: Redshift allows you to scale compute and storage independently, making it a cost-effective solution for data warehousing.
+
++ *High Performance*: It has various features like query optimization, columnar storage, and parallel execution to provide high performance on large datasets.
+
++ *Encryption and Security*: Offers encryption at rest and in transit, and integrates with AWS's IAM for advanced user access control.
+
++ *Integration with AWS Ecosystem*: Seamless integration with other AWS services such as AWS S3, AWS DynamoDB, AWS Lambda, and more, which enhances its capabilities as a data warehousing solution.
+
++ *Query language*; SQL interface for performing queries 
+
+
+Redshift Use Cases:
+
+1. Data Warehousing 
+2. Real-Time Analytics:
+3. Data Lake Integration
+4. Predictive Analytics
+
+
+
+**Amazon Glue** (ETL)
+
+Amazon Glue is a fully managed `extract, transform, and load (ETL) service` provided by AWS. It is designed to help users `prepare and transform data for analytics by automating much of the data integration process`. Amazon Glue can handle a variety of data sources, allowing users to clean, enrich, and transform data before storing it in a data lake, data warehouse, or other destination.
+
+`ETL stands for Extract, Transform, and Load, which refers to the process of moving and transforming data from multiple sources into a centralized data repository, such as a data warehouse or data lake, for analysis and reporting. The three primary steps of the ETL process are as follows`
+
+`Extract` : To retrieve data from various source systems or databases, which could include different file formats (e.g., CSV, JSON, XML), relational databases (e.g., SQL, Oracle), NoSQL databases (e.g., MongoDB, DynamoDB), or even real-time data streams.
+
+`Transform` : To clean (Removing duplicates, correcting errors, and handling missing values.), enrich (Adding additional data (e.g., from external sources) to enhance the dataset.), and transform the extracted data into a format that is suitable for analysis and reporting
+
+`Load`  : To load the transformed data into the target storage system, such as a data warehouse, database, or data lake.The load process involves inserting the transformed data into its final destination, where it can be accessed for analysis. Depending on the use case, the load may be done in batches (e.g., daily or weekly) or in real time, depending on the needs of the business
+
+
+**Key Features of Amazon Glue**
+
+1. *Its serverless*
+
+Amazon Glue is a serverless service, meaning there are no servers to manage. You only pay for the computing resources you use during the ETL process, making it a cost-effective solution for data integration tasks. 
+
+2. *Data Crawlers*
+
+Glue Crawlers automatically discover and catalog data stored in various data sources (e.g., Amazon S3, Amazon RDS, DynamoDB) by scanning the data and creating a schema for it. This metadata is stored in the AWS Glue Data Catalog, which can be accessed by other AWS services.
+
+3. ETL Jobs
+
+You can create ETL jobs using a visual interface or by writing Python or Scala scripts. These jobs allow you to transform, filter, and enrich data before loading it into your destination.
+
+4. AWS Glue Data Catalog 
+
+The Glue Data Catalog acts as a central repository for storing metadata about your data. It organizes metadata for various data sources and makes it available for querying through services like Amazon Redshift, Athena, and EMR.
+It can track schema changes and updates to ensure your ETL jobs are running on up-to-date data.
+
+5. Job monitoring and logging :
+
+Glue provides job monitoring capabilities that allow you to track job execution and handle any failures. Logs are automatically stored in Amazon CloudWatch for real-time monitoring.
+
+
+`USE CASES Amazon Glue Use Cases`
+
+1. Data Lakes : 
+
+Glue can help you build a data lake by transforming raw data stored in Amazon S3 into a more structured, queryable format. Once the data is transformed, it can be loaded into other services like Amazon Redshift or Amazon Athena for analysis.
+
+2. Data Migration 
+
+Amazon Glue can be used for migrating data from on-premises databases or third-party systems to AWS storage solutions like Amazon S3, Redshift, or RDS.
+
+3. Data Transformation for analysis 
+4. Real time data processing
+
+
+
+
+
 
