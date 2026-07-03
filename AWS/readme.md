@@ -6677,6 +6677,559 @@ Features of AWS CONFIG
 
 
 
+-----------------------------
+
+
+
+## Encryption 
+
+is converting information or data or plain text into a secret code or cipher text that hides the information or data from unauthorized users. 
+
+This is done using cryptographic algorithms that transform readable data, known as plaintext, into an encoded form called ciphertext. Encryption is a crucial technique for maintaining data confidentiality, integrity, and security in various applications, including data storage, communication, and transactions.
+
+### why is encryption important 
+
++ Privacy or confidentiality : This ensures sensitive data is not accessible to aunthorized users 
++ Security ( No authorized access) 
++ Encryption is good for data intergrity.it protects data from being modified (altered) without detection
++  Authentication ( it works along side with digital signatures ). Digital signature means it can verify the authencity of the sender or the receiver ensuring its a legitimate communication 
++  Compliance or regulations e.g SOC , HIPAA for protecting sensitive data 
+
+
+# KMS - KEY MANAGEMENT SERVICE ()
+
+`Helps to enrypt Data at rest` 
+
+This in aws provides ways of creating and managing your encryption keys . it helps you to manage cryptographic keys securely . You can create your own keys and aws also has its own managed keys .The two types of key management aws offers which are  :
+
++ **AWS managed Keys** 
+
+These are keys created and managed by aws on your behalf . This can be created by aws on your behalf as a result of a resource that you created that needed this key .
+
++ AWS rotates the keys on your behalf for security best practises
+
++ **Customer Managed Keys**
+
+These are keys created and managed by you or any one within your aws account . 
++ you are responsible to rotate the keys and follow security best practises 
+
+
+**Types of Encryption Keys**
+
+There are 2 different types of encryption keys you can create in KMS 
+
+1. **Symetric Keys** 
+
++ This is a single key you would create and this key is used for encryption of data (information) and decryption of data
++ It is faster but requires secure distribution of the key to all parties involved.
++ Common algorithms: AES (Advanced Encryption Standard), DES (Data Encryption Standard), Blowfish, and 3DES.
+
+USE CASE : 
+
++ You can use this for data encryption 
++ You can use it for File & Disk Encryption e.g EBS , AMI 
+
+2. **Asymmetric Keys :**
+
++ Asymmetric encryption uses a pair of keys: a public key for encryption and a private key for decryption.
++ The public key can be shared openly, while the private key must remain confidential.
++ Common algorithms: RSA, Elliptic Curve Cryptography (ECC), and Diffie-Hellman.
+
+USE CASE : 
+
++ Secure communication 
++ digital signatures 
++ enryption and authentication 
+
+
+Other encryption methods but not used by KMS we have 
+
++ **Hashing**  : 
+
++ Hashing is a one-way encryption technique that converts data into a fixed-length string of characters (a hash).
++ It is primarily used for verifying data integrity rather than confidentiality.
++ Common algorithms: SHA-256 (Secure Hash Algorithm), MD5 (Message Digest 5).
+
+
+
+
+
+**Certificate Manager** 
+
+This is a service in aws that helps you to easily create ,manage ,deploy SSL/TLS certificates for use within aws services 
+
+**SSL (Secure sockets Layer )** ; ssl was developed by netscape in the mid 1990s for secure internet connections .
+
++ SSL establishes encrypted links between the web server and a browser (remember server is a computer & and a browswer is a application ) making sure that all data (information) transfer between them remains private and integral . 
+
+**TLS (Transport Layer Security)** Just like SSL its provides enrypted connections for data to be transfered over networks , making sure communication is secured . TLS is more secured than SSL .It was created in 1999 
+
++ This helps to encrypt our data in flight using HTTPS .
++ It provides both public and private certificates
++ It offers free of charge public TLS certificate 
++ You can have automatic TLS certificate renewal 
++ you can use this service with AWS load balancers , Cloudfront Distribution , API'S on API gateway 
++ Note you cant use this with EC2 INSTANCES
+
+
+**Types of ACM certificates**
+
++ Public and Private Certificate 
+
++ Private Certificates . These are certificates that are used by an Organisation's own Certificate Authority (CA). 
+
+**What is a Certificate Authority (CA)**
+
+An entity ( organisation or company ) responsible for issuing digital signatures .
+They have control of their certificates e.g SSL /TSL . These person can issue their self certificates to encrypt their data 
+
+
+TLS /SSL ( Public certificates )
+
+
+
+**What is a Public Certificate** 
+
++ Its also known as a public key certificate and its a digital certificate that verifies the ownership of a public key but the named subject of the certificate .
++ Public certificates are issued by a Certificate Authority (CA) this certificates are trusted by client devices (your personal devices e.g computer , phones , laptops )  and browsers (mozilla , chrome , safari etc) globally  . This means they are trusted by networks accepted across the internet 
+
+
+
+**Requesting Public Certificates in ACM** 
+
++ To request a certificate you need a public domain e.g Team4techsolutions.com .you need to purchase a domain in route 53 
++ You will need to select a Validation Method ( prove you own the domain) : some of these Validations methods are : DNS VALIDATION , Email Validation 
++ Next you will need a Key algorithm this is simply the type of key you will want to use in encrypting the data e.g RSA 2048 , ECDSA P 256 , ECDSA P 384
++ It goes through a verification process and this might take few minute
++ Public certificates are going to enrolled for automatic renewal 
+
+- You can also import public certificates from third parties into your aws certificate manager 
+- These type of certificates dont support automatic renewal 
+- Amazon certificate manager (ACM) it sends daily expiration events to inform you about certificate expiration 45 days prior to the xpiration date .
+- You can set AWS config rules to check for expiration and send notification so you can react on them proactively . 
+
+
+**Apart from ACM you can get third party certificates from**
+
++ Let's Encrypt 
++ ZeroSSL 
++ Cloudflare 
++ Firebase
++ Bitami 
+
+
+
+
+
+# AWS System Manager ---> feature Parameter Store 
+
++ Parameter store is one of the features under AWS system manager 
++ This service helps you with hierachy storage for your configuration data management and secrets management .You can store data such as password , database strings , AMI and it has version control . 
+
+**KEY FEATURES of PARAMATER STORE** 
+
+1. Secure storage 
+2. It supports Paramaters 
+3. It supports Versoning 
+4. It has access control 
+5. Its easy to integrate with other aws services
+6. It supports Hirachical Storage 
+
+`what is a parameters` this is value that can change the behaviour of an application or service . 
+
+**Parameter Store has two Tiers (Options)**
+
+*Standard**: 
+
++ you can save up to 10,000 standard parameters values up to 4kb
++ it also supports parameter policies 
++ add parameter policies and share with other aws accounts at no extra cost 
+
+**Advanced* 
+
++ you can save 100,000 advanced paramaters
++ you can store up to 8kb of values
++ add parameter policies and share with other aws accounts at an extra cost 
+
+
+**Parameter Policy**
+
+This is a rule or a behaviour that can help you to define the life cycle policy of your parameters , it helps to automate task such as parameters expiration , version cleanup , notification etc
+
+**Types of Parameter Policies** 
+
++ **Expiration Policies (12 months) retention**: Expiration policies define a specific timeframe for how long a parameter is retained in the Parameter Store before it is automatically deleted.
+
+Use case : This is useful for managing sensitive data, such as passwords or API keys, that need to be rotated or removed after a certain period.
+
++ **Expiration Notification Policies**: These policies allow you to receive notifications when a parameter is approaching its expiration date. You can set up an Amazon SNS topic to receive notifications. This helps in taking proactive measures, such as renewing or updating the parameter before it expires.
+
++ **No change Notification Policies**: This policy notifies you when a parameter value has not been changed for a specified duration. Similarly you can use also sns to get notifications.
+
+
+`Note`: Paramater store uses Hierachy format when storing data 
+
+
+
+helps you store sensitive data e.g password , database strings , 
+
+/Departments/
+   Myapps/
+     dev/
+       db-url
+       db-password 
+
+
+Parameter store , will store 3 different types of parameters e.g Data Types 
+
+1. String : A string is a simple string value. 
+2. StringList : A comma-seperated list of strings  , 
+3. SecureString : This are encrypted values using AWS KMS 
+
+
+
+
+
+**AWS Secret manager**
+
++ What is aws secret manager 
++ Use cases of secret manager 
++ benefits of using secret manager over other approaches like hardcoding or using enironmental variables ) 
+
++ Hands on how to create a secret manager and understanding the secret manager service 
++ how to create secrets 
++ how to retrieve secrets 
+
+
+
+
+**AWS Secret Manager** 
+
+AWS Secrets Manager is a fully managed service provided by Amazon Web Services (AWS) designed to help you securely store, manage, and retrieve sensitive information, such as credentials, API keys, and other secrets
+
++ Secret manager is a fully managed service by aws 
++ Its a pay as you go service and each secret store cost $0.40 per secret per month
++ You can store data using key/value or plain text 
+
+**KEY FEATURES OF SECRET MANAGER**
+
++ `Secure Storage`: Secrets Manager encrypts secrets at rest and in transit using AWS Key Management Service (KMS). This ensures that sensitive data is protected against unauthorized access.
+
++ `Automatic Rotation`: You can configure Secrets Manager to automatically rotate secrets for supported AWS services, such as RDS databases. This reduces the risk of exposure due to compromised credentials. This can be done using a lambda function . 
+
++ `Versioning`: Secrets Manager maintains a history of secret versions. You can easily access previous versions if needed, facilitating rollback and auditing.
+
++ `Fine-Grained Access Control1`: You can use AWS Identity and Access Management (IAM) to define who can access specific secrets. This helps implement the principle of least privilege.
+
++ `Audit and Monitoring`: Secrets Manager integrates with AWS CloudTrail, allowing you to track access to your secrets and monitor for any unauthorized attempts to retrieve them.
+
+
+`AWS MULTI REGION SECRETS`
+
++ You can replicate secret across multiple aws regions 
++ Secret while replicating across mulitiple regions will keep a read replica in sync with the primary secret and you have the ability to promote the read replica to a standalone secret 
+
+
+
+**USE CASE OF AWS SECRET MANAGER**
+
++ `Database Credentials`: You can use it to store sensitive data like like `database credentials` e.g passwords , usernames allowing your applications to access them dymically or even allowing easy infrastruture provisioning using tools like terraform . 
+
+2. You can also store `API keys` : You can store third party api keys and credentials securely preventing you from hardcoding and exposing in your source code or configuration files . 
+
+3. `Application Configuration`: Store configuration values for applications that need to remain confidential, such as service endpoints and secrets used for encryption.
+
+4. `IAM User Credentials`: Manage AWS IAM user credentials securely and automate the rotation of these credentials.
+
+
+
+Benefits of using Secret Manager 
+
++ `Centralized Management of all secrets`: Single Source of Truth: Secrets Manager provides a centralized location to manage all your secrets. This simplifies management and reduces the risk of inconsistencies that can arise from hardcoding values in multiple places or using various environment variables.
+
++ `It enhances Auditing and Monitoring`: Secrets Manager integrates with AWS CloudTrail, allowing you to monitor access to your secrets and log any unauthorized attempts. This level of monitoring is harder to achieve with environment variables or hardcoded secrets.
+
++ `it supports Environment-Specific Secrets`: This makes configuration and secret management flexible . Secrets Manager allows you to create different secrets for different environments (e.g., development, testing, production) without changing application code or redeploying. This flexibility is difficult to maintain with hardcoded values.
+
++ `Compliance and Best Practices` 
+Regulatory Compliance: Using Secrets Manager helps organizations comply with security standards and regulations by providing a managed solution for handling sensitive data. Hardcoding or using environment variables may not meet these requirements.
+
++ `Improved Collaboration`
+
+Team Collaboration: With Secrets Manager, teams can manage secrets without sharing sensitive information through insecure methods like email or chat. This promotes better collaboration while maintaining security.
+
+
+
+# Web application Firewall (WAF)
+
++ What is web application firewall 
++ Core features of web application firewall ( Waf functionality)
++ Web application vunerabilities 
++ what is the use cases 
++ types of WAF
++ Benefits of using WAF 
++ WAF rules 
++ how integrate web application firewall with our loadbalancers and others services. 
+
+
+
+# WEB APPLICATION FIREWALL 
+
++ This is a service in aws , that helps to protect your web application from common web exploits and attacks that could affect your applications availability , compromise security , or consume excessive resources it operates at ( Layer 7)  or 
+
++ A Web Application Firewall (WAF) is a security solution designed to `monitor`, `filter`, and `protect web applications` by analyzing and controlling HTTP/HTTPS traffic between the client (user) and the web application. WAFs are specifically focused on protecting applications at the application layer (Layer 7 of the OSI model), ensuring that web applications remain secure from various types of threats and vulnerabilities.
++ Layer 7 HTTP 
++ This is an aws Global Service but while creating you need to specify the region where you want WAF to protect your application 
+
+**Role of web application in security ?** 
+
++ It prevents attacks ,it analyze , block and mitigate attacks before they reach our application server
++ Monitors Traffic : WAFs analyze incoming and outgoing traffic to identify and respond to potential threats in real time.
++ Enforcing Security Policies: Organizations can implement and enforce specific security rules to protect their web applications.
++ Providing Visibility: WAFs generate logs and reports, offering insights into traffic patterns, attempted attacks, and overall security status.
+
+**Main Purpose of Web application firewall**
+
+the main purpose is to protect our web applications from common attacks or web exploits like 
+
+1. **SQL Injection* : 
+2. Cross-Site Scripting 
+3. Cross Site Request Forgery 
+4. remote file inclusions 
+5. Distributed Denial of Service (DDOS)
+
+
+1. **SQL injection**: our web application firewall will protect us from such exploit like SQL injections. 
+
+SQL Injection is a type of cyber attack where attackers try to trick a web application into executing harmful SQL commands. SQL (Structured Query Language) is a language used to communicate with databases, and if an application doesn’t handle user inputs properly, attackers can exploit this.
+
+**How Does It Work?**
+
+*Injection Point*: Attackers find a place in a web application where they can input data, like a login form (username or password).
+*Malicious Input*: Instead of entering a normal username, the attacker types in a special SQL command. This command is crafted to manipulate the database.
+*Database Manipulation*: If the web application is not secured, it might execute this harmful SQL command. This could allow the attacker to bypass login checks, access sensitive information, or even delete data from the database.
+
+2. **Cross-Site Scripting** 
+
+What is Cross-Site Scripting? Cross-Site Scripting (XSS) is a type of attack where attackers inject malicious (harmful) scripts into web pages that other users view. This can lead to unauthorized access to sensitive information, like cookies or session tokens
+
+**How Does It Work?**
+
++ Injection: Attackers find a way to inject harmful scripts into a webpage. This could be through a comment section, a forum post, or any input field that doesn't properly validate user input.
++ Execution: When another user visits the page with the injected script, their browser runs the malicious code.
++ Data Theft: The script can steal cookies or other sensitive information from the user's session, send it back to the attacker, or even manipulate what the user sees on the webpage.
+
+e.g i make a comment on instagram :  `today is a good day` 
+
+3. **Cross-Site Request Forgery (CSRF):** : CSRF attacks trick users into submitting unwanted actions on a web application where they are authenticated, potentially leading to unauthorized transactions.
+
+
+
+
+**You can intergrate web application firewall with different aws services**
+
+- Application Load balancers 
+- Api gateway 
+- Cloudfront 
+- Amazon Cognito User pool 
+- AWS verified Access 
+- AWS appsync GraphQL API
+
+
+
+**Web application Firewall Rules**
+
+Rules are simply what you want your web application firewally to monitor incoming traffic against the rules you have setup in order to protect web application. 
+
+You can set your own custom rules or use aws managed rule groups 
+
+
+**AWS shield** :
+This is a service in aws that protects your application against DDos attack (Distributed Denial of Service)
+
+`what is a DDos Attack ?` :  
+
+This is when an attack sends malicious attempt to disrupt the normal functioning of a targeted server, service, or network by overwhelming it with a flood of internet traffic. that is sending larga amount of request that the server or application can not handle which causes it to fail or run slow and they can then take advantage of that . 
+
+There two types of services offered in regards to AWS Shield 
+
+1. **AWS shield standard**
+
++ By default all aws customers have this on their aws accounts 
++ It will provides basic protection against most common network and transport layer DDos attacks that targets web applications e.g SYN/ACK floods and UDP reflection attacks, utilizing intelligent traffic engineering and anomaly detection to mitigate such threats.
+
+
+2. **AWS shiled advanced** 
+
++ It offers more advanced or enhaced security attacks on applications and services .
++ It offers additional detection and mitigating (resolve) capabilities
++ it offers 24 on 7 Access AWS DDos Response Team (DRT) 
++ Protection against larger or complex attacks
++ AWS Shield advance cost $3000 a month 
+
+
+
+
+
+
+
+
+**AWS Firewall Manager** 
+
+This is a security management tool/ feature that simplifies the administration of network and web application firewall (WAF) rules across Multiple AWS accounts ( AWS Organisation) and resources .Its created to help organisations
+centrally manage their firewall rules and consistency in security policies 
+
+# You can set Security Policies within Firewall Manager
+
++ WAF rules 
++ AWS Shield Advanced
++ Security Groups for EC2 instances 
++ Network Firewall for your VPC 
++ Amazon route 53 DNS resolver Firewall 
+
+
+
+note : 
+
+- These policies are created at the regional level 
+- Rules are applied to new resources as they are created ( good for compliance , consistency) 
+
+
+**Benefits:**
+
++ Simplified Security Management: By centralizing firewall management, you reduce the complexity of managing security across multiple accounts and applications.
+
++ Consistency: Enforcing consistent security policies helps ensure that all your applications are protected according to the same standards.
+
++ Scalability: As your AWS environment grows, Firewall Manager makes it easier to scale your security posture without losing visibility or control.
+
++ Enhanced Protection: With the integration of AWS WAF and automatic updates, your applications can be better protected against emerging threats.
+
+
+
+## Difference WAF vs Firewall Manager Vs Shield 
+
+| WAF                            | Firewall Manager                                   | Shield                                   |
+|--------------------------------|----------------------------------------------------|------------------------------------------|
+| Web app firewall               | Centralized network management                     | DDos Attacks                             |
+| Focus application layer 7      | It manages different layers (all network rules)    | Both application and network layers      |
+| Protects Web app               | Good at managing complex and multiple firewalls    | Helps protect from DDoS Attacks          |
+
+
+
+
+
+
+
+END 
+monday continuation 
+
+
+
+
+
+
+
+# AWS Guard Duty (Threat Detection)
+
+AWS GuardDuty is a managed `threat detection service` that continuously monitors your AWS accounts, workloads, and data stored in Amazon S3 for malicious activity and unauthorized behavior. It helps you identify potential security threats and provides actionable insights to help you respond effectively. Here are the key features and benefits of AWS GuardDuty
+
+**Key Features of Guard Duty**
+
+1. Continous Scanning of your aws account .it will scan and analyze different data sources to detect threats real time . it uses machine learning , anomaly detection & integrated threat intelligence 
+2. it checks data sources
+3. Threat it has threat intelligence 
+
++ Helps in intelligent Threat Discovery to protect your AWS account .
++ It uses Machine Learning Algorithm , anomaly detection , 3rd party data to be able to check and discover threats 
++ Amazon Guard Duty offers a 30 days Trial period 
++ Guard Duty is a regional service ( turn it on in all your aws regions that has your resources )
+
+
+`USE CASE` : 
+
++ If you want to be protected or detec unusual activities in your aws account or resources . you can integrate guarduty with cloudwatch and slack notification
++ Compromise Detection 
++ security incident response . 
++ Compliance 
+
+
+Hands on Guard Duty 
+
+Guard duty scan your s3 buckets objects for any malware for all newly uploaded objects 
+
+reference documentation on how to set Guard duty findings notification : `https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_cloudwatch.html`
+
+1. Setup an Amazon SNS topic and endpoint
+2. Setup a CloudWatch event for GuardDuty findings
+
+ 
+
+# AWS INSPECTOR ( Vunerability Management  )
+
+ + This is an automated security assessement service 
+ + It helps to improve the security & compliance of applications deployed in aws by helping to identify any potential vunerabilities 
+ by identifying potential vunerabilities and misconfigurations or deviations that dont follow best practise 
++ A risk score is associated with its findings so that you can prioritized which vunerability needs to be addressed first . 
++ It has free 15 days Trial for accounts new with Amazon Inspector 
+
+## Services Amazon Inspector can check for Vunerabilities 
+
+1. **EC2 instances**
+
++ it uses System Manager Agent
++ It can check and analyze against unintented network accessibility ( it checks for suspicious network accessibility)
++ It checks the EC2 Operating System against Vunerabilities 
+
+2. **It Monitors Docker Container Images that are pushed into ECR ( Elastic Container Registry)**
+
+3. **Assess your Lambda Function** 
+
+- It identifies software vunerabilies in code function and package dependencies
+- Assess the functions as they are deployed 
+
+
+# Amazon Macie (Data security and Classification in s3 )
+
++ Fully managed service with AWS for data security and privacy 
++ It helps us to discover ,classify and protect the data 
+- It has Data classification and Data Discovery : It automatically discover this sensitive data like PII (personally identifiable information) 
+& intellectual properties using machine learning 
+- You can setup your own custom data classification 
+- You can setup alerts to help notify you when there findings ( event bridge and sns )
+- It helps in data classification if a company needs to be compliant
+- you would need to configure a repository ( storage) to store all your sensitive data when amazon macie identify them 
+- It has 30 days free trial 
+- Its a regional service 
+- By default Amazon Macie publishes findings to event bridge but You can publish findings to security hub 
+
+
+Main features of Amazon Macie 
+
++ **Data discovery** : Macie automatically discovers sensitive data in your S3 buckets, including personally identifiable information (PII), financial data, health information, and other confidential information. It uses machine learning to analyze your data and identify sensitive content.
+
++ **Data classification (sensitive data from non sensitive data)** : Once sensitive data is discovered, Macie classifies it based on its sensitivity level. This classification helps organizations understand the nature of their data and make informed decisions about how to protect it.
+
++ **Compliance & reporting** :Macie provides visibility into how sensitive data is being accessed and used, helping organizations comply with various regulatory requirements (like GDPR, HIPAA, etc.). It generates detailed reports and dashboards that summarize data findings and help with compliance audits.  
+
+
++ **You can set alerts and notifications**: Macie can alert you to potential security issues, such as unauthorized access to sensitive data or changes to your S3 bucket configurations. This allows for quick responses to potential data breaches or misconfigurations.
+
++ **You can integrate with different aws services**: Macie integrates seamlessly with other AWS services, such as AWS CloudTrail for auditing, AWS Lambda for automated responses, and Amazon CloudWatch for monitoring and alerting
+
++ **it supports automated data protection** . Based on the findings, you can implement automated workflows using AWS Lambda or other services to take action when sensitive data is detected, such as encrypting data or moving it to a more secure location.
+
+
+
+
+
+
+
+
+
+
+
+
 
 NETWORKING IN AWS 
 
@@ -9208,18 +9761,6 @@ Amazon Keyspaces is a scalable, highly available, and managed Apache Cassandra-c
 
 
 
-
-
-
-
-END 
-
-HANDS ON 
-
-
-
-
-
 5. **AMAZON QLDB ( stands for Quantum Ledger Database)**
 
 + A *ledger* is a book for recording financial transactions 
@@ -9290,6 +9831,19 @@ Amazon Quantum Ledger Database (QLDB) is a fully managed ledger database provide
 - Iot Applications (large volume of data and time stamps )
 - Real time anaylitics 
 - Application monitoring 
+
+
+
+
+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
+
+
+
+Database password :   class10db4you
+
+9:24 pm 
+
+
 
 
 
@@ -9397,13 +9951,6 @@ WHERE student_id = 1;
 | **Apache Hive**          | 10000            | Data warehouse on Hadoop, big data analytics, data mining, large datasets.                   |
 | **Apache HBase**         | 16010 (Master web UI), 16020 (RegionServer) | Distributed, scalable NoSQL on Hadoop, real-time read/write for large datasets.               |
 | **Memcached**            | 11211            | Distributed memory caching, speeds up dynamic web applications, session storage, API load.   |
-
-
-
-
-
-
-
 
 
 
@@ -9576,3 +10123,7 @@ Amazon Glue can be used for migrating data from on-premises databases or third-p
 
 
 
+
+
+
+9:26 PM EST. BACK ---> 9:36 PM EST 
