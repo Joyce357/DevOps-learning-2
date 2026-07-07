@@ -7128,6 +7128,8 @@ monday continuation
 
 
 
+9:10 pm est 
+
 
 
 # AWS Guard Duty (Threat Detection)
@@ -7148,7 +7150,7 @@ AWS GuardDuty is a managed `threat detection service` that continuously monitors
 
 `USE CASE` : 
 
-+ If you want to be protected or detec unusual activities in your aws account or resources . you can integrate guarduty with cloudwatch and slack notification
++ If you want to be protected or detect unusual activities in your aws account or resources . you can integrate guarduty with cloudwatch and slack notification
 + Compromise Detection 
 + security incident response . 
 + Compliance 
@@ -7165,7 +7167,7 @@ reference documentation on how to set Guard duty findings notification : `https:
 
  
 
-# AWS INSPECTOR ( Vunerability Management  )
+# AWS INSPECTOR ( Vunerability Management service )
 
  + This is an automated security assessement service 
  + It helps to improve the security & compliance of applications deployed in aws by helping to identify any potential vunerabilities 
@@ -7189,10 +7191,14 @@ reference documentation on how to set Guard duty findings notification : `https:
 - Assess the functions as they are deployed 
 
 
+
+
+
+
 # Amazon Macie (Data security and Classification in s3 )
 
 + Fully managed service with AWS for data security and privacy 
-+ It helps us to discover ,classify and protect the data 
++ It helps us to discover ,classify and protect data 
 - It has Data classification and Data Discovery : It automatically discover this sensitive data like PII (personally identifiable information) 
 & intellectual properties using machine learning 
 - You can setup your own custom data classification 
@@ -10124,6 +10130,27 @@ Amazon Glue can be used for migrating data from on-premises databases or third-p
 
 
 
+EKS (ELASTIC KUBERNETES SERVICE)
+ECR : ELASTIC CONTAINER REGISTRY 
 
 
-9:26 PM EST. BACK ---> 9:36 PM EST 
+
+
+
+CAN I START APPLYING FOR JOBS 
+
+
+
+NO 
+
+Terraform 
+
+( )
+
+
+
+CLOUD ENGINEER 
+AWS SOLUTIONS ARCHITECT 
+platform engineer 
+cloud developer 
+Site Reliability engineer 
