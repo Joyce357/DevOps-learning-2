@@ -307,11 +307,6 @@ output "public_ip" {
 + Each output define in this file we refer to it as the `output block` 
 
 
-
-
-**END** 
-
-
 4. `Provider.tf` 
 
 This is optional file you can create to specify the required providers  (AWS ,AZURE , GCP ) and their configurations
@@ -343,7 +338,7 @@ This file has configuration for your terraform backend which determines where th
 default backend is a file system , you can use a remote state backup using AWS S3 bucket or Terraform cloud 
 Best practise use a remote backend like s3 bucket or terraform cloud. 
 
-backend can be local or remote 
+you can store your terraform state in a backend which can be `local or remote `
 
 example 
 
@@ -407,8 +402,8 @@ using this file helps ensure that your infrastructure is deployed with compatibl
 
 8. `data.tf`  (optional)
 
-This is to define data sources that can be used to fetch or search information from providers without creating resources.
-when you seperate your code it helps in readability and maintainability terraform configurations . 
+This is to define data sources (where terraform search for information) that can be used to fetch or search information from providers without creating resources.
+when you seperate your code it helps in readability and maintainability  . 
 for instance , you might want to retreive information about an AWS AMI (Amazon Machine Image) , DNS  without making any changes to these entities , or retreive data from secret manager or paramaters 
 
 `example for data source for an ami`
@@ -433,6 +428,442 @@ data "aws_ami" "ubuntu" {
 
 
 
+###########################################
+**DIFFERENT TYPES OF TERRAFORM BLOCKS** 
+###########################################
+
+
+1. **Providers Block** : the provider block contains configuration of your cloud provider which you want terraform to interact with 
+
+`example `: 
+
+`provider "aws" {
+    region = us-east-1 
+}`
+
+2. **Resource Block** : A resource block define the resources you want terraform to manage (create , update etc) and within terraform code you can pass multiple resource blocks .
+
+`examples:`
+
+`resource "aws_instance" "jenkins" {
+    ami   =  "ami-0c345585595959595"
+    instance_type = t2.micro
+
+}`
+
+
+3. **Variable Block** : This block allows you to paramaterization (set parameters) and makes your configuration more flexible and resuable .using variables it makes your terraform code more dynamic .
+
+example
+
+`variable "instance_type" {
+    description = "Instance i want to create"
+    type = string
+    default = "us-east-1"
+}`
+
+
+4. **Output Block** : This is used to display information after terraform completes creating or changing your resources in the cloud 
+
+`example`
+
+output "instance_type" {
+    value = "aws_instance.jenkins.id"
+}
+
+
+5. **Data Block** : This block is used to fecth data from external sources (data sources) without modifying them. 
+
+
+
+6. **Module Block** : This allows the reuse of existing configurations package as modules 
++ There are two types of modules ( `custom modules or terraform modules`)
++ `Custom modules` : These are modules that are created by you can be stored on github, gitlab , local computer etc 
++ `Terraform modules` : These are modules that comes with terraform by default and are stored on terraform registry 
+
+example of a terraform module : 
+
+
+`example of an terraform registry module for vpc` 
+
+`module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "my-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+
+  enable_nat_gateway = true
+  enable_vpn_gateway = true
+
+  tags = {
+    Terraform = "true"
+    Environment = "dev"
+  }
+}`
+
+
+
+`example of a vpc custom module `
+
+module "vpc-module" {
+  source = "../../module/vpc"
+  name   = var.name
+
+  single_nat_gateway     = false
+  one_nat_gateway_per_az = true
+  enable_public_ipv6     = true
+
+  azs  = var.azs
+  cidr = var.cidr
+
+  public_subnets                       = var.public_subnets
+  private_subnets                      = var.private_subnets
+  tags                                 = var.tags
+  centralized_vpc_flow_logs_bucket_arn = var.centralized_vpc_flow_logs_bucket_arn
+  cloudwatch_log_group_arn             = module.network.cloudwatch_log_group_arn
+  vpc_flow_logs_role_arn               = module.iam_ssm_lambda.vpc_flow_logs_role_arn
+  max_aggregation_interval             = 60
+  log_retention_days                   = 365
+}
+
+
+**Terraform Block** : This block configures terraform settings such as backend configurations
+
+example 
+
+terraform {
+  backend "s3" {
+    bucket = "terraformstate-1273646474"
+    key = "terraform/dev/statefile"
+    region = "ca-central-1"
+    dynamodb_table = "terraform-state-lock"
+    encrypt = true
+  }
+}
+
+**Locals Block** : The local block is for defining local variables that are used only within the configuration file 
++ The local block variables helps to create resuable and simplified expressions within configuration
+
+Example 
+
+locals  {
+    environment = "dev"
+    instance_tag = {
+        name  = "jenkins instance"
+        environment = local.environment
+    }
+
+}
+
+
+**Dynamic Block** : This block provides away of configuring blocks within a resource 
+
+example ; 
+
+resource "aws_security_group" "jenkins_security_group" {
+    name = "jenkins_security_group"
+
+    dynamic "ingress" {
+        for_each = var.ingress_rules
+        content {
+            from_port = 443
+            to_port = 443
+            protocol = tcp
+            cidr_blocks = 0.0.0.0/0
+        }
+      
+    }
+}
+
+
+you want to create a security group using terraform 
+
+
+normally what you will do is 
+
+ingress {
+  from port 
+}
+
+
+
+ingress {
+  from port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+ingress {
+  from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+This can be come to messy and alot of work so you can use dynamic blocks to help with this.
+
+dynamic "ingress" {
+  for_each = var.ingress_rules
+  content {
+    from_port   = ingress.value.from_port
+    to_port     = ingress.value.to_port
+    protocol    = ingress.value.protocol
+    cidr_blocks = ingress.value.cidr_blocks
+  }
+}
+
+loop through var.ingress_rules and create an ingress block for each rule defined in the variable.
+each item creates one ingress rule 
+
+example of variables for dynamic block 
+
+variable "ingress_rules" {
+  description = "List of ingress rules for the security group"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "ingress_rules" {
+  description = "List of ingress rules for the security group"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+in terraform.tfvars 
+
+ingress_rules = [
+  {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  },
+  {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  },
+  {
+    from_port = 80
+    to_port = 80 
+    protocol = http
+    cidr_block ["0.0.0.0/0"]
+  }
+]
+
+
+
+
+
+# VARIABLES 
+
+variables are used to make configurations more flexible and reusable. Variables allow you to pass in values that can be used throughout your configuration files, making it easier to manage and update infrastructure settings. You can define variables for things like instance sizes, regions, AMIs, and other configuration options that may need to change based on different environments or use cases.
+
+So far we have seen the variable.tf (file) and inside this file we have been able to see the variable block .
+Variables in terraform allows you to parameterized or store values for your configurations , making them more flexible and resuable .Variables
+can be define for various data (information) types and there different types of variables .
+
+**DIFFERENT  TYPES OF VARIABLES** 
+
+1. `Input Variables`
+
+Input variables are used to customize the configuration of your Terraform infrastructure. They allow users to pass in values that Terraform can use during execution, making the configuration reusable and dynamic. These variables can be provided by the user via command-line arguments, .tfvars files, environment variables, or defaults within the configuration itself.
+
+2. `Output Variables` 
+
+Output variables are used to expose values from your Terraform configuration after it has been applied. These values could be information like IP addresses, instance IDs, or URLs that you may want to view or pass along to other configurations or modules. Outputs are typically used for displaying relevant data to the user or for passing information between modules or configurations .
+
+3. `Local Variables`
+
+Local variables in Terraform are used to store intermediate or calculated values that can be reused within a module (specific configurations). They are defined using the `locals block` and can simplify your configuration by eliminating repetitive calculations or code. Local variables are local to the module in which they are defined and cannot be passed to or accessed by other modules.
+ 
+
+**Variable Data Types**
+
+ Primitive Data Types 
+
+1. + **String** :A string variable holds a single piece of text. It is the most basic and common variable type in Terraform.  This is a sequence of characters used to represent a text .it can include letters ,numbers ,and symbols.
+e.g "hello" , "1234"  "welcome@90.com"
+
+
+`example`
+
+variable "aws_instance" {
+    type = string  
+    description = "Type of ec2 instance to launch"
+    default = "t2.micro"
+}
+
+example of a string = "t2.micro"
+
+
+2. **Number** : A number variable can hold a numeric value, either an integer or a float.
+
+A `number` represents numeric values.These can be integers (whole numbers e.g 43 44 ) or it can be a floating point number (decimal numbers e.g 2.5 , 9.0)
+
+example 
+
+variable "instance_count" {
+    description = "Number of ec2 instance to launch"
+    type = number
+    default = 2
+    
+}
+
+instance_count = 128.345.67
+
+
+3. **Boolean (Bool)** : A bool variable stores a boolean value, either `true or false` .
+This is used for conditional statements.
+
+variable "enable_logging" {
+    description = "Determined to enable or disable logging"
+    type = bool
+    default = false 
+   
+}
+
+enable_logging = true or false 
+
+
+4. **List** : Its a `List` (array) which is a collection of items which can be of any data type .They are used to store a sequence of values of the same type  .define using Square brackets 
+
+e.g list(number) [1, 2, 3, 4]  , list (string) ["calson", "divine", "foday", "lambert" ]
+
+
+variable "availability_zones" {
+    description = "List of Availability Zones"
+    type = list(string)
+    default =  [ "us-east-1a", "us-east-1b", "us-east-1c" ]
+  
+}
+
+variable "ip_addresses" {
+    description = "List of ip addresses"
+    type = list(number)
+    default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  
+}
+
+5. **Map**: This is a collection of values where each is identified by a string label defined using curly brackets 
+Note you can use a map(string) , map(number)
+
+example : {"name": "John", "age": 30 }
+
+
+variable "tags" {
+    description = "tags to apply on ec2 instances"
+    type = map(string)
+     default = {
+       Environment = "Development"
+       Class     = "5"
+     }
+     {
+       Product = "Software"
+       name    = "Class9" 
+       managedby = terraform
+
+     }
+}
+
+
+6. **Object**: An object is a complex data type that consists of named attributes, where each attribute can be a different data type. It allows you to group multiple related variables together. 
+
+Example ;
+
+variable "server" {
+  type = object({
+    name        = string
+    port        = number
+    protocol    = string
+    public      = bool
+  })
+}
+
+
+`variable "database" {
+  type = object({
+    username = string
+    password = string
+    port     = number
+  })
+  default = {
+    username = "admin"
+    password = "securepassword"
+    port     = 5432
+  }
+  description = "Credentials for the database."
+}`
+
+
+
+7. **Turple** : A `turple` is a fixed-sized collection of elements ,where each element can be of different data type
+
+example (true, "calson", 42)
+
+`variable "networking_settings" {
+    description = "my ip address .port and ssl certificates"
+    type = tuple([string, number, bool])
+    default = [ "10.0.0.0", 80, true ]
+  
+}`
+
+8. **Set** : A set is a collection of unique values of a specific type. Sets are unordered, meaning the order of the elements is not guaranteed.
+
+example : 
+
+variable "unique_names" {
+  type    = set(string)
+  default = ["Alice", "Bob", "Charlie"]
+}
+
+
+
+
+9. **null** : a value that represents absence or omission. If you set an argument of a resource to null, Terraform behaves as though you had completely omitted it — it will use the argument's default value if it has one, or raise an error if the argument is mandatory. null is most useful in conditional expressions, so you can dynamically omit an argument if a condition isn't met.
+
+variable "optional_variable" {
+  type    = string
+  nullable = true
+  default = null
+}
+
+10. **Any** 
+
+The any type is a special type that can represent any data type. It is used when the variable can accept any type of value, whether it's a string, number, list, object, or other types.
+
+variable "config" {
+  description = "explains any variable"
+    type = any 
+}
+
+
+| Data Type   | Description                                                                 | Example                                       |
+|-------------|-----------------------------------------------------------------------------|-----------------------------------------------|
+| **string**  | Holds a single string value.                                                 | `type = string`                               |
+| **number**  | Holds a numeric value (either integer or float).                             | `type = number`                               |
+| **bool**    | Holds a boolean value (`true` or `false`).                                  | `type = bool`                                 |
+| **list**    | Holds an ordered collection of values of the same type.                     | `type = list(string)`                         |
+| **set**     | Holds a collection of unique values, unordered.                             | `type = set(string)`                          |
+| **map**     | Holds a collection of key-value pairs where keys are strings.               | `type = map(string)`                          |
+| **object**  | A complex type that consists of named attributes, each with its own type.   | `type = object({ instance_type = string })`    |
+| **tuple**   | An ordered collection of elements with fixed types.                         | `type = tuple([string, number])`              |
+| **any**     | A special type that can represent any data type.                            | `type = any`                                  |
+| **nullable**| Allows a variable to be `null` or a specific type.                          | `nullable = true`                             |
 
 
 
@@ -440,4 +871,159 @@ data "aws_ami" "ubuntu" {
 
 
 
+
+END HERE 
+MONDAY CONTINUATION 
+
+
+# TERRAFORM DIRECTORY STRUCTURE 
+
+Companies have different ways of arranging terraform project directories .
+
+## Root Directory ( Main Configurations )
+
+.
+├── environments
+│   ├── Dev ----------------------> directories (folders)
+│   │   ├── main.tf
+│   │   ├── output.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   ├── Shared-service
+│   │   ├── main.tf
+│   │   ├── output.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   ├── Staging
+│   │   ├── main.tf
+│   │   ├── output.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   └── production
+│       ├── main.tf
+│       ├── output.tf
+│       ├── terraform.tfvars
+│       └── variables.tf
+└── modules
+    ├── ec2-instance
+    │   ├── main.tf
+    │   ├── output.tf
+    │   └── variables.tf
+    ├── loadbalancers
+    │   ├── main.tf
+    │   ├── output.tf
+    │   └── variables.tf
+    └── vpc
+        ├── main.tf
+        ├── output.tf
+        └── variables.tf
+
+
+
+
+
+
+**TERRAFORM MODULES** 
+
+*What is a terraform module* ; Its like a container of multiple resources that are used together. Modules in terraform are use to group resources that are logically associated , and making your code base more organised , resuable and easier to maintain.
+
+A module can include resoruces such as VPC, Security groups , S3 buckets ,cloudfront ,cloudwatch etc
+
+
+**Types of Terraform Modules** 
+
+1. `Root Module` : 
+
++ This is the main module where terraform is initialized and applied (i.e where you run terraform init , validate , plan and apply)
++ Located in the directory where you run Terraform commands (usually contains main.tf).
+
+
+2. `Child Modules`:
+
++ These are modules that has resource confugurations and they are called (referenced) by the root modules or other modules 
++ They are Stored in separate directories or remote sources (e.g., GitHub, Terraform Registry, or local paths).
+
+
+**HOW TO MANAGE MODULES**
+
+You can manage your modules locally or remotely 
+
+1.  `Local Management` : 
+
++ This is when you define modules in a directory.
++ To call the modules and use it in your configuration you need to specify the file path of that module 
+
+`example` to reference or call a child module in your root module you will use the following example 
+
+module "vpc" {
+  source = "../../modules/vpc
+  subnets = var.subnets
+}
+
+
+
+2.  `Remote Management : `
+
+You can save your child modules into a GitHub repository or  Terraform Registry and you can call the modules from there. 
+
+example of calling or referencing a remote module by following this 
+
+
+`example for calling terraform registery module`
+
+
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+  version = "2.44.0"
+}
+
+
+`example calling a github module`
+
+module "vpc" {
+  source = "github.com/your-org/terraform-aws-vpc"
+
+  cidr_block = "10.0.0.0/16"
+  environment = "dev"
+}
+
+
+
+or 
+
+`recommended`
+
+module "vpc" {
+  source = "github.com/your-org/terraform-aws-vpc?ref=v1.0.0"
+
+  cidr_block = "10.1.0.0/16"
+  environment = "staging"
+}
+
+
+
+### Importance of Terraform Modules
+
++ **Sharing and Collaboration** : You can share modules across different projects , environments within your organisation and you can share it with the terraform registry .This helps to foster collaboration and accelerate development by reusing proven infrastructure code . 
+
++ **Reusable** : Modules allows you to define your configurations and reuse them multiple times in different scenarios (env or projects).Which this helps to reduce duplication and errors in your infrastructure setup  
+
++ **Organisation of your code** : It helps to group all related resources together which makes your code easier to understand , manage and update 
+
++ **Version Control** ; Modules can be versioned allowing you to control and manage updates to the modules in a systematic way (1.0.0) .This is useful when you have a stable module that should not be affected by any ongoing changes somewhere else.(custom modules)
+
++ **Easy to Maintained** : This is easier to maintain because you can make changes to a single module and apply to your infrastructure and its going to make changes only to the resources using the module . 
+
+
+## Terraform Modules Best Practise 
+
+**Good naming conventions to your modules** : Give a name that reflects the modules purpose and components inside the module
+**Document your Modules** : Its good you include comments and documenation within the module to describe its purpose , inputs & outputs
+**Keep modules more focused** : Each module should have  a single , well defined purpose. Avoid creating overly complex or multipurpose modules for example a vpc module should not have cloud watch configurations or ec2 configurations keep it simple . 
+**use versions constraints** :its good to specify version constraints for your modules, especially when using external sources to avoid unexpected changes 
+**Test Modules** ; Test and validate modules independently to ensure they work before integrating them to your main infrastructure 
+
+
+Note: You can target a particular module in your environment to create , update using the target command 
+for examle `terraform plan --target=module.s3` && `terraform apply --target=modules.s3`  these target specific modules within your configuration and create the resources or update the resources . 
 
