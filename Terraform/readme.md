@@ -872,10 +872,6 @@ variable "config" {
 
 
 
-END HERE 
-MONDAY CONTINUATION 
-
-
 # TERRAFORM DIRECTORY STRUCTURE 
 
 Companies have different ways of arranging terraform project directories .
@@ -951,7 +947,7 @@ You can manage your modules locally or remotely
 1.  `Local Management` : 
 
 + This is when you define modules in a directory.
-+ To call the modules and use it in your configuration you need to specify the file path of that module 
++ To call the modules and use it in your configuration (root) you need to specify the file path of that module 
 
 `example` to reference or call a child module in your root module you will use the following example 
 
@@ -1004,6 +1000,7 @@ module "vpc" {
 
 ### Importance of Terraform Modules
 
+
 + **Sharing and Collaboration** : You can share modules across different projects , environments within your organisation and you can share it with the terraform registry .This helps to foster collaboration and accelerate development by reusing proven infrastructure code . 
 
 + **Reusable** : Modules allows you to define your configurations and reuse them multiple times in different scenarios (env or projects).Which this helps to reduce duplication and errors in your infrastructure setup  
@@ -1027,3 +1024,462 @@ module "vpc" {
 Note: You can target a particular module in your environment to create , update using the target command 
 for examle `terraform plan --target=module.s3` && `terraform apply --target=modules.s3`  these target specific modules within your configuration and create the resources or update the resources . 
 
+
+
+
+
+
+**TERRAFORM WORKSPACE**
+
++ `How can you use one terraform configuration and deploy your infrastructure in different environments` ?
+
+1. `Use Modules` 
+2. `Use Variables` 
+3. `Terraform Workspaces` 
+
+
+
+
+`What is Terraform Workspace` : workspace is a feature that allows you to manage multiple instances of a given infrastructure configuration within the same backend. Workspaces are especially useful when you want to create isolated environments like development, staging, and production using the same Terraform codebase but without duplicating configuration files.
+
+Terraform workspaces allows you to use one terraform configuration while keeping multiple , seperate statefiles 
+
+
+**Different Types of Workspaces**
+
++ **Default Workspace** : When you initialize terraform configuration (`terraform init`), you are in the default workspace name `default` .
+This is where the statefile is stored unless you switch to another workspace 
+
++ **Custom Workspaces** : You can create and switch between different workspaces . Each workspace maintains its own state file and allows you to deploy seperate instances of the same configuration . 
+
+
+
+
+
+9;29 PM EST 
+
+
+
+
+
+**Terraform Workspace Commands** 
+
+
+| **Command**                     | **Description**                                                             |
+|----------------------------------|-----------------------------------------------------------------------------|
+| `terraform workspace list`      | Lists all existing workspaces.                                              |
+| `terraform workspace show`      | Displays the name of the current workspace.                                 |
+| `terraform workspace new <name>`| Creates and switches to a new workspace with the specified name.            |
+| `terraform workspace select <name>` | Switches to an existing workspace with the specified name.               |
+| `terraform workspace delete <name>` | Deletes the specified workspace (except the `default` workspace).        |
+| `terraform init`                | Reinitializes the backend configuration for Terraform workspaces.           |
+| `terraform apply`               | Applies the configuration for the current workspace.                        |
+| `terraform plan`                | Creates an execution plan for the current workspace.                        |
+
+
+
+`Benefits or Advantages of Terraform Workspaces`
+
+1. Environment Isolation 
+
++ Workspaces allow you to manage multiple environments (e.g., development, staging, production) within the same Terraform configuration without duplication of .tf files. Reduces complexity and ensures clear separation between environments, minimizing the risk of deploying resources to the wrong environment.
+
+2. Efficient State Management
+
++ Each workspace has its own state file, ensuring that changes in one workspace do not impact another.Helps maintain consistency and isolation in infrastructure changes across environments or instances.
+
+3. Simplified Configuration 
+
++ Workspaces enable a single Terraform codebase to dynamically manage multiple instances of infrastructure.Avoids the need for duplicating and managing separate Terraform configuration files for similar deployments.
+
+5. Flexibility in Testing and Experimentation
+
++ You can create temporary workspaces to test changes without affecting existing environments.Provides a safe environment for experimentation or testing, improving confidence in deployments.
+
+6. Reduced Human Error
+
++ Explicitly switching workspaces before running terraform apply minimizes the risk of applying changes to the wrong environment.Protects production environments and sensitive resources from unintended modifications.
+
+
+
+
+
+
+
+
+**TERRAFORM STATE MANEGEMENT** 
+
+What is a terraform statefile ? 
+
+A Terraform state file (terraform.tfstate) is a file that Terraform uses to store information about the resources it manages. It acts as the single source of truth for Terraform's understanding of the current state of your infrastructure. The state file maps real-world resources to your Terraform configurations and stores metadata about those resources.
+
+1. Json Format 
+2. Sensitive Data or information 
+
+
+**WHERE CAN WE STORE OUR STATEFILE**
+
+1. Locally  on your local disk (terraform.tfstate)
+2. Remote State : backend 
+
++ Stored in a shared location like `AWS S3`, `Azure Blob Storage`, `Google Cloud Storage`, or `Terraform Cloud`.
+
+
+**Advantages of using a Remote Backend for your terraform statefile**
+
+1. `Collaboration` : A remote backend allows multiple team members to access the same state file simultaneously.Ensures everyone works with the latest infrastructure state, avoiding conflicts or outdated information.
+
+2. `It enhances security`:  Remote backends can encrypt state files in transit and at rest (e.g., AWS S3 with SSE, Terraform Cloud with encryption by default).Protects sensitive data like resource credentials, IDs, and configurations stored in the state file.
+
+3. `It helps in Backup and recovery` : Remote backends often support versioning (e.g., AWS S3) and automatic backups.Enables recovery of previous states in case of accidental state deletion or corruption.
+
+4. `Centralized Management` : A remote backend provides a single, centralized location to manage and monitor state files.Simplifies infrastructure management, especially in environments with multiple users or environments (e.g., dev, stage, prod).
+
+
+**Note**
+
+Though its advantageous to have many engineers colloborate with the same statefile , it can pose a risk if they all apply changes to the terraform state at the same time . This can cause the statefile to be overwritten and make it corrupt .To solve this problem in an environment where there multiple engineers managing the same state , its advisable to implement `state locking` 
+
++ Create a Dynamodb table and add to your s3 backend 
+
+e.g 
+
+terraform {
+  backend "s3" {
+    bucket      = "terraformstate-1273646474"
+    key         = "env/dev/terraform.tfstate"
+    region      = "ca-central-1"
+    dynamodb_table = "terraform-state-lock"
+    encrypt     = true 
+  
+  }
+}
+
+
+
+
+Steps to create a DYNAMODB Table for state-locking 
+
++ Open dynambo db on aws 
++ create a table and give the table a name 
++ Partition key must be `LockID` 
+
+
+
+---------------------
+
+END 
+
+
+**FUNCTIONS IN TERRAFORM** 
+
+Functions in terraform are used to perform  various operations on values and expressions within your configuration .
+Understanding functions in terraform can greatly enhance flexibility and can make your terraform code powerful 
+
+
+1. `string functions` : Manipulate and analyze strings (e.g., format, replace, substr).
+
++ format() : This formats a string with place holders
++ lower() : This converts a string to a lowercase . 
++ upper() ; This converts a string to uppercase
++ length(): This returns the length of a string 
++ substr(): it extract sub string from a string 
++ join() : connects or join a list of strings into a single string 
++ split(): splits a string into a list using specified delimetert
+
+
+`example :` 
+
+`variable "environment" {
+  description = "This is my deployment environment"
+  type    = string
+  default = "production"
+}
+
+`example :` 
+
+`variable "environment" {
+  description = "This is my deployment environment"
+  type    = string
+  default = "production"
+}
+
+output "formatted_string" {
+  value = format("Environment: %s", var.environment)
+}`
+
+so when you run terraform apply the output will show you like this `environment:production`
+
+
+
+2. `Numeric functions` : Perform arithmetic or other operations involving numeric values (e.g., abs, ceil, floor).
+
++ max(): Returns the maximum value among a set of numbers.
++ min(): Returns the minimum value among a set of numbers.
++ abs(): Returns the absolute value of a number.
++ ceil(): Rounds a number up to the nearest integer.
++ floor(): Rounds a number down to the nearest integer.
+
+example :
+
+variable "num1" {
+  description = "my first number"
+  type    = number
+  default = 10
+}
+
+variable "num2" {
+  type    = number
+  default = 20
+}
+
+variable "num3" {
+  type    = number
+  default = 15
+}
+
+output "maximum_number" {
+  value = max(var.num1, var.num2, var.num3)
+}
+
+when you run terraform apply : its going to ouput  `maximum_number = 20`
+
+
+
+`Practical example`
+
+variable "instance_types" {
+  type    = list(string)
+  default = ["t2.micro", "t2.small", "t2.medium"]
+}
+
+
+data "aws_ec2_instance_type" "instances" {
+  for_each = toset(var.instance_types)
+  instance_type = each.value
+}
+
+output "max_vcpu_instance" {
+  value = max(
+    data.aws_ec2_instance_type.instances["t2.micro"].vcpu,
+    data.aws_ec2_instance_type.instances["t2.small"].vcpu,
+    data.aws_ec2_instance_type.instances["t2.medium"].vcpu
+  )
+}
+
+3. `Collection Functions: Work with lists and maps (e.g., concat, merge, sort)`.
+
++ element(): Retrieves an element from a list by index.
++ concat(): Merges multiple lists into a single list.
++ flatten(): Flattens a list of lists into a single list.
++ distinct(): Removes duplicate elements from a list.
++ length(): Returns the length of a list or map.
++ keys(): Returns the keys of a map as a list.
++ values(): Returns the values of a map as a list.
++ lookup(): Retrieves a value from a map given a key.
+
+
+4. `Encoding Functions`: Handle encoding and decoding of data (e.g., base64encode, jsondecode).
+
+
++ base64encode(): Encodes a string to base64.
++ base64decode(): Decodes a base64 string to a regular string.
++ jsonencode(): Encodes a value as a JSON string.
++ jsondecode(): Decodes a JSON string to a value.
+
+`example`
+
+variable "example_string" {
+  type    = string
+  default = "Hello, World!"
+}
+
+variable "example_map" {
+  type = map(string)
+  default = {
+    name  = "Terraform"
+    type  = "IAC"
+    year  = "2024"
+  }
+}
+
+output "base64_encoded_string" {
+  value = base64encode(var.example_string)
+}
+
+output "json_encoded_map" {
+  value = jsonencode(var.example_map)
+}
+
+
+
+5. `File Functions`: Interact with the local filesystem (e.g., file, templatefile).
+
++ file(): Reads the contents of a file as a string.
++ filebase64(): Reads the contents of a file and encodes it as a base64 string.
++ fileset(): Lists files in a directory that match a given pattern.
++ templatefile(): Renders a template file with provided variables.
+
+`example`
+
+resource "aws_s3_bucket_object" "example" {
+  bucket = "my-bucket"
+  key    = "example.txt"
+  source = filebase64("${path.module}/example.txt")
+}
+
+
+6. `Network Functions`: Assist with IP network calculations (e.g., cidrsubnet, cidrhost).
+
++ cidrsubnet(): Derives subnet information from a CIDR block.
++ cidrhost(): Calculates the number of host address within a CIDR block.
++ cidrnetmask(): Calculates the netmask of a CIDR block.
++ cidrsubnetmask(): Calculates the subnet mask of a subnet within a CIDR block.
+
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+variable "vpc_cidr" {
+  type    = string
+  default = "10.0.0.0/16"
+}
+
+variable "public_subnet_bits" {
+  type    = number
+  default = 4
+}
+
+variable "private_subnet_bits" {
+  type    = number
+  default = 4
+}
+
+resource "aws_vpc" "main" {
+  cidr_block = var.vpc_cidr
+}
+
+resource "aws_subnet" "public_subnet_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, var.public_subnet_bits, 0)
+  availability_zone = "us-west-2a"
+}
+
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, var.public_subnet_bits, 1)
+  availability_zone = "us-west-2b"
+}
+
+resource "aws_subnet" "private_subnet_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, var.private_subnet_bits, 2)
+  availability_zone = "us-west-2a"
+}
+
+resource "aws_subnet" "private_subnet_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, var.private_subnet_bits, 3)
+  availability_zone = "us-west-2b"
+}
+
+output "public_subnet_cidrs" {
+  value = [
+    cidrsubnet(var.vpc_cidr, var.public_subnet_bits, 0),
+    cidrsubnet(var.vpc_cidr, var.public_subnet_bits, 1)
+  ]
+}
+
+output "private_subnet_cidrs" {
+  value = [
+    cidrsubnet(var.vpc_cidr, var.private_subnet_bits, 2),
+    cidrsubnet(var.vpc_cidr, var.private_subnet_bits, 3)
+  ]
+}
+
+output "example_public_ip" {
+  value = cidrhost(cidrsubnet(var.vpc_cidr, var.public_subnet_bits, 0), 10)
+}
+
+output "example_private_ip" {
+  value = cidrhost(cidrsubnet(var.vpc_cidr, var.private_subnet_bits, 2), 10)
+}
+
+
+
+
+7. `Date and Time Functions`:Parse and format date and time strings (e.g., timestamp, formatdate).
+
++ formatdate(): Formats a timestamp according to a specified format.
++ timestamp(): Returns the current timestamp.
+
+
+resource "aws_s3_bucket" "example" {
+  bucket = var.bucket_name
+
+  tags = {
+    Name       = var.bucket_name
+    Created_On = formatdate("YYYY-MM-DD'T'HH:MM:SS'Z'", timestamp())
+  }
+}
+
+created_on=2025-12-16 8:09:09
+
+
+Question . 
+
+`What happens if your team is using terraform and someone mistakenly goes on the aws console and creates resources on there , how will you manage those resources with terraform ` ?
+
+`What happens if you have a terraform drift` ?
+
+
+
+ec2 instance with terraform ---- edit add more security group rules on the instance 
+
+
+`Terraform import`
+
+
+| Command | Use Case |
+|-------|----------|
+| terraform fmt | Format Terraform files to standard style |
+| terraform fmt -recursive | Format all Terraform files including subdirectories |
+| terraform plan -out=tfplan | Save an execution plan for later apply |
+| terraform apply tfplan | Apply a previously saved execution plan |
+| terraform show | Display current Terraform state or saved plan |
+| terraform output | Display output values from Terraform |
+| terraform output -json | Export outputs in JSON format for automation |
+| terraform state list | List all resources tracked in state |
+| terraform state show `aws_instance.example` | View details of a specific resource |
+| terraform state rm `aws_instance.example` | Remove resource from state without deleting it |
+| terraform import `aws_instance.example i-1234567890 `| Import an existing resource into Terraform |
+| terraform taint `aws_instance.example` | Force a resource to be recreated |
+| terraform untaint `aws_instance.example` | Remove taint from a resource |
+| terraform providers | Show providers used in the configuration |
+| terraform graph | Generate dependency graph of resources |
+| terraform refresh | Sync Terraform state with real infrastructure |
+| terraform login | Authenticate with Terraform Cloud |
+| terraform logout | Remove Terraform Cloud authentication |
+! terraform init --upgrade | It updates your local terraform state from cached modules or files 
+
+
+
+
+Terraform Questions 
+
++ How can you deploy with terraform using the same code base in multiple environments ?
++ What are the commands to deploy a terraform configuration ( terraform workflow ) ?
++ How do you guys manage terraform state ?
++ Whats is a terraform workspace 
++ What happens if you have a terraform drift . what can you do ? 
++ If i want to create multiple resources with the same configuration how will i do that e.g i want to create 5 ec2 instances with same configuration 
++ if i want to create multiple resources using different configurations how will i do that e.g i want to create 2 instances with different configurations 
+
+
+
+1. If i want to create multiple resources with the same configuration how will i do that e.g i want to create 5 ec2 instances with same configuration  ?
+
+You can use the `count` : This allows you to create the identical resources but with the same configurations 
+
+2. option 2  `for_each` : This will allow you to create same resource but you will have control with the values. same configuration but different values 
