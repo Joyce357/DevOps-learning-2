@@ -1166,9 +1166,6 @@ Steps to create a DYNAMODB Table for state-locking
 
 
 
----------------------
-
-END 
 
 
 **FUNCTIONS IN TERRAFORM** 
@@ -1483,3 +1480,133 @@ Terraform Questions
 You can use the `count` : This allows you to create the identical resources but with the same configurations 
 
 2. option 2  `for_each` : This will allow you to create same resource but you will have control with the values. same configuration but different values 
+
+3. What happens if a resource depends on another resource before creation and will fail if the that resource was not created . 
+
+
+
+`depend_on `= This is a meta argument that tells terraform `create this resource only after another resource has been created` 
+
+Terraform is usually smart enough to figure out dependencies automatically by looking at resource references. However, there are situations where Terraform cannot detect the dependency, and that's when depends_on is useful.
+
+
+`Terraform lifecyle` :  This is a meta-argument that tells terraform how to manage the creation , update and deletion of a resource . It allows you to override terraforms default behaviour for specific situations , 
+
+
+`Think of it this way `
+
+Terraform decides what should happen, but the lifecycle meta-argument allows you to override Terraform's default behavior and control how those changes should happen.
+
+`Example`
+
+Suppose you create a VPC that is associated with its default security group. Later, you decide to replace it with a custom security group.
+By default, Terraform's behavior is to:
+
++ Destroy the existing resource.
++ Create the replacement resource.
+
+In this scenario, Terraform would attempt to remove the existing security group before creating and associating the new one. This can cause the deployment to fail because the VPC (or resources attached to it) cannot temporarily exist without an associated security group.
+
+This is where the lifecycle meta-argument becomes useful. By using:
+
+lifecycle {
+  create_before_destroy = true
+}
+
+you instruct Terraform to:
+
++ Create the new custom security group.
++ Attach it to the VPC (or the dependent resource).
++ Verify that everything is working correctly.
++ Destroy the old security group.
+
+This approach prevents downtime and avoids dependency issues that would occur if Terraform followed its default destroy-before-create behavior.
+
+
+
+
+
+
+**TERRAGRUNT** 
+
+`What is terragrunt `: Terragrunt is a thin wrapper around Terraform that helps you manage, organize, and scale Terraform code `more efficiently`. It is designed to reduce `code duplication`, `simplify configuration management`, and make it easier to deploy infrastructure across multiple environments and AWS accounts.
+
+Terragrunt does not replace Terraform. Instead, it works alongside Terraform by orchestrating how Terraform modules are executed.
+
+`Think of it this way` 
+
++ Terraform is the engine that provisions infrastructure while Terragrunt is the manager that tells Terraform where the code is located, which variables to use, the order in which modules should be deployed, and how remote state should be managed.
+
+
+`Why was Terragrunt created?`
+
+As infrastructure grows, Terraform projects often become repetitive. For example, a company may have multiple environments such as Development, QA, UAT, and Production.
+
+Without Terragrunt, each environment typically contains duplicate files such as:
+
+main.tf
+output.tf
+variables.tf
+terraform.tfvars 
+
+
+As the number of environments and modules increases, maintaining these duplicate configurations becomes difficult and error-prone.
+
+`Terragrunt solves this problem by allowing you to:`
+
++ Reuse Terraform modules across multiple environments.
++ Centralize backend and remote state configuration.
++ Pass variables to Terraform without duplicating code.
++ Define dependencies between modules.
++ Deploy multiple modules in the correct order.
++ Follow the DRY (Don't Repeat Yourself) principle.
+
+
+
+Instead of maintaining this structure:
+
+dev/
+ ├── provider.tf
+ ├── backend.tf
+ ├── variables.tf
+
+qa/
+ ├── provider.tf
+ ├── backend.tf
+ ├── variables.tf
+
+prod/
+ ├── provider.tf
+ ├── backend.tf
+ ├── variables.tf
+
+You can use Terragrunt to keep the common configuration in one place and allow each environment to inherit it:
+
+live/
+├── terragrunt.hcl
+├── dev/
+├── qa/
+└── prod/
+
+
+modules/
+├── vpc/
+├── ec2/
+└── rds/
+
+This makes your infrastructure easier to maintain, more consistent, and much more scalable.
+
+
+**Key Benefits of Terragrunt**
+
++ Eliminates duplicate Terraform code.
++ Simplifies multi-environment deployments.
++ Makes remote state management easier.
++ Supports multi-account AWS deployments.
++ Automatically manages module dependencies.
++ Enables commands such as terragrunt run-all to deploy multiple modules together.
++ Encourages cleaner, enterprise-ready infrastructure repositories.
+
+`Key Take take away`
+
++ Terraform builds your infrastructure. Terragrunt helps you organize, manage, and deploy that infrastructure more efficiently.
