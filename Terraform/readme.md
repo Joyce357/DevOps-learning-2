@@ -1524,6 +1524,8 @@ This approach prevents downtime and avoids dependency issues that would occur if
 
 
 
+BACK 8:16 PM EST 
+
 
 
 
@@ -1610,3 +1612,104 @@ This makes your infrastructure easier to maintain, more consistent, and much mor
 `Key Take take away`
 
 + Terraform builds your infrastructure. Terragrunt helps you organize, manage, and deploy that infrastructure more efficiently.
+
+
+
+With terragrunt you can have files  like 
+
++ `Root.hcl ` : What does every environment has in common e.g Remote state , provider , terraform version , common tags , Hooks , Generate files , retry ules 
++ `common.hcl` : This confuses alot of people when studing terragrunt . This files is not a required files but you can create it if you need it . This is like a standard configuration that is required in each environment and instead of duplicating in each environment we can add them here 
++ `Environment.hcl` : Theses is the actual cloud enviroments where resources will run e.g production , staging , dev etc  
++ `Region.hcl ` : This is the aws region where you will deploy the resources 
+
+
++ `Terragrunt.hcl` :  This is the most important file . This file tells terragraunt which modules and the order it needs to build the infrastructure 
+
+
+
+                           terragrunt.hcl
+                                  │
+                                  │
+                 ┌────────────────┼────────────────┐
+                 │                │                │
+                 ▼                ▼                ▼
+            root.hcl       environment.hcl    region.hcl
+                 │                │                │
+                 └────────────────┼────────────────┘
+                                  │
+                           common.hcl (optional)
+                                  │
+                                  ▼
+                        Terraform Module (EC2)
+                                  │
+                                  ▼
+                             AWS EC2 Instance
+
+
+
+                             | File                        | Purpose                                                        | Typical Contents                                                              |
+| --------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **root.hcl**                | Global configuration shared by every deployment                | Remote state, provider generation, backend, hooks, retry rules                |
+| **common.hcl** *(optional)* | Shared values reused across multiple environments or resources | Common tags, naming standards, cost center, owner, organization defaults      |
+| **environment.hcl**         | Environment-specific configuration                             | Environment name, instance sizes, CIDRs, NAT Gateway, deletion protection     |
+| **region.hcl**              | Region-specific configuration                                  | AWS region, availability zones, region-specific networking or endpoints       |
+| **terragrunt.hcl**          | Deployment configuration for a single module                   | Which Terraform module to use, dependencies, and inputs passed to that module |
+
+
+
+
+`HOW TO INSTALL TERRAGRUNT`
+
+`Install Terragrunt on macOS`
+
++ brew install terragrunt
++ terragrunt --version
+
+
+`Install Terragrunt on Windows`
+
++ choco install terragrunt -y
++ terragrunt --version
+
+
+https://docs.terragrunt.com/getting-started/install/
+
+
++ What is your experience with terraform 
++ Can you tell when you will use terragrunt over using terraform alone ? 
+
+`sample answer `
+
+I would use Terraform alone for small or simple infrastructure, such as:
+
+A single AWS account
+One environment (e.g., only Development)
+A few Terraform modules
+Little or no duplicated configuration
+
+In these cases, adding Terragrunt may introduce unnecessary complexity.
+
+However, I would choose Terragrunt when managing enterprise-scale infrastructure, especially when there are:
+
+Multiple environments (Development, QA, Staging, Production)
+Multiple AWS accounts
+Multiple AWS regions
+Many Terraform modules
+Shared configuration that would otherwise be duplicated
+
+Terragrunt helps solve several common problems:
+
+Eliminates duplication by centralizing shared configuration like remote state, provider settings, and common variables.
+Manages dependencies between modules, ensuring resources are deployed in the correct order (for example, VPC before EC2).
+Simplifies deployments by allowing me to deploy multiple modules with a single command, such as terragrunt run --all apply.
+Improves maintainability by separating global, environment-specific, and region-specific configuration into dedicated files like root.hcl, environment.hcl, and region.hcl.
+
+
+
+Note: 
+
+To deploy all the resources in a specific environment you can run 
+
+`terragrunt run --all --non-interactive -- apply -auto-approve`
+
+and you also deploy each resource independently within the terragrunt.hcl file under each resource as long as there no dependencies 
