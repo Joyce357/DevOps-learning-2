@@ -1,0 +1,178 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Create an EC2 instance in a custom VPC with a public subnet.
+
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: 10.20.0.0/16
+    Description: CIDR block for the custom VPC.
+
+  PublicSubnetCidr:
+    Type: String
+    Default: 10.20.1.0/24
+    Description: CIDR block for the public subnet.
+
+  InstanceType:
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+      - t3.small
+    Description: EC2 instance type.
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+    Description: Latest Amazon Linux 2023 x86_64 AMI from the public SSM parameter.
+
+  KeyName:
+    Type: String
+    Default: ""
+    Description: Optional existing EC2 key pair name for SSH access.
+
+  AllowedSshCidr:
+    Type: String
+    Default: 127.0.0.1/32
+    Description: CIDR allowed to connect over SSH. Replace with your public IP/32.
+    AllowedPattern: "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+    ConstraintDescription: Must be an IPv4 CIDR such as 203.0.113.10/32.
+
+Conditions:
+  HasKeyName: !Not [!Equals [!Ref KeyName, ""]]
+
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-vpc
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-igw
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: !Ref PublicSubnetCidr
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-public-subnet
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-public-rt
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and restricted SSH access
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - Description: HTTP from the internet
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - Description: SSH from the administrator network
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref AllowedSshCidr
+      SecurityGroupEgress:
+        - Description: Allow all outbound IPv4 traffic
+          IpProtocol: "-1"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-instance-sg
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn: DefaultPublicRoute
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !If [HasKeyName, !Ref KeyName, !Ref AWS::NoValue]
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: gp3
+            VolumeSize: 20
+            Encrypted: true
+            DeleteOnTermination: true
+      MetadataOptions:
+        HttpEndpoint: enabled
+        HttpTokens: required
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          dnf install -y nginx
+          systemctl enable --now nginx
+          echo '<h1>${AWS::StackName} EC2 instance is running</h1>' > /usr/share/nginx/html/index.html
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-instance
+
+Outputs:
+  VpcId:
+    Description: ID of the custom VPC.
+    Value: !Ref Vpc
+
+  PublicSubnetId:
+    Description: ID of the public subnet.
+    Value: !Ref PublicSubnet
+
+  SecurityGroupId:
+    Description: ID of the EC2 security group.
+    Value: !Ref InstanceSecurityGroup
+
+  InstanceId:
+    Description: ID of the EC2 instance.
+    Value: !Ref Ec2Instance
+
+  PublicIp:
+    Description: Public IPv4 address of the EC2 instance.
+    Value: !GetAtt Ec2Instance.PublicIp
+
+  WebsiteUrl:
+    Description: URL of the nginx test page.
+    Value: !Sub http://${Ec2Instance.PublicDnsName}

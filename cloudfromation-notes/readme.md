@@ -14,7 +14,7 @@ Interview Question
 + Cloudformation is infrastructure as code and its a service in aws . Its not an open source like terraform. It does not support any other cloud provider only aws 
 + You can define your cloud resources in a simple text file called a template.With CloudFormation, you define your cloud infrastructure in text files using `JSON or YAML format`, known as `templates`. These templates describe the desired state of your resources, such as servers, databases, and networking configurations, and CloudFormation automates their creation and management.
 
-
+Cloudformation is a regional service 
 
 **Key Features / understanding of Cloudformation**
 
@@ -189,6 +189,7 @@ Outputs:
 
 
 
+
 **Hands On**
 
 AWS Console : When you want to create a stack you can use Existing Templates from sync with git , uploading as a file or Amazon s3 url 
@@ -262,6 +263,14 @@ Resources:
       ImageId: 'ami-0cf2b4e024cdb6960'
       KeyName: 'myteam4tech'
 
+  Webserver:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: 'ami-0cf2b4e024cdb6960'
+      KeyName: 'myteam4tech'
+
+
 Outputs:
   InstanceId:
     Description: 'The Instance ID'
@@ -279,10 +288,12 @@ Resources:
     Properties:
       InstanceType: 't2.micro'
       ImageId: 'ami-0cf2b4e024cdb6960'
+
   MyInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
       Roles: [!Ref MyRole]
+
   MyRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -293,10 +304,12 @@ Resources:
             Principal:
               Service: [ec2.amazonaws.com]
             Action: ['sts:AssumeRole']
+
 Outputs:
   InstanceID:
     Description: 'The Instance ID'
     Value: !Ref MyEC2Instance
+
   AvailabilityZone:
     Description: 'The Availability Zone'
     Value: !GetAtt MyEC2Instance.AvailabilityZone
@@ -329,7 +342,7 @@ Resources:
                 - '/*'
             Principal: '*'
 
-arn:aws:s3:::demobucketusa
+arn:aws:s3:::demobucketusa/*
 
 4. `Fn::Sub Function` : the Fn::Sub function substitutes variables in an input string with values that you specify. It’s often used to construct ARNs.
 
@@ -476,7 +489,6 @@ Resources:
 
 
 
-
 # Interview Question :  
 
 + `What is the difference Between Cloudformation and Terraform` which of them do you prefer ? 
@@ -485,7 +497,7 @@ Resources:
 
 **WHAT ARE THE KEY DIFFERENCES BETWEEN TERRAFORM AND CLOUDFORMATION** 
 
-1. Terraform is an opensource tool and free to use while AWS cloudformation is propriatary and not free 
+1. Terraform is an opensource tool and free to use while AWS cloudformation is propriatary
 2. Terraform is written in Hashicorp or Json while Cloudformation is written in Yaml and also json 
 3. Terraform manages a state (statefile ) that tracks the current state vs the desire state while cloudformation does not require any statefile
 4. Cost cloudformation is free to use but you pay for the resources it will provisioned while terraform is also free but have a paid enterprized offer for advanced collaboration ,features with an addiational cost . 
