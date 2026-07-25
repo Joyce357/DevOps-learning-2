@@ -1,0 +1,37 @@
+---
+- name: Gather installed package information
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Stop and disable Apache to release port 80
+  ansible.builtin.service:
+    name: apache2
+    state: stopped
+    enabled: false
+  when: "'apache2' in ansible_facts.packages"
+
+- name: Install Nginx package
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Deploy the Class10 website
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Nginx service
+
+- name: Validate Nginx configuration
+  ansible.builtin.command: nginx -t
+  changed_when: false
+
+- name: Enable and start Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

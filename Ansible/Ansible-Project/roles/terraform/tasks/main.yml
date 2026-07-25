@@ -1,0 +1,36 @@
+---
+- name: Install packages required by the HashiCorp repository
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - gnupg
+      - software-properties-common
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Add the HashiCorp APT repository
+  ansible.builtin.deb822_repository:
+    name: hashicorp
+    types: deb
+    uris: https://apt.releases.hashicorp.com
+    suites: "{{ ansible_distribution_release }}"
+    components: main
+    architectures: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
+    signed_by: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Install Terraform
+  ansible.builtin.apt:
+    name: terraform
+    state: present
+    update_cache: true
+
+- name: Verify Terraform installation
+  ansible.builtin.command: terraform version
+  register: terraform_version
+  changed_when: false
+
+- name: Display installed Terraform version
+  ansible.builtin.debug:
+    msg: "{{ terraform_version.stdout_lines[0] }}"

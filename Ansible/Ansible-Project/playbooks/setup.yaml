@@ -1,0 +1,21 @@
+---
+- name: Install services on Ubuntu
+  hosts: servers
+  become: true
+
+  roles:
+    - role: ansible
+      tags:
+        - ansible
+
+    - role: terraform
+      tags:
+        - terraform
+
+    - role: apache
+      tags:
+        - apache
+
+    - role: nginx
+      tags:
+        - nginx

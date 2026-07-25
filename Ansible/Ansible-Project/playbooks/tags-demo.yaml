@@ -1,0 +1,44 @@
+---
+- name: Demonstrate installing packages with tags
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Update the APT package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      tags:
+        - always
+
+    - name: Install Git
+      ansible.builtin.apt:
+        name: git
+        state: present
+      tags:
+        - git
+        - tools
+
+    - name: Install Curl
+      ansible.builtin.apt:
+        name: curl
+        state: present
+      tags:
+        - curl
+        - tools
+
+    - name: Install Tree
+      ansible.builtin.apt:
+        name: tree
+        state: present
+      tags:
+        - tree
+        - tools
+
+    - name: Install Unzip
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+      tags:
+        - unzip
+        - tools

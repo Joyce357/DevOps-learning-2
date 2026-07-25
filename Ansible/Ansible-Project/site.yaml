@@ -1,0 +1,3 @@
+---
+- import_playbook: playbooks/setup.yaml
+- import_playbook: playbooks/install-nginx.yaml

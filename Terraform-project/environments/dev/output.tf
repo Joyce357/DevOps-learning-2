@@ -1,0 +1,29 @@
+output "vpc_id" {
+  description = "Development VPC ID."
+  value       = module.vpc.vpc_id
+}
+
+output "public_subnet_ids" {
+  description = "Development public subnet IDs."
+  value       = module.vpc.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  description = "Development private subnet IDs."
+  value       = module.vpc.private_subnet_ids
+}
+
+output "security_group_id" {
+  description = "Development EC2 security group ID."
+  value       = module.ec2_security_group.id
+}
+
+output "instance_id" {
+  description = "Development EC2 instance ID."
+  value       = module.ec2_instance.id
+}
+
+output "instance_public_ip" {
+  description = "Development EC2 public IPv4 address."
+  value       = module.ec2_instance.public_ip
+}

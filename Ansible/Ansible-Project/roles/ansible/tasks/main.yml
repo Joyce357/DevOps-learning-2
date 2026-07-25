@@ -1,0 +1,16 @@
+---
+- name: Install Ansible
+  ansible.builtin.apt:
+    name: ansible
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Verify Ansible installation
+  ansible.builtin.command: ansible --version
+  register: ansible_version_command
+  changed_when: false
+
+- name: Display installed Ansible version
+  ansible.builtin.debug:
+    msg: "{{ ansible_version_command.stdout_lines[0] }}"
