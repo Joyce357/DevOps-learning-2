@@ -412,3 +412,558 @@ Note: this only sets a global default. Individual Pipelines and MultiBranch proj
 + **you can also set the number of executors** : (An executor are computational threads that jenkins uses to run build jobs . The purpose for an executor is to helps your jenkins server to be able to run multiple jenkins builds at the same time e,g if you set an executor as 2 , this means your jenkins server can run two builds at the same time) when you install jenkins the default executor is 2 
 + **labels (also known as node label or tags)** : These are tags assigned to Jenkins nodes be it master node or slave nodes. Labels provide a way to control where jobs are executed , this helps when you want to run a job on a particular server and this can be because the server has alot more resources or meets different requirements
 + **Usage** : This settings helps you to define which nodes jenkins is going to use to run its jobs : You can set it as `use this node as much as possible`: This means jenkins will be running all its jobs on the nodes . if you select `only builds jobs with the label expression matching this node` This means jenkins will only build any job on the node if you use the label in your jenkins job . 
+
+
+
+2. ## Under (Manage Jenkins)  and under System Configurations  we have   
+
+`TOOLS` : 
+
+This is where you configure how to install different tools (software) in your Jenkins server and intergrate them to your 
+Jenkins jobs. tools are useful components that provide the necessary software environments and dependencies required to run builds and jobs. Configuring tools in Jenkins ensures that the correct versions of software packages are available to the build processes.
+
++ You can set Maven Configuration ( This is a build server) for Java Applications
++ You can also set Java 
++ You can also set Github installation 
++ Gradle installations
++ Ant installations
++ Maven installations
+
+
+
+3. ## Under Manage Jenkins and Under System configurations we have `PLUGINS`: 
+
+Plugins helps to extend the functionality of our jenkins jobs or server. 
++ On your Jenkins Plugins Dashoboard you can `update , install , see available plugins ,remove and set advanced settings` 
++ `updates` shows you the plugins on your jenkins server that needs updates  
++ `available plugins` : This shows you the plugins that are available for you to install which you have not already installed. if you have installed a plugin already you wont see in the available plugins instead you will see it in the installed plugins 
++ `installed plugins` : shows you the plugins you have installed 
++ `advance settings` : This is where you can upload your own custom plugin or a download plugin you have from the internet which is outside of Jenkins : for example you can see plugins to download on this url : https://updates.jenkins-ci.org/download/plugins/  
+
+
+4. ## In the Manage Jenkins  we have Systems and under Systems we have `Nodes`: 
++ The nodes helps you to configure your jenkins built in node (master) and also the slave (agents) .
++ you can also add more agents /nodes /slave in the node dashboard
++ you can also remove a node by taking offline . you can mark a node as temporarily offline . this can be because you want to do some updates or maintenance .Once a node is offline no jobs are dispatched to the node (agent)
+
+
+
+
+
+## Under Manage Jenkins --> System configuration we have 
+
+`CLOUD`: 
+
+This allows jenkins to interact with cloud providers for provisioning and managimng build environments .This helps in Scalability because Jenkins can add resources dynamically based on demand . You can allow jenkins to interact with cloud providers to add resources if needed by jenkins for example ; 
+
++ These are done through Plugins 
+
+
+
+`Jenkins Cloud Configurations in Jenkins`
+
+1. **Amazon EC2**
+
+Meaning and Purpose: Allows Jenkins to dynamically provision Amazon EC2 instances as build agents.
+Use Case: Automatically scale Jenkins build capacity by launching and terminating EC2 instances based on build load.
+Kubernetes
+
+2. **Kubernetes**
+
+Meaning and Purpose: Integrates Jenkins with a Kubernetes cluster to run jobs in Kubernetes pods.
+Use Case: Leverage Kubernetes for dynamic and scalable build environments, ideal for microservices and containerized applications.
+
+3. **Google Kubernetes Engine (GKE)**
+
+Meaning and Purpose: Similar to Kubernetes, but specifically integrates with Google Kubernetes Engine.
+Use Case: Utilize GKE for running Jenkins jobs in a managed Kubernetes environment provided by Google Cloud Platform.
+
+4. **Azure VM Agents**
+
+Meaning and Purpose: Integrates Jenkins with Microsoft Azure to provision virtual machines as build agents.
+Use Case: Scale Jenkins build infrastructure by adding Azure VMs dynamically based on the current build workload.
+
+5. **OpenStack Cloud**
+
+Meaning and Purpose: Integrates Jenkins with an OpenStack cloud for provisioning VMs as build agents.
+Use Case: Use OpenStack to dynamically allocate and deallocate VMs for Jenkins jobs, providing a scalable build environment.
+
+6. **VMware vSphere Cloud**
+
+Meaning and Purpose: Allows Jenkins to use VMware vSphere to provision and manage virtual machines as build agents.
+Use Case: Utilize vSphere infrastructure for scaling Jenkins build capacity with virtual machines.
+
+7. **DigitalOcean**
+
+Meaning and Purpose: Integrates Jenkins with DigitalOcean to provision droplets as build agents.
+Use Case: Use DigitalOcean droplets to dynamically scale Jenkins build environments.
+
+8. **Docker Cloud**
+
+Meaning and Purpose: Integrates Jenkins with Docker Cloud to use Docker containers as build agents.
+Use Case: Leverage Docker containers for isolated and reproducible build environments, scalable on demand.
+
+9. **Mesos Cloud**
+
+Meaning and Purpose: Integrates Jenkins with Apache Mesos to dynamically provision build agents.
+Use Case: Use Mesos for orchestrating resources across multiple clusters, providing scalable build environments for Jenkins.
+
+
+
+
+## Under Manage Jenkins / System Configuration --->  we have `Apperance`: 
+
+This is how you can set up your jenkins Dasboard to look 
+
+
+
+
+**HANDS TO SETUP JENKINS MASTER SLAVE ARCHITECTURE (ADDING AGENT NODES TO JENKINS)**
+
+
+`Jenkins Master Slave Architecture`
+
+Jenkins uses a master-slave (or controller-agent) architecture to enable scalable, distributed builds and optimize resource utilization. This design divides the responsibilities of coordinating builds and executing tasks between the Jenkins Master (Controller) and one or more Jenkins Slaves (Agents).
+
+`Benefits `
+
++ `Scalability`  :   In a large development environment, a single Jenkins server (master) may become a bottleneck if it tries to handle all builds, tests, and deployments simultaneously.
+
++ `Resource Management` : The slave or agent . Executes builds, allowing for specialized hardware or configurations (e.g., high-memory slaves for large builds, GPU-enabled slaves for machine learning tasks).This ensures efficient use of system resources and it prevents the master from becoming overburdened.
+
++ `This brings Flexibility` : Different slaves can be configured for specific tasks. A slave for Windows builds, another for Linux builds and even another for MacOs builds . Specialized environments for different programming languages or toolchains.Separate slaves for production-like environments to run integration or end-to-end tests.
+
++ `Fault Tolerance`: if a slave fails, the master can reassign tasks to other available slaves without impacting the system's overall operation. Isolating the master from resource-heavy builds ensures high availability and stability for managing jobs.
+
+
+
+
+
+
+       ***SECURITY**
+
+
+  # Manage Jenkins ---> SECURITY 
+  This where you will manage the security on your jenkins server . Under security we have the following categories or features
+
+  `Security`
+
+  + Under security we have authentication and Authorization , Here you can set how jenkins is going to authenticate users and Authorized users to manage  jenkins 
+  + Also you can set jenkins to disable the `keep me signed in` option to avoid instances where a user is going click and save their password for easy logins .
+  + You can allow users to signup and have access to your jenkins server ( Note : this is not a good security practise)
+  + You can choose which database to use when it comes to Jenkins Authenticating users . you can set this under `Security Realm` .You can choose to use 
+  `Jenkins Database ` ,`dedicatet serverlet container`  `Ldap` , `unix-user/groups database` or `none` . This will help you to manage users and their passwords for authentication 
+
++ `Authorization` : When you setup a user and password for authentication with your jenkins server , you can also set up authorization.You can set permissions on what a user can do , see on your jenkins jobs or server . There are different Authorization Types 
+
+_ **anyone can do anything* : avoid using this as its not secured as anyone can perform any action  
+- **Login users can do anything* : This allows any authenticated user to perform any action .This perform basic level of security by allowing only authenticated users to perform actions on your jenkins jobs 
+- **Legacy mode* : This is meant for older jenkins version with compactability issues
+- **Matrix Based Security* : It provides fine grained control over permissions . Admins can assigned different permissions to different users or groups for the various parts of your jenkins .eg you can assign only read access or configure access 
+**Use case** good for teams that require different level of access/
+- **Project based matrix authorization strategy* : This is an extension of matrix based security but with the ability to specify permissions on a each project base or jobs . 
+
+
+`Markup Formatter`
+
+Markup Formatter determines how text in build descriptions, job descriptions, and other rich-text fields is processed and displayed. By default, Jenkins uses a plain text formatter, but you can configure it to use other formats such as HTML or Groovy.
+
++ Jenkins uses the `Plain Text` by default it treats all inputs as plain text .it does not support any formatting or html 
++ you can also use the `safe html` Allows a subset of HTML to be used in descriptions and other text fields. It strips out potentially dangerous HTML tags to prevent cross-site scripting (XSS) attacks
+
+`CSRF Protection` : The full meaning of CSRF is `cross-site request Forgery` this is a feature in jenkins to prevent unauthorized commands being transmitted from users that jenkins trust. CSRF can trick users into executing unwanted actions on web applications in which they are currently authenticated.
++ Jenkins provides an in build protection by default to avoud this  
+
+
+`How CSRF Protection Works`
+
+*CSRF Token*: Jenkins generates a unique token for each user session. This token must be included in any request that changes the state on the server (e.g., creating jobs, running builds).
+
+*Validation*: Jenkins validates the token for each incoming request that modifies data. If the token is missing or incorrect, Jenkins rejects the request.
+
+`Git plugin notifyCommit access tokens`
+
+This is a feature that gives added security when a build is being trigerred by your git repository.`notifyCommit` endpoint is used to trigger builds when changes are detected in a Git repository. For security reasons, especially when dealing with public repositories or repositories that allow anonymous access, you should secure this endpoint using access tokens.
+
+`Git Hooks` : Git hooks are custom scripts that run automatically when certain events occur in a Git repository. They allow you to enforce policies, automate tasks, and integrate with other tools such as CI/CD pipelines.
+
+
+`Api Tokens` 
+In Jenkins, API tokens are used to authenticate and authorize API requests, allowing users and systems to interact with Jenkins in a secure manner without using passwords.
+
+`Git Host Key Verification Configuration` This configuration helps to prevent man in the middle attack .This helps to identify the identity of the remote host .
+
+What is a Man in a middle attack ? A Man-in-the-Middle (MitM) attack is a security breach where an attacker secretly intercepts and potentially alters the communication between two parties who believe they are directly communicating with each other. This type of attack can occur in various forms and can target different types of communication, such as internet connections, email exchanges, or any other type of data transmission
+
+
+
+
+Sonarqube ---check coding bad practices 
+
+
+Master Node -----> create ssh ( public and private key ) -----> public key -------> added to agent (authorized_keys)
+Jenkins UI ---> We added the master node .ssh private key as username and password ---->> it uses to authenticate with the public key in the agent node 
+
+
+Under `security`  we have credentials 
+
+` credentials` : 
+
+This is where you store sensitive information such as passwords , api keys  etc which you intend to securely  use them in your jenkins jobs or pipelines for authentication with other tools or software which your jenkins job or pipelines needs to interact with.
+
++ You can also modify or change existing secrets ,passwords or api keys . 
+
+There are different kind of credentials types you can setup and they are : 
+
++ Username and password 
++ Github App Credentials
++ ssh username with private keys
++ secret file
++ secret text 
++ Certificate
+
+Note : you can also install more plugins from the system plugins and jenkins will add the credentials kinds if required 
+e.g AWS Credential 
+
+`Credential Providers`
+
+These is a feature that helps you to set which credential provider you want jenkins to use to access secrets or passwords or api keys to interact with other services . 
+
+`USERS` :
+
+This is where you can manage users that is create , remove  users from your jenkins server and many more.
+
+
+
+
+####################
+# Status Information
+######################
+
+Under status information we have the following : 
+
+`System information` : Here you will find information about your jenkins server .you can find information about ( system properties` ,  `Environmental variables` , `plugins`, `Memory` ,`Thread dumps`) and these can help in troubleshooting 
+
+`System log` : This are the logs or events that are stored from your jenkins server . 
++ you can set a log recorder to be able to capture specific logs 
+
+`Load Statistics` 
+
+This simply shows you how your jenkin server is performing in regards to the load or jobs that are running .it gives you an insight or help you to monitor your nodes(agents) for resource utilization . 
+Load statistics keep track of four key metrics of resource utilization:
+
+`Number of online executors`:
+
+For a computer: if the computer is online then this is the number of executors that the computer has; if the computer is offline then this is zero.
+For a label: this is the sum of all executors across all online computers in this label.
+For the entire Jenkins: this is the sum of all executors across all online computers in this Jenkins installation.
+Other than configuration changes, this value can also change when agents go offline.
+
+`Number of busy executors`
+
+This line tracks the number of executors (among the executors counted above) that are carrying out builds. The ratio of this to the number of online executors gives you the resource utilization. If all your executors are busy for a prolonged period of time, consider adding more computers to your Jenkins cluster.
+
+`Number of available executors`
+
+This line tracks the number of executors (among the online executors counted above) that are available to carry out builds. The ratio of this to the total number of executors gives you the resource availability. If none of your executors are available for a prolonged period of time, consider adding more computers to your Jenkins cluster.
+
+`Queue length`
+This is the number of jobs that are in the build queue, waiting for an available executor (of this computer, of this label, or in this Jenkins, respectively). This doesn't include jobs that are in the quiet period, nor does it include jobs that are in the queue because earlier builds are still in progress. If this line ever goes above 0, that means your Jenkins will run more builds by adding more computers.
+
+**Note**: The number of busy executors and the number of available executors need not necessarily be equal to the number of online executors as executors can be suspended from accepting builds and thus be neither busy nor available.
+
+
+`About Jenkins `
+
+This is shows you the version and license of jenkins server and other informations about your jenkins server 
+
+
+########################################################
+# Managed Jenkins--> Troubleshooting---> Managed Old data 
+#######################################################
+
+`Managing old data`:  in Jenkins is essential to maintain optimal performance, save storage space, and ensure that your Jenkins instance runs efficiently. Jenkins jobs, builds, and artifacts can accumulate over time, leading to increased disk usage and potentially degraded performance. Here's how to manage old data in Jenkins effectively:
+
+
+
+######################################
+# Managed Jenkins -> Tools and Actions
+####################################
+
+
+Under Tools and Actions we have the following 
+
++ `Reload configuration from disk `
+
++ `Jenkins CLI` : The Jenkins CLI allows you to interact with your Jenkins instance from the command line. It provides a wide range of commands to manage jobs, nodes, plugins, and more.
+
++ `script console` :  The Jenkins Script Console allows you to run Groovy scripts to interact with Jenkins programmatically. This can be useful for performing administrative tasks, automation, and debugging.
+
++ `prepare for shutdown` : Preparing Jenkins for shutdown ensures that no new builds are started, and ongoing builds are allowed to complete before shutting down.
+
+
+
+
+
+
+
+
+###############################
+Jenkins Intergrations
+##############################
+
+1.  Jenkins and AWS Intergration ( Installed aws cli , Create IAM role and attached to Jenkins instance)
+2. Jenkins & Github integration ( We created a token , on managed jenkins we added othe token to credentials using Username & password )
+3. Jenkins & Slack Intergration to notify when builds are complete 
+
+
+
+`Monday Jan 13` 
+
+HANDS ON PROJECT 
+
++ Build a Freestyle jenkins job that starts and stops our dev and stage ec2 instances for cost optimization 
+
++  On your jenkins make sure you install AWS CLI 
+by running the following commands 
+`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"`
+`unzip awscliv2.zip`
+`sudo ./aws/install`
+
++ Attach an IAM ROLE  on your jenkins server which gives permission to Jenkins to manage EC2 INSTANCES on your behalf . avoid using Access Keys because they are static credentials 
+
++ Build Triggers :  This is what trigers or causes jenkins to start a build . In this project we will use a build trigger called `build periodically` 
+
+
+**Explanation:**
+
+0: Minute field (at the 0th minute)
+12: Hour field (12 PM UTC, which is 7 AM EST)
+*: Day of the month field (every day)
+*: Month field (every month)
+*: Day of the week field (every day of the week)
+
+**Steps to Set Up in Jenkins:** 
+
+Open Jenkins: Go to your Jenkins dashboard.
+Select the Job: Click on the job you want to schedule.
+Configure the Job: Click on "Configure" on the left-hand menu.
+Build Triggers: Scroll down to the "Build Triggers" section.
+Schedule the Build: Check the "Build periodically" option.
+Enter the Schedule: Enter the cron syntax 0 12 * * * in the schedule text box.
+Save: Click the "Save" button.
+
+
+
+#############################
+Jenkins Slack Integration
+#############################
+
+
+Reference documentation :   https://plugins.jenkins.io/slack/ 
+
++ Install the `Slack Notification plugin` on Jenkins UI (Manage Jenkins-Systems Configuration-Plugins)
++ Go to your slack Channel and login to slack on the browser : https://api.slack.com when you have login to slack go to : https://api.slack.com
+
++ `Note`: If you install the app into your workspace and you go to your slack workspace and you dont see the app you just created , go back on the apps on web ui (`https://app.slack.com`) click on the specific app , click on app `details` it will open a new link and then click on `open in slack` this will redirect to your slack channel workspace   
+
+
+############################
+Jenkins Jira Intergration 
+############################
+
+This helps jenkins to interact with Jira and this is done through Jira webhook and jira API . WE Will look at this later .
+
+
+1. **FREE STYLE PROJECT** : This is a General Purpose , built-automation project that supports simple configuration and its highly flexible. 
++ It allows you to define Build steps and Post Build Actions using the Jenkins UI (User interface) 
+**build step*: is the action or task you actually want jenkins to carryout , you can setup more than 1 build steps 
+**Post Build Action* : This steps tells jenkins what to do after the build is success or failed .'once the build is done what should i do next`?  you can set more than 1 post built action 
+
+**Key Features of a Free Style Project**
+
++ Simple to setup : It has a user friendly interface 
++ Build Steps e.g executing shell scripts , you can run window batch commands, you can invoke maven , gradle etc
++ it has Buid in Post Build Actions setup
+
+**USE CASE**  ( When should you pick a freestyle project over other project configuration) 
+
++ Small projects : This is good for small projects with simple setups and dont require any complex build process
++ Quick Prototyping : Its good to build quick build jobs to test basic functionalities for your application 
+
+
+2. **PIPELINE PROJECTS** A Jenkins pipeline project is designed to handled complex Continous Delivery pipeline as code. 
++ It uses Groovy-Based DSL (Domain specific language), it uses this language to define your build processes or steps in a `Jenkinsfile` .
++ The default name to save the file is called Jenkinsfile
+
+**What is a Jenkinsfile** . This is a file that contains steps of your jenkins build pipeline that helps to build , test and deploy your application . The jenkins pipeline can be written into two different types of syntax
+
+
+Types of Jenkins Pipeline Syntax
+
+1. `Declarative Pipeline` : It uuses High-level syntax designed for simplicity and readability.
+  + Provides predefined structure and keywords, making it easier to write and maintain.
+  + Enforces a more structured format.
+  + Includes a pipeline block as the top-level structure.(It starts with `pipeline` )
+  + Supports post actions for better handling of success, failure, and cleanup steps.
+
+  `example` 
+
+  pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+    }
+}
+
+
+2. `Scripted Pipeline` :  Low-level syntax for more advanced control and flexibility.
++ Its Written entirely in Groovy, allowing for complex scripts and custom logic.
++ Provides complete freedom but requires more Groovy knowledge.
++ Uses node blocks to define pipeline execution
+
+`example`
+
+node {
+    stage('Build') {
+        echo 'Building...'
+    }
+    stage('Test') {
+        echo 'Testing...'
+    }
+    stage('Deploy') {
+        echo 'Deploying...'
+    }
+}
+
+
+**When should you use Declarative Vs Scripted Pipelines**
+
+| **Feature**         | **Declarative Pipeline**             | **Scripted Pipeline**             |
+|----------------------|---------------------------------------|------------------------------------|
+| **Ease of Use**      | Beginner-friendly, easier syntax.    | Advanced users, complex logic.    |
+| **Structure**        | Enforces a strict structure.         | Fully flexible, no strict rules.  |
+| **Error Handling**   | Built-in error handling (`post`).    | Custom error handling required.   |
+| **Use Case**         | Common CI/CD pipelines.              | Advanced or custom workflows.     |
+
+
+**Key Features of a Pipeline Project**
+
++ *Pipeline as code* : The entire build process can be defined in a `jenkinsfile` which allows version control and easy updates
++ *it can handle complex workflows*: Pipelines gives you the freedom to extend builds capabilities.You can also setup multi-branch pipelines , parallel execution , stages with complex workflow .
++ **Extensibility* : Pipeline projects are easy for you to extend its functionalities because it offers options to use multiple plugins for continous integration and delivery 
++ Durable in the sense that , they can survive Jenkins Master Restart ,and the state of the pipeline is going to be reserved 
+
+
+**USE CASE PIPELINE** 
+
++ Complex Workflows or projects 
++ Its good for Micro-services deployments because you can have coordinated builds and deployments 
+
+
+
+
+#####################################
+A CLOSER LOOK FOR A **JENKINSFILE** : 
+#####################################
+A Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline and is checked into source control. There are two types of syntax that can be used in a Jenkinsfile: Declarative and Scripted.
+
+1. **Declarative Syntax** : This syntax provides more structured and easier to read format for writing Jenkins pipelines
+
+`example of a declarative pipeline syntax `
+
+pipeline {
+    agent agent1
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('clown repository') {
+            steps {
+              git clone 
+            }
+        }
+    }
+}
+
+    
+
++ *Pipeline* : All jenkins pipelines start with the word `pipeline`
++ *agent any* : This is where you specify where the pipeline will run e.g master , agent , or specific nodes or agents.  agent any means the pipeline will run on any agent (node or server)
++ *Stages* : Contains a sequence of stages , each has its own set of steps
++ *Stage* : Stage are nested or they are under stages where stage means each task the pipeline will execute and the actual commands for the piple to execute are under steps  
++ *Steps* : Steps is where you defined the tasks or action you want the particular step in your pipeline to execute e.g will echo the word ` hello world`  , the second step on the pipeline example will clone a git repository
+
+
+
+2. **Scripted Pipeline** 
+
+ A scripted pipeline syntax offers more flexibility and is based on groovy code. This syntax is less structured than declarative syntax but it allows for complex logic. 
+
+`Example of a Scripted Pipeline Syntax`
+
+node {
+    def mvnHome
+    stage('Preparation') { // for display purposes
+        // Get some code from a GitHub repository
+        git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+        // Get the Maven tool.
+        // ** NOTE: This 'M3' Maven tool must be configured
+        // **       in the global configuration.
+        mvnHome = tool 'M3'
+    }
+    stage('Build') {
+        // Run the maven build
+        withEnv(["MVN_HOME=$mvnHome"]) {
+            if (isUnix()) {
+                sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean package'
+            } else {
+                bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+            }
+        }
+    }
+    stage('Results') {
+        junit '**/target/surefire-reports/TEST-*.xml'
+        archiveArtifacts 'target/*.jar'
+    }
+}
+
+
++ *node*: This block defines node (agent or server) where the pipeline is going to run 
++ *stage* : Stage is where you defined the tasks or action you want the particular stage in your pipeline to execute e.g you can have preparation stage , build stage , result stage , notification stage 
+
+Java Web Application 
+NodeJs Application 
+
+
+First Pipeline Job 
+
+
+
+- How install and configure jenkins 
+- Jenkins configurations features (Manage Jenkins)
+- Jenkins AWS integration (IAM roles or aws access keys)
+- How integrate jenkins with git and github (Freestyle project , Pipelines) 
+- How to integrate jenkins with slack 
