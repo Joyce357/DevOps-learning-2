@@ -705,6 +705,7 @@ Under Tools and Actions we have the following
 
 
 
+SETTING UP OUR FIRST JENKINS JOB 
 
 
 
@@ -712,13 +713,13 @@ Under Tools and Actions we have the following
 Jenkins Intergrations
 ##############################
 
-1.  Jenkins and AWS Intergration ( Installed aws cli , Create IAM role and attached to Jenkins instance)
-2. Jenkins & Github integration ( We created a token , on managed jenkins we added othe token to credentials using Username & password )
-3. Jenkins & Slack Intergration to notify when builds are complete 
+1.  Jenkins and AWS Intergration ( Installed aws cli on jenkins server , Create IAM role and attached to Jenkins instance to give access to jenkins and add the permissions that is required by jenkins . You can also integrate jenkins with aws using jenkins credentials kind called `AWS Credentials ` ( you would need an access and secret access key )
+
+
+2. Jenkins & Github integration ( We created a token , on managed jenkins we added othe token to credentials using Username & password ) and then on the jenkins job you can use the credentials 
 
 
 
-`Monday Jan 13` 
 
 HANDS ON PROJECT 
 
@@ -741,7 +742,7 @@ by running the following commands
 12: Hour field (12 PM UTC, which is 7 AM EST)
 *: Day of the month field (every day)
 *: Month field (every month)
-*: Day of the week field (every day of the week)
+*: Day of the week field (every day of the week) or specific days monday to friday u can set it like 1-5 
 
 **Steps to Set Up in Jenkins:** 
 
@@ -756,7 +757,7 @@ Save: Click the "Save" button.
 
 
 #############################
-Jenkins Slack Integration
+**Jenkins Slack Integration**
 #############################
 
 
@@ -776,8 +777,11 @@ This helps jenkins to interact with Jira and this is done through Jira webhook a
 
 
 1. **FREE STYLE PROJECT** : This is a General Purpose , built-automation project that supports simple configuration and its highly flexible. 
+
 + It allows you to define Build steps and Post Build Actions using the Jenkins UI (User interface) 
+
 **build step*: is the action or task you actually want jenkins to carryout , you can setup more than 1 build steps 
+
 **Post Build Action* : This steps tells jenkins what to do after the build is success or failed .'once the build is done what should i do next`?  you can set more than 1 post built action 
 
 **Key Features of a Free Style Project**
@@ -789,12 +793,19 @@ This helps jenkins to interact with Jira and this is done through Jira webhook a
 **USE CASE**  ( When should you pick a freestyle project over other project configuration) 
 
 + Small projects : This is good for small projects with simple setups and dont require any complex build process
+
 + Quick Prototyping : Its good to build quick build jobs to test basic functionalities for your application 
+
+
+
+
+
 
 
 2. **PIPELINE PROJECTS** A Jenkins pipeline project is designed to handled complex Continous Delivery pipeline as code. 
 + It uses Groovy-Based DSL (Domain specific language), it uses this language to define your build processes or steps in a `Jenkinsfile` .
 + The default name to save the file is called Jenkinsfile
+
 
 **What is a Jenkinsfile** . This is a file that contains steps of your jenkins build pipeline that helps to build , test and deploy your application . The jenkins pipeline can be written into two different types of syntax
 
@@ -805,14 +816,14 @@ Types of Jenkins Pipeline Syntax
   + Provides predefined structure and keywords, making it easier to write and maintain.
   + Enforces a more structured format.
   + Includes a pipeline block as the top-level structure.(It starts with `pipeline` )
-  + Supports post actions for better handling of success, failure, and cleanup steps.
+  + it Supports post actions for better handling of success, failure, and cleanup steps.
 
   `example` 
 
   pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Build application') {
             steps {
                 echo 'Building...'
             }
@@ -838,8 +849,8 @@ Types of Jenkins Pipeline Syntax
 
 2. `Scripted Pipeline` :  Low-level syntax for more advanced control and flexibility.
 + Its Written entirely in Groovy, allowing for complex scripts and custom logic.
-+ Provides complete freedom but requires more Groovy knowledge.
-+ Uses node blocks to define pipeline execution
++ it Provides complete freedom but requires more Groovy knowledge.
++ it uses node blocks to define pipeline execution
 
 `example`
 
@@ -885,6 +896,7 @@ node {
 #####################################
 A CLOSER LOOK FOR A **JENKINSFILE** : 
 #####################################
+
 A Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline and is checked into source control. There are two types of syntax that can be used in a Jenkinsfile: Declarative and Scripted.
 
 1. **Declarative Syntax** : This syntax provides more structured and easier to read format for writing Jenkins pipelines
@@ -910,7 +922,7 @@ pipeline {
 
     
 
-+ *Pipeline* : All jenkins pipelines start with the word `pipeline`
++ *Pipeline* : All jenkins pipelines written in declarative syntax starts with the word `pipeline`
 + *agent any* : This is where you specify where the pipeline will run e.g master , agent , or specific nodes or agents.  agent any means the pipeline will run on any agent (node or server)
 + *Stages* : Contains a sequence of stages , each has its own set of steps
 + *Stage* : Stage are nested or they are under stages where stage means each task the pipeline will execute and the actual commands for the piple to execute are under steps  
@@ -967,3 +979,418 @@ First Pipeline Job
 - Jenkins AWS integration (IAM roles or aws access keys)
 - How integrate jenkins with git and github (Freestyle project , Pipelines) 
 - How to integrate jenkins with slack 
+
+
+
+
+
+
+Team4tech Solutions 
+Java web applications ( was written java) ---> mvn build 
+
+Node js application ( Nodejs) --> Yarn install , Node install 
+
+
+
+
+**MAVEN** 
+
+Build automation tool 
+At team4tech solutions `Java web application and a Nodejs application`
+
+
+**What is Maven ? :* 
+
+This is a  build automated tool used for `Java Projects`.  It simplifies the build process, dependency management, and project documentation through a `project object model (POM)`. Maven is designed to address various aspects of the software development lifecycle, including compiling code, packaging binaries, running tests, generating documentation, and deploying artifacts.
+
++ Maven is used to build `Java projects` .a java project is simply a Java application 
+
+**Key features of Maven Include**
+
++ `Dependency Management` : Automatically downloads and manages the libraries and plugins required by your project.
++ `Project configurations` : Maven uses a single configuration file called ( `pom.xml` ) its uses this file to manage project dependencies, build configurations and plugins 
++ `Build Automation` : Provides consistent and repeatable builds by standardizing the build process.
++ `Project Documentation`: Generates comprehensive documentation from the project's source code.
+
+Project file for maven is called `POM.XML`
+
+
+
+**History of Maven** 
+
++ Maven was developed by the Apache Software Foundation, and its first release was in `July 2004`. The need for Maven arose from the limitations and complexities encountered with Apache Ant, the predecessor build tool. The name "Maven" means "accumulator of knowledge," reflecting the tool's goal to bring best practices and patterns to the development process.
+
+**Purpose of Maven**
+
++ To simplify the build process: Providing a uniform build system across projects.
++ To simplify dependency management : Handling external libraries and project dependencies automatically.
++ Project consistency:  Enforcing conventions to ensure consistent project structures.
+
+**What are the names of other build servers or build tools** 
+
++ Gradle 
++ Ant 
+
+| Feature                     | Maven                                               | Ant                                                 | Gradle                                               |
+|-----------------------------|-----------------------------------------------------|-----------------------------------------------------|------------------------------------------------------|
+| **Build Configuration**     | Declarative (`pom.xml`)                             | Procedural (`build.xml`)                            | Declarative (Groovy/Kotlin DSL)                      |
+| **Dependency Management**   | Built-in                                            | Requires additional tools (e.g., Ivy)               | Built-in                                             |
+| **Project Structure**       | Enforces standard conventions                       | Flexible, user-defined                              | Flexible, user-defined                               |
+| **Build Lifecycle**         | Predefined build lifecycle                          | Customizable tasks and targets                      | Customizable lifecycle with incremental build support|
+| **Flexibility**             | Opinionated, less flexible                          | Highly flexible, user-defined tasks                 | Highly flexible with rich API                        |
+| **Performance**             | Moderate                                            | Moderate                                            | Generally faster with incremental build support      |
+| **Scripting Language**      | XML                                                 | XML                                                 | Groovy or Kotlin                                     |
+| **Ease of Use**             | Easier for standard Java projects                   | Requires more configuration, more complex           | Easier for complex builds, more intuitive DSL        |
+| **Community & Ecosystem**   | Large, mature ecosystem with many plugins           | Mature but smaller ecosystem compared to Maven      | Growing ecosystem with increasing adoption           |
+| **Documentation**           | Comprehensive and well-documented                   | Good documentation, but less standardized           | Good documentation, continuously improving           |
+| **Incremental Builds**      | Not supported                                       | Not supported                                       | Supported                                            |
+| **IDE Integration**         | Well-supported in most IDEs                         | Well-supported in most IDEs                         | Well-supported in most IDEs                          |
+| **Use Cases**               | Standardized Java projects                          | Custom build processes, older projects              | Complex builds, multi-language projects              |
+
+
+
+**Maven Architecture Overview** 
+
+1. Core components 
+
++ `Project Object Model (POM )` . The pom.xml its fundamental unit of maven . Inside this file `pom.xml` it describes all mavens projects , dependencies and plugins and other configurations.
+
+source code : This main code used in building a software or application 
+
+**Key elements inside the pom.xml** 
+
+<modelVersion>: Specifies the POM model version.
+<groupId>: Unique identifier for the group or organization.
+<artifactId>: Unique identifier for the project or module.
+<version>: Version of the project.
+<packaging>: Type of artifact (e.g., jar, war).
+<dependencies>: List of dependencies required by the project.
+<build>: Configuration for the build process, including plugins.
+<profiles>: Define sets of configuration values for different environments.
+
+
+2. **Repositories**
+
+Definition: Repositories store all of Maven’s artifacts (libraries, plugins, etc.). Maven uses repositories to download and upload artifacts.
+
+**What are the different Types of Maven Repositories**  
+
++ **Local Repository:**  Located on the developer's machine (e.g., ~/.m2/repository). Stores downloaded artifacts and local builds.
+
++ **Central Repository:**  Maven Central is a public repository containing a vast number of libraries and components.
+
+**Remote Repository:**  Can be any repository accessible over the internet or intranet. Organizations often set up their own remote repositories using tools like Nexus or Artifactory.
+
+
+3. **Plugins** : Plugins provide the capability to perform tasks within Maven's build process. They are responsible for executing specific goals such as `compiling code, running tests, or packaging artifacts`
+
+**Common Plugins:**
+
+**Compiler Plugin*: Compiles source code (maven-compiler-plugin).
+**Surefire Plugin*: Runs unit tests (maven-surefire-plugin). Unit Test Cases 
+**Jar Plugin*: Creates JAR files (maven-jar-plugin).
+**War Plugin*: Creates WAR files (maven-war-plugin).
+**Ear Plugin* : Creates EAR files 
+
+
+
+4. **Maven Lifecycle** : Maven’s build lifecycle is a well-defined sequence of phases that Maven executes in order to build and deploy a project. The build process is divided into three main lifecycles: default, clean, and site.
+
+
+1.1 : **Default Lifecyle** ; This lifecycle is responsible for building and deploying the project.
+
+**The steps or phases this mavens uses when buiding with the Default Life Cycle* 
+
++ **validate** : Checks if the project is correct and all necessary information (dependecies) is available.
++ **compile**: Compiles the source code.
++ **test** : Runs unit tests.( when developers write the code they write unit test cases)
++ **package**: Packages the compiled code into a distributable format (e.g., JAR, WAR, EAR ).
++ **verify** : Runs any checks to ensure the package is valid and meets quality criteria.
++ **install** : Installs the package into the local repository for use as a dependency in other projects.
++ **deploy**: Copies the package to a remote repository for sharing with other developers and projects.
+
+
+1.2 . **Clean Lifecyle** : This lifecycle is used to clean up files created during the build process.
+
+*Phases:*
+
++ pre-clean: Performs actions required before the actual cleaning.
++ clean: Deletes the `target` directory where Maven stores its build artifacts.
++ post-clean: Performs actions required after cleaning.
+
+1.3 . **Site LifeCycle** : This lifecycle is used to generate project documentation.
+ 
+*Phases:*
+
++ pre-site: Performs actions required before generating the site.
++ site: Generates the project site documentation.
++ post-site: Performs actions required after generating the site.
++ site-deploy: Deploys the generated site to a web server.
+
+`In a nutshell a maven lifecyle is just a series of steps maven takes to build , test , deploy and document a maven project` . 
+
+
+
+
+
+## Maven Installation 
+
+Reference Documentation : https://maven.apache.org/download.cgi
+To install maven you need some prequesites : 
++ if installing Maven version 3.9+ and above you will requires JDK (Java development kit) 8 or above to execute 
++ You can install Maven on different operating systems such as `linux , Mac , Windows etc`
++ You can install Maven using the CLI or GUI by downloading the Files 
+
+*Step 1*
+
+**Installation on MAC** 
+
++ Use mac package manager using brew `brew install maven` 
+
+**Linux Operating System**
+
+sudo apt update 
+sudo apt install maven 
+
+
+**Installation Manually (windows )**
+
+go on this website : https://maven.apache.org/download.cgi
+Download the latest binary tar.gz archive. e,g apache-maven-3.9.8-bin.zip or apache-maven-3.9.8-src.tar.gz
+you can extract the file using the fowllow commands : unzip or tar 
+
+
+
+**step2 after downloading you need to configure Environmental Variables*
+
+vi or nano ~/.bashrc 
+vi or nano ~/.bash_profile 
+
+**Step3 Add the following lines*
+
+`export MAVEN_HOME=/opt/apache-maven-<version>`
+`export PATH=$MAVEN_HOME/bin:$PATH`
+
+**Step4* : Apply the chanes and run the following command below 
+
+`source ~/.bashrc` or `~/.bash_profile `
+
+
++ Next Install the `Maven Intergation Plugin` you should be fine 
++ automated installation of Maven you can install maven by going to Managed Jenkins ----> System configurations , go to tools and from tools ---select Maven Installation and the version you want.Select installer type 
+
++ After installing Maven plugin you will be able to Build Jobs using a Maven project 
++ When you run the maven build it comes with a target directory . 
+
++ to confirm if maven has been installed run the following command 
+`mvn -v` . you should see the information like this 
+
+example
+
+Apache Maven 3.8.7
+Maven home: /usr/share/maven
+Java version: 21.0.5, vendor: Ubuntu, runtime: /usr/lib/jvm/java-21-openjdk-amd64
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "6.8.0-1021-aws", arch: "amd64", family: "unix"
+
+`Troubleshooting errors`
+
+ : if you see `Command 'mvn' not found` then maven has not been installed but if you truly think you installed then you might be missing enviromtal variables setup . so ahead and set the following environtal varianbles 
+
+
+vi or nano ~/.bashrc 
+vi or nano ~/.bash_profile 
+
+**Step3 Add the following lines*
+
+`export MAVEN_HOME=/opt/apache-maven-<version>`
+`export PATH=$MAVEN_HOME/bin:$PATH`
+
+**Step4* : Apply the chanes and run the following command below 
+
+`source ~/.bashrc` or `~/.bash_profile `
+
+
+
+
+**Building and Running Maven Projects** 
+
+1. **Basic Maven Commands* : 
+Maven provides different commands to perform various task in relation to the build and management of projects. 
+These commands can be executed inside the project directory this is where the pom.xml file is found. 
+
+`mvn compile` : This command compiles the source code of your project 
+This command processes the source code in the src/main/java directory and places the compiled bytecode in the target/classes directory.
+
+`mvn test` : 
+Purpose: Runs unit tests using the maven-surefire-plugin.
+Executes tests located in the src/test/java directory and places the test results in the target/test-classes and target/surefire-reports directories.
+
+`mvn package` : 
+Packages the compiled code into a distributable format (e.g., JAR, WAR).
+Creates the final artifact (e.g., target/WebApplication-1.0-SNAPSHOT.jar or target/WebApplication-1.0-SNAPSHOT.war) based on the packaging type defined in the pom.xml.
+
+`mvn install` : 
+Purpose: Installs the packaged artifact into the local repository.
+After packaging, this command places the artifact into the local Maven repository (~/.m2/repository). This allows other projects on the same machine to use the artifact as a dependency.
+
+`mvn deploy` : 
+Deploys the artifact to a remote repository.
+Uploads the artifact to a remote repository (e.g., Nexus, Artifactory). This is typically done for sharing artifacts with other developers or projects.
+
+
+## What is Jar , War & Ear ?
+
+In the context of `Java applications`, WAR, JAR, and EAR are types of archive files used to package and distribute applications.Each of them are used for different types of java applications. 
+
+1. **JAR (Java Archive)** :
+
+JAR files are used to package Java class files, associated metadata, and resources (like images and configuration files) into a single archive. They are mainly used for distributing Java libraries or standalone applications.
+
++ The file extension is `.jar`
+
+*What is a standalone application ? :* 
+
+A Standalone applications, also known as desktop applications or desktop software, these are programs that run directly on a user's computer without requiring a web server or internet connection to function. They are self-contained and typically have a graphical user interface (GUI) that interacts directly with the operating system. 
+
+**Examples of Standalone Applications*
+
++ Productivity software; (Word ,Excel ,Powerpoint )
++ Utilities softwares ; ( Antivirus programs like , Norton , McAfee etc)
++ Media players (Windows Media Player, VLC media player)
++ Development Tools ( VS Code )
+
+
+2. **WAR (Web Application Archive)** : 
+
+WAR files are used to package web applications. They include all the necessary components to deploy a web application to a web server or servlet container.
++ The file extension is `.war`
+
+
+**Usage**  
+Web Applications: Deployed to web servers like Apache Tomcat, Jetty, or application servers like JBoss, WebLogic.
+Example: myapp.war
+
+*What is a Web application ? :* 
+
++ A web application is a software application that runs on a web server and is accessed through a web browser over a network (typically the internet). Unlike standalone desktop applications that run on a user's local machine, web applications are designed to be accessed and used via web browsers, providing users with a wide range of functionality through the web.
+
+**Types of Web Applications**
+
++ . **Static Web Applications:*
+
+Definition: Serve fixed content that does not change unless manually updated.
+Example: Simple websites with static HTML pages. (web applications we have been deploying in class using Apache (index.html))
+
++ . *Dynamic Web Applications:*
+
+*Definition:* Generate content on-the-fly based on user input or other factors.
+*Example:* Online stores e.g Amazon, social media platforms like facebook, instagram, twitter , and content management systems (CMS).
+
++ . *Single Page Applications (SPAs):*
+
+*Definition*: Load a single HTML page and dynamically update content as users interact with the app, providing a more fluid user experience.
+*Example*: Google Maps, Gmail.
+
+
++ . *Progressive Web Applications (PWAs):*
+
+*Definition*: Web applications that use modern web capabilities to deliver an app-like experience. They can work offline and be installed on a user’s device.
+
+*Example:* Twitter Lite, Starbucks.
+
+
+3. **EAR (Enterprize Archive)**
+
+EAR files are used to package and deploy Java EE (Enterprise Edition) applications, which may include multiple modules such as JARs and WARs. They are used for large-scale, enterprise-level applications.
++ file extension is `.ear`
+
+**What is an ENTERPRIZE APPLICATION** 
+
+Enterprise applications are large-scale software systems designed to support and automate the core functions and processes of an organization. They are built to handle a significant volume of data, a large number of users, and complex business requirements. These applications are typically integrated into an organization's infrastructure to streamline operations, improve efficiency, and support decision-making.
+
+**Types of Enterprise Applications** 
+
++ *Enterprise Resource Planning (ERP):*
+
+Purpose: Integrates core business processes across various departments (e.g., finance, HR, manufacturing, supply chain).
+Examples: SAP ERP, Oracle ERP Cloud, Microsoft Dynamics 365.
+
++ **Customer Relationship Management (CRM):*
+
+**Purpose: Manages interactions with customers and potential customers, helping to improve relationships, sales, and customer service.
+Examples: Salesforce, HubSpot CRM, Zoho CRM.
+
+
++ **Business Intelligence (BI):*
+
+Purpose: Analyzes business data to provide insights and support decision-making through reporting, dashboards, and data visualization.
+Examples: Tableau, Power BI, QlikView.
+
++ **Supply Chain Management (SCM):*
+
+Purpose: Manages and optimizes the supply chain processes, including procurement, production, inventory management, and logistics.
+Examples: SAP SCM, Oracle SCM Cloud, JDA Software.
+
++ **Human Resource Management Systems (HRMS):*
+
+Purpose: Manages employee data, payroll, recruitment, performance evaluations, and other HR-related functions.
+Examples: Workday, ADP, BambooHR.
+
++ **Content Management Systems (CMS):*
+
+Purpose: Manages and organizes digital content, including documents, web content, and media.
+Examples: SharePoint, Drupal, Sitecore.
+
++ **Enterprise Asset Management (EAM):*
+
+Purpose: Manages the lifecycle of physical assets, including maintenance, procurement, and replacement.
+Examples: IBM Maximo, Infor EAM, Oracle EAM.
+
+
+Maven Application is located in this repository 
+
+`https://github.com/CalsonNjinoh/DevOps`
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Cloning GitHub repository ....'
+                git branch: 'main', credentialsId: 'GitHub-jenkins-auth2', url: 'https://github.com/CalsonNjinoh/DevOps.git'
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                dir('WebApplication-2') {
+                    sh 'mvn test'
+                    sh 'mvn package'
+                }
+            }
+        }
+        stage('Send message to Slack') {
+            steps {
+                echo 'Sending message to Slack channel'
+
+                slackSend(
+                    channel: '#jenkins-notifications',
+                    message: 'Hi class6 and 7, your application deployment is now successful',
+                    color: '#36a64f' // Optional: specify a color for the message
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution is now completed'
+        }
+    }
+}
+
+
+
