@@ -1394,3 +1394,576 @@ pipeline {
 
 
 
+
+
+
+# SONAQUBE 
+
+`What is sonarqube`
+
+Sonarqube is an open-source platform that performs continuous inspection of code quality. It supports static code analysis to detect bugs, code smells, and security vulnerabilities.
+
+
++ Note Sonarqube runs a static code analysis :`What is static code analysis` - Static Code Analysis is a method of checking code without running it to find errors, security issues, and bad coding practices. It helps developers catch problems early before the software is tested or deployed.
+
+
+**Key Features of Sonarqube** 
+
+1. `Static Code Analysis` : Analyzes source code without executing it, identifying potential issues early in development.
+2. `Security vunerability detections`: Identifies security flaws using OWASP, SANS Top 25, and CWE standards.
+3. `Code Quality Metrics` : Measures code duplication, complexity, maintainability, and technical debt.
+4. `It supports Multiple Programing Languages` : Supports Java, JavaScript, Python, C, C++, Go, Kotlin, PHP, TypeScript, and more.
+5. `Intergration with CI/CD Pipelines` : its Works with Jenkins, GitLab CI/CD, GitHub Actions, Azure DevOps, Bitbucket Pipelines, etc.
+6. `Quality Gates & Rules Enforcement` : Defines pass/fail criteria based on code quality thresholds.
+7. `Code coverage Analysis` : Supports integration with JUnit, Jacoco, Clover, Istanbul, etc.
+8. `Developer & Management Dashboards` : Provides graphical reports for developers and managers to track technical debt and improvements.
+
+
+
+## OVERVIEW OF STATIC CODE ANALYSIS 
+
+**What are some of the Key Aspects of Static Code Analysis using tools like Sonarqube** 
+
++ `Code Smells`: Patterns in code that indicate potential problems.A Code Smell is a sign of poor code quality that makes the code harder to understand, maintain, or extend
++ `Bugs`: A bug is an error, flaw, or unexpected behavior in a software program that prevents it from functioning correctly. Bugs can occur due to coding mistakes, logical errors, missing requirements, or system failures
++ `Vulnerabilities`: What are some of the Security issues OR Concerns that could be exploited.
++ `Code Coverage`: The percentage of code executed during tests, indicating the thoroughness of testing.
+
+
+
+**Benefits of using Sonarqube or Code Quality Analysis in your CI/CD Pipeline or Project** 
+
++ **It Improves Code Quality*: It Detects issues early in the SDLC, and helps in maintaining high code standards.
++ **Enhanced Security*: Identifies security vulnerabilities and promotes secure coding practices.
++ **Maintainability*: Provides insights into code smells and potential refactoring needs.
++ **Continuous Feedback*: Integrates with CI/CD pipelines to provide real-time feedback on code quality.
++ **Customizable*: Offers flexibility through customizable rules and quality profiles.
+
+
+`Other tools for static code analysis apart from sonarqube are`: 
+
++ Checkmarx : Security-focused static analysis
++ Coverity : Enterprise-grade security and defect detection
++ Fority static code analyzer : Large enterprises and compliance-heavy environments
++ DeepSource :  AI-powered static analysis , AI-driven insights for improving code quality
++ OWASP Dependency-Check : Dependency security scanning. Detects vulnerable third-party libraries ,supports Java, JavaScript, Python, and .NET
+
+
+
+##########################
+## SONARQUBE INSTALLATION 
+##########################
+
+**STEP 1 :** 
+
+ Create a new EC2 instance for your Sonarqube Server ( recommend `T2 medium` )
+
+**STEP 2 (follow the installation Guide )**
+
+## INSTALLATION AND CONFIGURATION OF SONARQUBE 
+
+
+Here is the installation Guide :  `https://github.com/jae1choi/sonaqueue-installation-guide` follow this guide step by step 
+and you will successfully installed Sonarqube 
+
+
++ Default sonarqube port : 9000
++ Defaule sonarqube UI username & Password : `admin` 
+
+
+1. Prepare your Ubuntu server.
+
+SSH to your Ubuntu server as a non-root user with sudo access.
+Update your server.
+sudo apt update
+sudo apt upgrade -y
+
+2. Install OpenJDK 11
+
+Install OpenJDK 11.
+sudo apt install -y openjdk-21-jdk 
+
+3. InstalL Postgress
+
+sudo apt install -y postgresql postgresql-contrib
+sudo systemctl enable --now postgresql
+sudo systemctl status postgresql
+
+4. Change the default PostgreSQL password.
+
+sudo -u postgres psql
+
+5. Switch to Postgress user 
+
+sudo -u postgres psql
+
+6. Create a Sonar
+
+createuser sonar
+
+7. Log into PostgreSQL.
+psql
+
+8. Set a password for the sonar user. Use a strong password in place of my_strong_password.
+
+ALTER USER sonar WITH ENCRYPTED password 'my_strong_password';
+
+9. Create SonarQube database and set its owner to sonar.
+
+CREATE DATABASE sonarqube OWNER sonar;
+
+
+10. Grant all privileges on SonarQube database to the user sonar.
+GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar;
+
+11. Exit PostgreSQL.
+
+\q
+
+12. Return to your non-root sudo user account.
+
+exit
+
+
+13.  Download and Install SonarQube
+
+Install the zip utility, which is needed to unzip the SonarQube files.
+
+`sudo apt install -y zip`
+
+`wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-26.8.0.126808.zip`
+
+`unzip sonarqube-26.8.0.126808.zip`
+
+`sudo mv sonarqube-26.8.0.126808 /opt/sonarqube`
+
+`Note` : If you want to install the latest version of sonarqube you will need the following binaries below . 
+
+Sonarqube Latest Version URL : wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.6.0.92116.zip
+
+Note : You will require java version 11 if you are using sonarqube version 10 and below 
+
+#mysonarqube password welcome1
+
+Add SonarQube Group and User
+ sudo useradd -d /opt/sonarqube -g sonar sonar
+  sudo chown sonar:sonar /opt/sonarqube -R
+
+
+####################################
+## JENKINS - SONARQUBE INTERGRATION 
+####################################
+
+STEP-1 
+
+Jenkins 
+
++ Install SonarQube Plugin on your jenkins UI : `SonarQube Scanner` plugin
+ (Manage Jenkins ---> System configurations----> Plugins---->Available plugins search for SonarQube Scanner plugin )
+
+
+STEP-2
+Sonarqube 
+
++ Go to Sonarqube UI and click on Administration ----> Click Security---> select users and you will see a default sonarqube user called administrator , at top right under tokens select the 4 doted lines to generate a token for the user . 
+
++ Give the token a name and click on generate token 
++ Copy the token and add the token under jenkins 
+
+
+`STEP 3`
+
+Jenkins 
+
++ The token you created in sonarqube add the token under Jenkins credentials and the credential kind is `secret text` . paste the secret where it says secret and give it any i.d of your choice and save . 
+
++ Go to Manage Jenkins ---> System configuration ---> systems and look for sonarqube 
++ When you locate sonarqube select environmental variables , give a label to the environmental variables e.g Team4techsolutions and paste the url of your sonarqube server in the server url e.g `http://3.96.168.175:9000`  
+
++ Then next add `Server authentication token` by selecting the token you added in step2 . 
+
+username : admin 
+password : welcome1 
+
+
+`Step 4` 
+
+Add sonarqube steps to your ci/cd pipeline 
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven3.9.9'
+    }
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Cloning GitHub repository ....'
+                sh 'mvn -v'
+                git branch: 'main', credentialsId: 'GitHub-jenkins-auth2', url: 'https://github.com/CalsonNjinoh/DevOps.git'
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                dir('WebApplication-2') {
+                    sh 'mvn test'
+                    sh 'mvn package'
+                }
+            }
+        }
+        stage('Running static code analysis with Sonarqube'){
+            steps {
+                dir('WebApplication-2') {
+                    withSonarQubeEnv(installationName: 'team4techsolutions') {
+                        sh 'mvn sonar:sonar -Dsonar.java.binaries=target/classes'
+                    }
+                }
+            }
+        }
+        stage('Send message to Slack') {
+            steps {
+                echo 'Sending message to Slack channel'
+
+                slackSend(
+                    channel: '#jenkins-notifications',
+                    message: 'Hi class6 and 7, your application deployment is now successful',
+                    color: '#36a64f' // Optional: specify a color for the message
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution is now completed'
+        }
+    }
+}
+
+
+
+
+
+Class10@sonarqube
+9:30 pm est 
+
+
+
+
+
+
+
+**SONARQUBE INSIGTS or FEATURES ** 
+
++ Sonarqube is used for Static Code Analysis 
++ You can access Sonarqube on the UI
++ Sonarqube Default Port is 9000
++ Sonarqube comes with default quality profile 
++ You can intergrate sonarqube with jenkins using plugins
+
+
+1. ## ISSUES IN SONARQUBE 
+
++ Sonarqube issues are problems that have been detected in your codebase during a sonarqube analysis.They represent deviations from coding standards, potential bugs, security vulnerabilities, or code smells.
+
+**DIFFERENT TYPES OF ISSUES** 
+
++ **Code smells** : Suboptimal code practices that affect readability, maintainability, or performance but don't necessarily cause functional issues.
+
++ **Bugs** : This is an issue or defect that can lead to incorrect behaviour or system failure. 
+
++ **Vunerabilities**: This are security flaws that can lead to bad actors to compromise the application 
+
+
+
+**SEVERITY LEVEL** :  With the various types of issues that sonarqube is going to scan for . it will classify the issues in different severity levels . This means it classifies into levels of how critical or important the issues can impact your application . 
+
+
+`OLD SONAQUBBE SEVERITY CLASSIFICATIONS`
+
++ **Critical* : These are high impact issues that needs immediate attention 
++ **Major* : These significant issues that affects code quality but they are less severe than critical issues 
++ *Minor* : These are issues that have minor impact and should be addressed to maintained a good practise. 
++ **info* : Informational issues that provides recommendations for improvement. 
++ **Blocker* : This is the most severe type of issue which prevents code from functioning correctly or compromises the application's stability. 
+
+
+`NEW VERSION OF SONARQUBE SEVERITY CLASSIFICATION`
+
+
++ **High* : These are high impact issues that needs immediate attention 
++ **Medium* : These significant issues that affects code quality but they are less severe than High issues 
++ *Low* : These are issues that have minor impact and should be addressed to maintained a good practise. 
++ **info* : Informational issues that provides recommendations for improvement. 
++ **Blocker* : This is the most severe type of issue which prevents code from functioning correctly or compromises the application's stability. 
+
+
+
+
+2. ## RULES
+
+These are predefined guidelines or custom guidelines used by Sonarqube to anlyze code and detect issues. Rules define what constitutes a problem and how it should be reported.
+
+**TYPES OF RULES** 
+
++ **Built-in Rules* : Default rules provided by SonarQube, which cover various programming languages and common coding issues.
+
++ **Custom Rules* : User-defined rules that can be created to address specific coding standards or practices within an organization.
+
+Sonarqube comes with different languages with in built rules and some of the languages sonarqube supports are : 
+
++ Java
++ typescript 
++ c#
++ python
++ PHP
++ VB.NET
++ XML
+
+
+Project : Java   :  Quality profile 
+Project : Python  Typescript :  Quality profile 
+
+**Rules Categories**
+
++ Bugs : Theses rules will detect potential bugs in your code
++ Vunerability : Rules that will identify security vunerabilities
++ Code smell : Rules that will flag code smells
++ Security hotspot : Rules that identify areas of code that may be security risk but require manual review. 
+
+
+
+3. ## QUALITY PROFILES 
+
+These are a  collections of rules that are applied to analyze a project. They define which rules are enforced and their severity levels
+
++ Quality profiles help standardize code quality practices across projects and teams by applying a consistent set of rules.
++  Each project can be assigned a specific quality profile, which dictates the rules applied during analysis.
++ Customizable: Users can create and modify quality profiles to align with specific coding standards or requirements.
++ Language-Specific: Different profiles can be used for different programming languages
+
+
+4. ## QUALITY GATE 
+
+Quality gates are sets of criteria or thresholds that a project must meet to pass code analysis. They help enforce code quality standards by defining acceptable levels for various metrics.
+
++ Quality gates ensure that projects meet predefined quality standards before they are promoted to the next stage of the development process (e.g., deployment).
+
++ We have built in Quality Gate and you can customize your own quality gate.
++ Criteria: Quality gates can include criteria such as the number of new issues, code coverage percentage, duplications, and more.
++ Customizable: Users can define and configure quality gates based on specific requirements or standards.
++ Impact: Projects failing to meet the criteria of a quality gate are typically blocked from proceeding to the next stage, ensuring that only high-quality code is released.
+
+
+Setup your jenkins pipeline to check on the quality gate and if the quality gate results is passed then the pipeline build would proceed to the next stage and if the build is failed it will abort meaning it wont proceed to deploy the application 
+
+steps 
+
++ Go on Sonarqube UI ---Click on Administration ---Under administration click on --> Configurations and select webhook 
+
++ Create a webhook and give the webhook any name and URL go to your jenkins server and copy the url e.g `http://jenkins-336613335.us-east-1.elb.amazonaws.com` and add the following to `sonarqube-webhook` at the end .here is the full example of how the url should look like 
+
+`http://jenkins-336613335.us-east-1.elb.amazonaws.com/sonarqube-webhook`
+
+
+step 2
+
+add the following step on your jenkins pipeline 
+
+ stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+
+5. Administration 
+
+
+
+## SONATYPE NEXUS (Artifactory Repository)
+
+What is Nexus : Its an artifact repository manager used to store, manage, and distribute software components or artifacts across a DevOps pipeline in case we will be storing our Jar ,War or Ear packages.It is commonly used in modern software development workflows to manage binaries, libraries, dependencies, and Docker images. Nexus supports various package formats, such as `Maven`, `npm`, `Docker`, `NuGet`, `RubyGems`, and many more . 
+
+
+
+1. `Artifacts Management`:
+
++ Stores and manages various types of software artifacts (e.g., Java libraries (war , ear ,jar), Docker images, Node.js packages).
++ Supports both open-source and commercial software components, enabling teams to share and reuse code efficiently.
+
+2. `Repository Types`: 
+
++ Hosted Respositories: These respositories you can store your own artifacts e.g in our case WAR 
++ Proxy Repositories : These acts as a cache for remote repositoes like Maven Central , enabling faster builds by avoiding repeated downloads
++ Group Repositories : Combine of Multiple repositories into one , simplifying artifacts access 
+
+3. `Integration with Build Tools:` 
+
++ Integrates seamlessly with popular build tools such as Maven, Gradle, Jenkins, and other CI/CD platforms, making it easy to manage dependencies and deploy artifacts as part of your build pipelines.
+
+4.`Security and Access Control`
+
++ Offers fine-grained access control to repositories through user roles, permissions, and integration with LDAP and other identity management systems.
++ Supports authentication mechanisms like Single Sign-On (SSO).
+
+5. `Artifact Lifecycle` 
+
++ Manages the lifecycle of artifacts from development through testing, staging, and production.
++ Allows users to promote artifacts between stages, making it easier to manage the release pipeline.
+
+
+Other Artifactory repositories other than Nexus are : 
+
++ `Jfrog` : its supports maven , gradle , npm ,docker etc 
++ `AWS CodeArtifact` : owned by aws and it supports Maven, npm, NuGet, Python (pip).AWS CodeArtifact is fully managed and integrates directly with AWS services, making it a natural choice for teams heavily invested in the AWS ecosystem.
+
+
+
+**STEPS TO INSTALL NEXUS** 
+
+Follow this documenation : `https://www.fosstechnix.com/install-nexus-repository-manager-on-ubuntu-24/#google_vignette`
+
+After the installation is completed make sure you open port 8081 in your inbound rules to be able access Nexus on the browswer because nexus listens on port 8081 
+
+Default username for Nexus is :  `admin` 
+password can be found at :     `/opt/sonatype-work/nexus3/admin.password`
+
+Nexus password : welcome1 
+
+
+**JENKINS - NEXUS INTERGRATION**
+
+Once your nexus server is up and running and you able to login 
+
++ On your nexus Repository manager , create a private repository and the repository type is `snapshots` 
++ On jenkins UI , go to Managed Jenkins --->System ----> Plugins and install the plugin called `Nexus Artifact Uploader` 
++ Add the nexus credentials in Jenkins under Managed Jenkins ---> Credentials ---> credential kind should be `username and password` in our case we will use the admin username and password but is strongly recommended to create a new user and their own password rather than using the admin user . 
++ Add step in your jenkinsfile to upload aritfacts in your repositoru 
+
+
+
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven3.9.9'
+    }
+
+    stages {
+        stage('clone private repository') {
+            steps {
+                echo 'Cloning GitHub repository ....'
+                sh 'mvn -v'
+                git branch: 'main', credentialsId: 'GitHub-jenkins-auth2', url: 'https://github.com/CalsonNjinoh/DevOps.git'
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                dir('WebApplication-2') {
+                    sh 'mvn test'
+                    sh 'mvn package'
+                }
+            }
+        }
+        stage('Running static code analysis with SonarQube'){
+            steps {
+                dir('WebApplication-2') {
+                    withSonarQubeEnv(installationName: 'team4techsolutions') {
+                        sh 'mvn sonar:sonar -Dsonar.java.binaries=target/classes'
+                    }
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('Upload Artifacts to Nexus') {
+            steps {
+                script {
+                    dir('WebApplication-2') {
+                        // Retrieve version from Maven
+                        def version = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
+                        echo "Version: ${version}"
+
+                        // Construct the artifact path based on the version
+                        def projectName = 'WebApplication'
+                        def artifactPath = "target/${projectName}-${version}.war"
+                        echo "Artifact Path: ${artifactPath}"
+
+                        // Check if the artifact path exists
+                        sh "if [ -f ${artifactPath} ]; then echo 'Artifact found'; else echo 'Artifact not found'; fi"
+
+                        // Upload artifact to Nexus
+                        nexusArtifactUploader(
+                            nexusVersion: 'nexus3',
+                            protocol: 'http',
+                            nexusUrl: 'nexus.team4techsolutionsinc.com',
+                            groupId: 'com.example',
+                            version: version,
+                            repository: 'class5jenkins-snapshot',
+                            credentialsId: 'Jenkins-nexus-auth-cred',
+                            artifacts: [
+                                [artifactId: 'WebApplication',
+                                 classifier: '',
+                                 file: artifactPath,
+                                 type: 'war'],
+                                [artifactId: 'WebApplication',
+                                 classifier: '',
+                                 file: 'pom.xml',
+                                 type: 'pom']
+                            ]
+                        )
+                    }
+                }
+            }
+        }
+        stage('Send message to Slack') {
+            steps {
+                echo 'Sending message to Slack channel'
+
+                slackSend(
+                    channel: '#jenkins-notifications',
+                    message: 'Hi class6 and 7, your application deployment is now successful',
+                    color: '#36a64f' // Optional: specify a color for the message
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution is now completed'
+        }
+    }
+}
+
+
+
+
+**HOW TO SETUP  BUILD TRIGGER FOR** 
+`GitHub hook trigger for GITScm polling`
+
+**STEP 1** 
+
++ Go to the github project repository and click on settings 
++ After clicking settings on the left hand side you will find webhooks click on it and click `add webhook` 
++ Add your jenkins url for example  `http://jenkins-336613335.us-east-1.elb.amazonaws.com` and `github-webhook` after the url so you should have a full url like this 
+
+
+`http://jenkins-336613335.us-east-1.elb.amazonaws.com/github-webhook/`
+
+If this has been setup correctly then you will see a delivery on the github under recent deliveries as okay 
+
+
+**STEP 2**
+
++ Go on jenkins on the project e.g pipeline project or freestyle project select the `GitHub hook trigger for GITScm polling`
+

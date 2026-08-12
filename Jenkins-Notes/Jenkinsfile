@@ -1,10 +1,53 @@
 pipeline {
-    angent any
-}
-stages {
-    stage ('Build') {
-        steps {
-            echo 'Building...'
+    agent any
+
+    stages {
+        stage('Clone Github Repository') {
+            steps {
+                git branch: 'main', credentialsId: 'jenkins-github-authentication', url: 'https://github.com/CalsonNjinoh/DevOps.git'
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                dir('WebApplication-2') {
+                    sh 'mvn test'
+                    sh 'mvn compile'
+                    sh 'mvn package'
+                }
+            }
+        }
+        stage('Sonarube Analysis') {
+            steps {
+                dir('WebApplication-2') {
+                    withSonarQubeEnv(installationName: 'Sonarqube-server') {
+                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.java.binaries=target/classes'
+                    }
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('Send message to Slack') {
+            steps {
+                echo 'Sending message to Slack channel'
+
+                slackSend(
+                    channel: '#jenkins-notifications',
+                    message: 'Hi class10, your application deployment is now successful',
+                    color: '#36a64f' // Optional: specify a color for the message
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution is now completed'
         }
     }
 }
