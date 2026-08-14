@@ -1647,6 +1647,7 @@ pipeline {
 
 Class10@sonarqube
 9:30 pm est 
+letmein@619
 
 
 
@@ -1948,6 +1949,10 @@ pipeline {
 
 
 
+9:20 pm est 
+
+
+
 **HOW TO SETUP  BUILD TRIGGER FOR** 
 `GitHub hook trigger for GITScm polling`
 
@@ -1967,3 +1972,540 @@ If this has been setup correctly then you will see a delivery on the github unde
 
 + Go on jenkins on the project e.g pipeline project or freestyle project select the `GitHub hook trigger for GITScm polling`
 
+
+
+
+
+
+
+
+**CONTAINERIZATION** 
+
+**What is Containerization** :
+
+This is a type of virtulaziation at the OS level where you packaged your application and its depencicies such (libraries , configurations files , binaries etc) into lightweight , portable containers .These containers can run consistently across different computing environments, such as development, testing, and production, without being affected by the underlying infrastructure or operating system
+
+ It's like putting your app and everything it needs into a virtual box that can run anywhere, from your laptop to the cloud, without worrying about differences in the underlying system. This makes applications easier to deploy, manage, and scale.
+
+
+**DOCKER** 
+
+`What is Dockers` ? : Docker is an opensource platform and a tool  used to automate the deployment and management of containerized applications. 
+
+
+**Two types of Application Architecture**
+
+`Micro-service Architecture` :Most micro service architecture applications uses containerization
+
+`monolithic application`: A monolithic application is a traditional software architecture where the entire application is built as a single, unified unit. All components of the application (e.g., database, user interface, business logic) are tightly integrated and operate as one entity. 
+
+
+**Steps to Install Docker**
+
+**Installing Docker on Ubuntu**
+
+reference documentation : https://docs.docker.com/engine/install/ubuntu/
+
+`sudo apt-get update`
+`sudo apt-get install ca-certificates curl`
+`sudo install -m 0755 -d /etc/apt/keyrings`
+`sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc`
+`sudo chmod a+r /etc/apt/keyrings/docker.asc`
+
+# Add the repository to Apt sources:
+
+`echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
+
+`sudo apt-get update`
+
+To install the latest version, run:
+
+` sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
+Verify that the Docker Engine installation is successful by running the hello-world image
+
+`sudo docker run hello-world`  or run `docker --version` 
+
+
+1.  Introduction to containers 
++ What is docker
++ What is a container or containerization 
++ Difference between containerization and Virtualization
++ What is Virtualization 
+
+2. Docker installation and setup 
+
++ How to install docker ( windows ,MacOs & Linux)
++ Verify Version (docker --version) after installation 
+
+3. Docker Architecture or Features of Docker 
++ docker daemond , client and engine
++ docker image , docker containers ,docker registries and dockerfile
++ dockerhub quick review
+
+
+
+**ARCHITECTURE OF DOCKER** 
+
+
+
+1. **Docker Engine (dockerd)** : This is the core platform of docker which helps in managing containers on the host Machine . The docker engine has 3 very important  components  (`Docker client , Docker Daemon , Docker Rest Api`)
+
++ **It has a Docker Daemon (dockerd)* : This is a background service running on the host machine that manages docker objects like e.g images , containers , networks and volumes(storage). It listens to the docker api request and performs actions to manage containers . 
+
++ **Docker Client* : This is a command line interface (CLI) tool that allows users to interact with the docker daemon . it can send commands such as `docker run` , `docker build` ,`docker pull` etc 
+
++ **Docker Rest API :  This is the interface used by docker client and other tools to communicate with the docker Daemon .This Api allows integration with other systems and automation of docker operations.
+
+
+Api rest (command) ----> docker client -----> docker daemon (background service) manages docker images , docker containers . network etc 
+
+
+
+2. **Docker Images** : A docker image is a lightweight ,standalone and executable package or its a read-only template used to create containers , that includes everything needed to run a part of your software or application. it can include the application code , runtime , libraries , enviromental variables and configurations etc . Images are immutable (which means once a docker image is built, it cannot be changed or modified) and can be versioned using tags . 
+
+`Docker images have layers` 
+
++ Docker images have Layers and each layer is an instruction in the dockerfile e.g RUN , COPY , ADD etc 
++ Layers are stacked ontop each other in a specific order .The final image is the combination of all these layers 
++ Layers are cached and resused to optimized buiding process , making it faster and more efficient 
+
+Docker images are Immutable 
+
++ Docker images are immutable ,meaning they cannot be changed once they are created 
++ if you really need to make a change you will need to create a new version of the existing image and add the new layer on the existing one 
+
++ Docker images are ,portable as they can run on any OS(operating system) that supports docker 
++ Docker images are resuable and can be resused in different projects e.g prod , staging and dev 
++ Docker images can be versioned
++ To create a docker image you need a `dockerfile` 
+
+
+
+**DOCKERFILE** 
+
+A dockerfile  is simply a text file  that contains a list of instructions that docker uses to build a Docker Image . In the dockerfile you will need to specify a base image , environment variables , commands to run , files to copy and more . 
+
+**example of a dockerfile** 
+
+FROM tomcat:9.0
+RUN rm -rf /usr/local/tomcat/webapps/ROOT \
+    && rm -rf /usr/local/tomcat/webapps/docs \
+    && rm -rf /usr/local/tomcat/webapps/examples \
+    && rm -rf /usr/local/tomcat/webapps/host-manager \
+    && rm -rf /usr/local/tomcat/webapps/manager
+COPY WebApplication-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+
+
+**DOCKER CONTAINERS** : A docker container is running instance of a docker image . This is when your application or software have been deployed and running . While docker images are immutable and static , docker containers on the other hand are dynamic and can be started , stopped , moved or deleted . 
+
+
+**Difference between a docker container and Docker Image**
+
+| Feature                    | Docker Image                                              | Docker Container                                         |
+|----------------------------|-----------------------------------------------------------|----------------------------------------------------------|
+| **Definition**             | A blueprint or template for creating containers.          | A runnable instance of a Docker image.                   |
+| **State**                  | Immutable, cannot be changed after creation.              | Mutable, changes during runtime but changes do not persist unless committed. |
+| **Purpose**                | To define the environment and application dependencies.   | To run applications in isolated environments.            |
+| **Storage**                | Stored in registries like Docker Hub.                     | Exists on the host system's storage as long as it's running or not removed. |
+| **Creation**               | Built using a Dockerfile or pulled from a registry.       | Created from a Docker image using `docker run`.          |
+| **Lifecycle**              | Static, does not change over time.                        | Dynamic, can be started, stopped, restarted, and removed.|
+| **Isolation**              | Not directly executed; serves as the basis for containers.| Runs in an isolated environment with its own filesystem, network, etc. |
+| **Example Command**        | `docker build`, `docker pull`                             | `docker run`, `docker stop`, `docker exec`               |
+
+
+**Docker Registry** : 
+
+A docker registry is a distributed system where you can save  or store docker  images .
+It acts as a centralized location where you can save your docker images , managed them and retrieve them for your projects .
+Docker registries are good for team collaboraion and automating deployments using CI/CD tools . 
+
+Different Types of Docker Registries
+
+1. *Public Registry* : These are registries where anyone can push and pull docker images. e.g Docker Hub 
+dockerhub is the default and widely used registry .It hosts millions images 
+apart from Docker hub other public registries are : ECR in AWS (Elastic container registry),GCR (Google container registry) , Quay.io.
+
+2. *Private Registry* : These are restricted registries can only be accessed if you have the right permissions and authorization.Organizations or companies often use private registries to store proprietary or sensitive docker images.
+Dockerhub , ECR , GCR etc provides private repositories .
+
+
+
+9:24 pm est 
+
+
+
+
++ BUILD OUR FIRST DOCKER IMAGE ( TEAM4TECH SOLUTION )
++ DEPLOY MANUALLY 
++ docker commands ( images and Containers )
++ Docker hub 
++ Integrate Docker with Jenkins 
+
+
+
+Developers can write application code in different languages ( Nodejs react , Java , Jago , Python , c++ ETC ): 
+
++ Monolitheque Architecture  (All application code is package together to come out with an application )
++ Micro-service Architecture ( each service within the application is segregated or separated from each other but communicate with each other )
+
+
+**HOW TO CREATE A DOCKERFILE**
+
+In other for us to deploy our application we need to create a docker image . To create a docker image we need to use a dockerfile .
+
+**Dockerfile** A dockerfile is simply a text file or document that contains a series of instructions for docker to follow in orde
+to create a docker image 
+
+
+
+**What can be inside a dockerfile or Key components of a dockerfile**
+
+example of our own dockerfile at Team4techsolutions 
+
+FROM tomcat:9.0
+RUN rm -rf /usr/local/tomcat/webapps/ROOT \
+    && rm -rf /usr/local/tomcat/webapps/docs \
+    && rm -rf /usr/local/tomcat/webapps/examples \
+    && rm -rf /usr/local/tomcat/webapps/host-manager \
+    && rm -rf /usr/local/tomcat/webapps/manager
+COPY WebApplication-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+MAINTAINER team4tech solutions inc info@teamtechsolutions.com
+VOLUMES
+
+**COMPONENTS OF A DOCKERFILE**
+
+1. **Base Image** : This is the image that your container will be built on , typically a lightweight operating system or a specific platform like ubuntu , alpine or node , tomcat etc 
++ example: FROM tomcat:9.0 , FROM ubuntu:22.04
+
+2. **Maintainer (optional)** : This is the person or organization maintaining the image for example MAINTAINER team4tech solutions info@team4techsolutions.com or Nsoh Divine 
+
+3. **RUN** : This executes a command or commands  in the container (it can be used to install software packages or setup configurations ) 
++ example `RUN rm -rf /usr/local/tomcat/webapps/ROOT \` OR `RUN apt-get update && apt-get install -y python3` 
+
+4. **COPY** ; Copy command copies files from the host machine (local computer) to the container .you will specify the path in the container where you want the files to be copied to 
+
++ example `COPY WebApplication-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war` or `COPY . /app`
+
+5. **WORKDIR** : This sets a working directory inside a container 
++ example : `WORKDIR /app`
+
+6. **EXPOSE** : This informs docker that the conatiner listens on a specific network port at runtime . 
+example : `EXPOSE 8081`
+
+7. **CMD/ENTRYPOINT** : This specifies the command or program that should run when a container is started from the image. 
+CMD : is overridden while ENTRYPOINT is not 
+
+example : `CMD ["catalina.sh", "run"]`
+example : `ENTRYPOINT ["./catalina.sh]
+
+8. **ENV** : This sets environmental variables 
+example `ENV APP_ENV=Production
+
+9. **VOLUMES** : This will create a mount point with the specified path and marks it as holding externally mounted volumes 
+for example : VOLUME /var/lib/mysql 
+
+10. **ADD vs COPY** : Both commands are used to copy files from the host to the container. The difference is that ADD can handle URLs (Uniform Resource Locators) and tar files , while COPY  only works with local files. 
+
+
+
+**difference between CMD and ENTRYPOINT** 
+
++ CMD defines the default command or argumentts that will run when a container starts . It will be overriden that is if you specify a command when running the container , it will replace the CMD command specify in your dockerfile Whereas 
+
++ ENTRYPOINT ;sets the main command that always runs when the container starts . You can pass additional arguments but Entrypoint will not be overriden . This is good when you want the container to always runs on a specific command 
+
+
+
+`Sunday : 6pm to 9 pm` 
+
+
+
+
+**DOCKER IMAGE COMMANDS** 
+
+`docker build -t "image name" .` or `docker build -t "image name" "path-to-dockerfile` :This will build a docker image from your dockerfile .This command will work if you are in the location of the dockerfile . -t image name = tag ,.This means you are tagging the name with a name e.g `docker build -t myapp1 .`
+. :The dot specifies the build context in this case it means the `current directory`
+
+`docker images` : This shows you all docker images in your local environments or system
+
+`docker run -d -p 8000:8000 myapp1` : This will start a docker container from your docker image (deploying your application)
+
+`docker tag <image-id> <repository-name>:<tag>` e.g docker tag myapp1 myrepo/myapp:latest 
+
+`docker rmi <image-id>` : This will remove docker image and note an image that is used by a stop container can't be removed using this command you will need to force remove 
+
+`docker rmi -f <image-id>`: This will force remove a docker image that is in used by a container 
+
+` docker push <repository-name>:<tag>` e.g docker push myrepo/myapp1:latest 
+
+`docker pull <repository-name>:<tag>` This will pull a docker image from a registry 
+
+`docker inspect <image-id>` : This gives you more information about a docker image and its good for troubleshooting image issues
+
+`docker history <image-id>` : This will show you the image history including its layers 
+
+
+**TABLE FOR DOCKER IMAGE COMMANDS*** 
+
+# Docker Image Commands Summary
+
+| **Command**                                 | **Description**                             |
+|---------------------------------------------|---------------------------------------------|
+| `docker images`                             | List all Docker images on the system        |
+| `docker build -t <name> <path>`             | Build an image from a Dockerfile            |
+| `docker tag <image-id> <repo>:<tag>`        | Tag an image with a new name                |
+| `docker rmi <image-id>`                     | Remove an image                             |
+| `docker rmi -f <image-id>`                  | Force remove an image                       |
+| `docker push <repo>:<tag>`                  | Push an image to a Docker registry          |
+| `docker pull <repo>:<tag>`                  | Pull an image from a Docker registry        |
+| `docker inspect <image-id>`                 | Inspect an image (detailed information)     |
+| `docker history <image-id>`                 | Show the history of an image (layers)       |
+| `docker save -o <file>.tar <image-id>`      | Save an image to a `.tar` file              |
+| `docker load -i <file>.tar`                 | Load an image from a `.tar` file            |
+| `docker search <image>`                     | Search for an image on Docker Hub           |
+| `docker image prune`                        | Remove unused images (dangling images)      |
+| `docker image prune -a`                     | Remove all unused images                    |
+| `docker images -f dangling=true`            | List dangling (untagged) images             |
+| `docker tag <old-image> <new-image>`        | Tag an image with a new name                |
+| `docker rmi <old-image>`                    | Remove an old image after tagging           |
+
+
+
+
+
+**COMMANDS FOR DOCKER CONTAINERS** 
+
+1.  `docker run -d -p <host-port:container-port> <docker-image>` : This command starts a docker container from a docker image (deploying your application)
+
+-d : Means run the container in detached mode (in the background)
+-p : map to <host-port:container-port>
+- it : Run the container interactively  (this good when you are testing)
+--name <container-name> : This will give 
+
+`example 1`: `docker run -d -p 8080:8080 myapp2`
+`example 2`: `docker run -d --name <containername> -p 8080:8080 myapp`
+
+2. `docker ps` : This list all running containers 
+3. `docker ps -a` : This will list all containers including running and stopped containers 
+4. `docker stop <container-id or container-name>`: This will stop a running docker container 
+5. `docker start <container-id or container-name>` : This will start a stopped container 
+6. `docker rm <container-id or container-name>` : This will remove a container . Note the container needs to be stopped first before you can remove it . 
+7. `docker rm -f <container-id or container-name>`: This will force remove a running container. 
+8. `docker logs <container-id or container-name>`: This will help you to view logs of a docker container (This is good for trouble shooting issues)
++ `docker logs -f <container-id or container-name>` : This will show you live updates of your docker logs
+9. `docker exec <options> <container-id or container-name> <command>` ; This will allow you to run commands inside your running  container 
+example `docker exec -it e94bcc35746b /bin/bash`
+10. `docker inspect <container-id or container-name>` : This will show you detailed information about your container . 
+
+11. `docker cp <host-path> <container-id> or <container-name>:<container-path>
+example `docker cp text.txt e94bcc35746b:/tmp/`
+
+12. `docker stats` : This will help you to view your container usage statistics for example ( CPU , Memory etc)
+
+13. `docker stop $(docker ps -q)` : This will stop all running containers .Run this with caution 
+
+14. `docker rm $(docker ps -a -q)`: This will remove all stopped containers 
+
+
+
+| **Command**                                    | **Description**                                                              |
+|------------------------------------------------|------------------------------------------------------------------------------|
+| `docker run <options> <image-name>`            | Start a new container from an image.                                         |
+| `docker ps`                                    | List all running containers.                                                 |
+| `docker ps -a`                                 | List all containers (running and stopped).                                   |
+| `docker stop <container-id or container-name>` | Stop a running container.                                                    |
+| `docker rm <container-id or container-name>`   | Remove a stopped container.                                                  |
+| `docker rm -f <container-id or container-name>`| Force remove a running container.                                            |
+| `docker start <container-id or container-name>`| Restart a stopped container.                                                 |
+| `docker logs <container-id or container-name>` | View logs of a container.                                                    |
+| `docker logs -f <container-id or container-name>`| Follow live log updates from a container.                                    |
+| `docker exec -it <container-id or container-name> <command>` | Execute a command inside a running container (interactive). |
+| `docker inspect <container-id or container-name>` | View detailed information about a container.                                |
+| `docker cp <host-path> <container-id or container-name>:<container-path>` | Copy files from host to container.                                          |
+| `docker cp <container-id or container-name>:<container-path> <host-path>` | Copy files from container to host.                                          |
+| `docker stats`                                 | View resource usage (CPU, memory, etc.) of running containers.               |
+| `docker stop $(docker ps -q)`                  | Stop all running containers.                                                 |
+| `docker rm $(docker ps -a -q)`                 | Remove all stopped containers.                                               |
+| `docker pause <container-id or container-name>`| Pause all processes in a running container.                                  |
+| `docker unpause <container-id or container-name>`| Unpause a paused container.                                                 |
+| `docker restart <container-id or container-name>`| Restart a container (stop and start again).                                  |
+| `docker kill <container-id or container-name>` | Forcefully stop a container immediately.                                     |
+| `docker top <container-id or container-name>`  | Display running processes inside a container.                                |
+| `docker attach <container-id or container-name>`| Attach to a running container (interact with it).                            |
+| `docker rename <old-name> <new-name>`          | Rename a container.                                                         |
+| `docker port <container-id or container-name>` | List port mappings for a container.                                          |
+| `docker commit <container-id> <new-image-name>`| Create a new image from a container’s changes.                               |
+| `docker events`                                | Get real-time events from the Docker daemon.                                 |
+| `docker diff <container-id or container-name>` | Inspect changes to files or directories on a container’s filesystem.         |
+| `docker update <options> <container-id or container-name>` | Update resource limits on a running container.                               |
+| `docker wait <container-id or container-name>` | Block until a container stops and then print the exit code.                  |
+| `docker history <image-id>`                    | Show history of an image.                                                    |
+| `docker export <container-id or container-name>` | Export a container’s filesystem as a tar archive.                           |
+| `docker import <tarball-file> <repository-name>`| Import a tarball to create a filesystem image.                               |
+| `docker ps --filter <filter>`                  | Filter containers based on conditions (e.g., status, name, etc.).            |
+| `docker volume ls`                             | List volumes.                                                               |
+| `docker volume rm <volume-name>`               | Remove a volume.                                                            |
+| `docker network ls`                            | List networks.                                                              |
+| `docker network create <network-name>`         | Create a network.                                                           |
+| `docker network rm <network-name>`             | Remove a network.                                                           |
+
+
+
+**DOCKER HUB** 
+
+Docker hub is basically Github for docker images 
+github --> store code 
+docker --> stores container images 
++ Docker hub is what we call a registry we can create repositories ---> Private or Public repositories 
++ Public repositories : Public images --> Anyone can pull the images without needing any credentials or require authentication 
++ Private repositories : Only you or your organisation or company can access it . Its used for , Internal app images , proprietary code and enterprise workloads
++ To access dockerhub : https://hub.docker.com 
++ You will need to create account 
+
+
+**PUSHING IMAGES TO A REGISTERY ( DOCKER HUB AND ECR)**
+
+
+`HOW TO PUSH AN DOCKER IMAGE INTO DOCKER HUB`
+
+Docker hub is a registry that helps you to save and manage your docker images .apart from docker hub they are other registries you can use for eclearxample ECR . 
+
+
++ Create a dockerhub account using the url : https://hub.docker.com 
++ Once account has been created , create a repository ( public or private)
++ on your command line (CLI) run the following command  `docker login` : This will prompt for your username and password : copy the username from your dockerhub account , and use the password for the dockerhub acct .
++ Tag the image you want to push by running this command 
+
+`docker tag <docker-image-name>:<latest> <dockerhub-username>/<dockerhub-repository>:<docker-image-name>
+
+example : `docker tag myapp2:latest team4techsolutions/team4techsolutions:myapp2`
+
++ After tagging push the image to dockerhub using the following command 
+
+`docker push <dockerhub-username>/<dockerhub-repository-name>:<docker-image-name>`
+
+example : `docker push team4techsolutions/team4techsolutions:myapp2`
+
+
+
+**HOW TO PUSH A DOCKER IMAGE INTO AMAZON ECR (ELASTIC CONTAINER REGISTRY)** 
+
++ Make sure to authenticate with AWS using iam roles and attached the following permissions (EC2InstanceProfileForImageBuilderECRContainerBuilds) or CLI (keys)
++ Open ECR on your aws account and click on create Repository . Select if you want to create a public or private repository 
++ Once repository has been created , click on the repository and at the top right you will see `View Push Commands` in yellow , click on it and follow the steps on how to push the docker image into ECR. 
+
+
+
+
+**HOW TO INTERGRATE --> DOCKER WITH JENKINS
+
++ Download the following docker plugins ( docker , docker pipeline and  docker build steps) or you can install docker directly on the host server and it will work . 
++ add jenkins user to Docker group e.g `sudo usermod -aG docker jenkins` : this is for the jenkins user to be able to interact with the docker daemon by running docker commands .
++ Modify your jenkinsfile to have steps on how to build a docker image and step to push the docker image into a registry (ECR -Elastic container Registry)
+
+
+
+**DOCKER COMPOSE ?**  
+
+This is a tool you can use to define multi-container docker applications . It allows you to define services , networks , volumes required for your application in a single docker-compose.yml file .It can be used to start , or manage multiple containers at once 
+
+starting 1 container (1 application (Monoliqthe Application))
+micro-service architecture : each container will represent service 
+
+
+**KEY COMPONENTS OF DOCKER COMPOSE**
+
+**Service** : A service represents a container that is part of your application.Each service is defined in the compose file and can be started , stopped , and managed independently or as part of the entire application
+
+**YAML FILE** (docker-cpmpose.yml) : This is the configuration file where you will define your applications services , networks , and volumes .This will be your blueprint for docker-compose 
+
+**Project** : A collection of services define by a docker-compose.yml file .All containers are part of the same project by default.
+
+
+
+Micro-service 
+
+dockerfile :  docker image , 
+dockerfile :  docker image 
+dockerfile :  docker image 
+
+
+
+
+**DOCKERFILE VS DOCKER-COMPOSE** 
+
++ A dockerfile is a txt file that helps you to define instructions to build a specific docker image .you define step by step instructions to create a container image . 
+
++ A docker-compose : when an image has been created already using a dockerfile , docker-compose helps to orchestrates multiple containers based on pre-built image or images built from dockerfile 
+
+
+NOTE: To use docker-compose you need to install it . 
+
+**Setting up Docker Compose** 
+
+Installation follow this guide : https://docs.docker.com/compose/install/standalone/
+
+`example of a docker-compose file `
+
+version: '3'
+services:
+  service_name:
+    image: myapp2
+    build: .  # Use this to build from a Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV_VAR=value
+    volumes:
+      - host-path:container-path
+    networks:
+      - network_name
+networks:
+  network_name:
+    driver: bridge
+volumes:
+  volume_name:
+    driver: local
+
+
+`another example` 
+
+version: "3.9"
+
+services:
+  web:
+    image: calson1/team4tech-webapp:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: appdb
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+
+
+when you have defined the various services in the docker-compose file and you want to build the services you will need to run the following command 
+
++ `docker-compose build` : This will build the services from the compose file you have specified 
++ `docker-compose up` : This will start all the services defined in he compose file .  you can use -d to run them in the background 
++ `docker-compose down` : This stops and remove containers , networks , volumes associated with the project 
++ `docker-compose ps`: This list all running containers 
++ `docker-compose up --scale <service-name>=<number>` This will scale your containers 

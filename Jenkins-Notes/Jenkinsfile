@@ -32,6 +32,45 @@ pipeline {
                 }
             }
         }
+        stage('Upload Artifacts to Nexus') {
+            steps {
+                script {
+                    dir('WebApplication-2') {
+                        // Retrieve version from Maven
+                        def version = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
+                        echo "Version: ${version}"
+
+                        // Construct the artifact path based on the version
+                        def projectName = 'WebApplication'
+                        def artifactPath = "target/${projectName}-${version}.war"
+                        echo "Artifact Path: ${artifactPath}"
+                        // Check if the artifact path exists
+                        sh "if [ -f ${artifactPath} ]; then echo 'Artifact found'; else echo 'Artifact not found'; fi"
+
+                        // Upload artifact to Nexus
+                        nexusArtifactUploader(
+                            nexusVersion: 'nexus3',
+                            protocol: 'http',
+                            nexusUrl: '16.54.245.86:8081',
+                            groupId: 'com.example',
+                            version:  version,
+                            repository: 'class10-webapp-repository',
+                            credentialsId: 'nexus-auth',
+                            artifacts: [
+                                [artifactId: 'WebApplication',
+                                 classifier: '',
+                                 file: artifactPath,
+                                 type: 'war'],
+                                [artifactId: 'WebApplication',
+                                 classifier: '',
+                                 file: 'pom.xml',
+                                 type: 'pom']
+                            ]
+                        )
+                    }
+                }
+            }
+        }
         stage('Send message to Slack') {
             steps {
                 echo 'Sending message to Slack channel'
