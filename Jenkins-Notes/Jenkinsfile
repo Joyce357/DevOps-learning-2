@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_REGION      = 'ca-central-1'
+        ECR_REGISTRY    = '891377304437.dkr.ecr.ca-central-1.amazonaws.com'
+        ECR_REPOSITORY  = 'class10-repository'
+    }
+
     stages {
         stage('Clone Github Repository') {
             steps {
@@ -13,6 +19,16 @@ pipeline {
                     sh 'mvn test'
                     sh 'mvn compile'
                     sh 'mvn package'
+                }
+            }
+        }
+        stage('Determine App Version') {
+            steps {
+                dir('WebApplication-2') {
+                    script {
+                        env.APP_VERSION = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
+                        echo "Application Version: ${env.APP_VERSION}"
+                    }
                 }
             }
         }
@@ -36,13 +52,9 @@ pipeline {
             steps {
                 script {
                     dir('WebApplication-2') {
-                        // Retrieve version from Maven
-                        def version = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
-                        echo "Version: ${version}"
-
                         // Construct the artifact path based on the version
                         def projectName = 'WebApplication'
-                        def artifactPath = "target/${projectName}-${version}.war"
+                        def artifactPath = "target/${projectName}-${env.APP_VERSION}.war"
                         echo "Artifact Path: ${artifactPath}"
                         // Check if the artifact path exists
                         sh "if [ -f ${artifactPath} ]; then echo 'Artifact found'; else echo 'Artifact not found'; fi"
@@ -51,9 +63,9 @@ pipeline {
                         nexusArtifactUploader(
                             nexusVersion: 'nexus3',
                             protocol: 'http',
-                            nexusUrl: '16.54.245.86:8081',
+                            nexusUrl: '16.54.231.9:8081',
                             groupId: 'com.example',
-                            version:  version,
+                            version:  env.APP_VERSION,
                             repository: 'class10-webapp-repository',
                             credentialsId: 'nexus-auth',
                             artifacts: [
@@ -80,6 +92,22 @@ pipeline {
                     message: 'Hi class10, your application deployment is now successful',
                     color: '#36a64f' // Optional: specify a color for the message
                 )
+            }
+        }
+        stage('Build & Push Docker ECR') {
+            steps {
+                script {
+                    dir('WebApplication-2') {
+                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr-credentials']]) {
+                            sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                            sh "docker build -t ${ECR_REPOSITORY}:${APP_VERSION} ."
+                            sh "docker tag ${ECR_REPOSITORY}:${APP_VERSION} ${ECR_REGISTRY}/${ECR_REPOSITORY}:${APP_VERSION}"
+                            sh "docker tag ${ECR_REPOSITORY}:${APP_VERSION} ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+                            sh "docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${APP_VERSION}"
+                            sh "docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+                        }
+                    }
+                }
             }
         }
     }
